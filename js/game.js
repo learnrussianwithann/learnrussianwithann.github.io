@@ -39,7 +39,7 @@ const SIZE_OF_HOUSE = 0.25;
 const SIZE_OF_MONSTERS = 0.2;
 const MIN_DIST_MONSTERS = 10;
 const VOWELS_HARD = 'АУОЫЭ';
-const VOWELS_SOFT = 'ИЕЯЁЮЭ';
+const VOWELS_SOFT = 'ИЕЯЁЮ';
 const CONSONANTS = 'НМТКХБВГДЗЛПРСФ';
 const MONSTER_NAMES = ['monster_0', 'monster_1', 'monster_2', 'monster_3', 'monster_4'];
 
