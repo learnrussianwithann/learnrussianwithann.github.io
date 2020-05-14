@@ -1,0 +1,51 @@
+body, html
+{
+	width: 100%;
+	height: 100%;
+	padding: 0px;
+	margin: 0px;
+	overflow: hidden;
+}
+
+@font-face {
+	font-family: 'adigiana_2regular';
+	src: url('../font/Adigiana2.woff2') format('woff2'),
+		 url('../font/Adigiana2.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
+.wrapper
+{
+	background-color: #20b020;
+	background-image: url('../img/back.png');
+	background-size: cover;
+	width: 100%;
+	height: 100%;
+}
+ 
+.monster
+{
+	display:inline-block;
+}
+
+img
+{
+	
+}
+
+.text
+{
+	display:inline-block;
+	position: absolute;
+	left: 35%;
+	top: 21%;
+}
+
+.text h1 
+{
+	font-family: 'adigiana_2regular';
+	text-shadow: 0 0 2px rgba(255, 255, 0, .7), 0 0 10px #573a02, 0 0 10px #573a02;
+	color: transparent;
+	font-size: 5vmin;
+}
