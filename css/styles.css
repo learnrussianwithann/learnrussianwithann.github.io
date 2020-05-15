@@ -17,11 +17,76 @@ body, html
 
 .wrapper
 {
-	background-color: #20b020;
-	background-image: url('../img/back.png');
+	background-color: #1b998b;
+	/*background-image: url('../img/back.png');*/
 	background-size: cover;
 	width: 100%;
 	height: 100%;
+}
+
+.message
+{
+	position: absolute;
+	left: 25%;
+	right: 25%;
+	top: 25%;
+	bottom: 25%;
+
+	border-radius: 50px;
+	color: #fdfcdc;
+	background-color: #0081a7;
+	text-align: center;
+	z-index: 1000;
+
+	align-items: center;
+
+
+	padding: 2vmin;
+}
+
+.text
+{
+	font-family: 'adigiana_2regular';
+	font-size: 6vmin;
+
+
+}
+
+.button
+{
+	position: absolute;
+	left: 0vw;
+	right: 0vw;
+	margin-right: auto;
+	margin-left: auto;
+	bottom: 4vh;
+	border-radius: 10vmin;
+
+	background-color: #00afb9;
+	text-align: center;
+	width: 40vmin;
+	height: 8vmin;
+
+	font-family: 'adigiana_2regular';
+	color: #fdfcdc;
+	font-size: 6vmin;
+	white-space: nowrap;
+}
+
+.house
+{
+	display:inline-block;
+	position: absolute;
+	left: 10%;
+	top: 0%;
+}
+
+.house h1
+{
+	font-family: 'adigiana_2regular';
+	text-shadow: 0 0 2px #fdfcdc, 0 0 10px #3a435e, 0 0 10px #3a435e;
+	color: transparent;
+	font-size: 5vmin;
 }
  
 .monster
@@ -29,12 +94,7 @@ body, html
 	display:inline-block;
 }
 
-img
-{
-	
-}
-
-.text
+.syllable
 {
 	display:inline-block;
 	position: absolute;
@@ -42,10 +102,10 @@ img
 	top: 21%;
 }
 
-.text h1 
+.syllable h1 
 {
 	font-family: 'adigiana_2regular';
-	text-shadow: 0 0 2px rgba(255, 255, 0, .7), 0 0 10px #573a02, 0 0 10px #573a02;
+	text-shadow: 0 0 2px #fdfcdc, 0 0 10px #3a435e, 0 0 10px #3a435e;
 	color: transparent;
-	font-size: 5vmin;
+	font-size: 6vmin;
 }
