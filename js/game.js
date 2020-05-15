@@ -39,7 +39,7 @@ const MIN_DIST_MONSTERS = 10;
 const VOWELS_HARD = 'АУОЫЭ';
 const VOWELS_SOFT = 'ИЕЯЁЮ';
 const CONSONANTS = 'НМТКХБВГДЗЛПРСФ';
-const MONSTER_NAMES = ['monster_0', 'monster_1', 'monster_2', 'monster_3', 'monster_4'];
+const MONSTER_NAMES = ['monster_0', 'monster_1', 'monster_2', 'monster_3'];
 
 const POSITION_HARD_VERTICAL = new Point(50, 100 - SIZE_OF_HOUSE * .5);
 const POSITION_HARD_HORIZONTAL = new Point(100 - SIZE_OF_HOUSE * .5, 50);
@@ -152,7 +152,6 @@ class House extends Element {
 		this.div.appendChild(this.textDiv);
 	}
 }
-//const monster = new Element('1212121', .5, .5, true, 150, 150);
 
 const houseSoft = new House('house_soft', POSITION_SOFT_HORIZONTAL, SIZE_OF_HOUSE, false, 'Мягкий дом');
 const houseHard = new House('house_hard', POSITION_HARD_HORIZONTAL, SIZE_OF_HOUSE, false, 'Твердый дом');
