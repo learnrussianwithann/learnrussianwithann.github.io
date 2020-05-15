@@ -130,8 +130,9 @@ body, html
 {
 	display:inline-block;
 	position: absolute;
-	left: 35%;
-	top: 21%;
+	left: 50%;
+	top: 25%;
+	transform: translateX(-50%);
 }
 
 .syllable h1 
