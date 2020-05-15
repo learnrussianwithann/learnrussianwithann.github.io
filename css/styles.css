@@ -101,7 +101,19 @@ body, html
 	color: transparent;
 	font-size: 5vmin;
 }
- 
+
+@keyframes jump
+{
+	0%, 100%
+	{
+		transform: none;
+	}
+	50% 
+	{
+		transform: translateY(-4%) scaleX(.95);
+	}
+}
+
 .monster
 {
 	display:inline-block;
@@ -109,7 +121,9 @@ body, html
 
 .monster:hover
 {
-
+	animation-name: jump;
+	animation-duration: .5s;
+	animation-iteration-count: infinite;
 }
 
 .syllable
