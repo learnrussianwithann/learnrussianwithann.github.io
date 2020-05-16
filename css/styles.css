@@ -23,8 +23,6 @@ body, html
 	font-style: normal;
 }
 
-
-
 .wrapper
 {
 	background-color: #1b998b;
@@ -51,7 +49,6 @@ body, html
 	z-index: 1000;
 
 	align-items: center;
-
 
 	padding: 2vmin;
 }
@@ -83,12 +80,12 @@ body, html
 
 	background-color: #00afb9;
 	text-align: center;
-	width: 40vmin;
+	width: 45vmin;
 	height: 8vmin;
 
 	font-family: 'Arimo';
 	color: #fdfcdc;
-	font-size: 6vmin;
+	font-size: 5vmin;
 	white-space: nowrap;
 	/*text-shadow: 0 0 10px #3a435e;*/
 }
@@ -152,4 +149,3 @@ body, html
 	color: #fdfcdc;
 	font-size: 7vmin;
 }
-
