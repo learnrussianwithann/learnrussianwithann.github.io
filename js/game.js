@@ -301,7 +301,7 @@ function endMoving(e) {
 }
 
 function remove(elem) {
-	wrapper.removeChild(elem.div);
+	wrapper.removeChild(elem.container);
 	monsters.splice(monsters.indexOf(elem), 1);
 }
 
