@@ -15,10 +15,19 @@ body, html
 	font-style: normal;
 }
 
+@font-face {
+	font-family: 'Arimo';
+	src: url('../font/Arimo-Bold.woff2') format('woff2'),
+		 url('../font/Arimo-Bold.woff') format('woff');
+	font-weight: bold;
+	font-style: normal;
+}
+
+
+
 .wrapper
 {
 	background-color: #1b998b;
-	/*background-image: url('../img/back.png');*/
 	background-size: cover;
 	width: 100%;
 	height: 100%;
@@ -56,9 +65,9 @@ body, html
 
 	width: 80%;
 
-	font-family: 'adigiana_2regular';
+	font-family: 'Arimo';
 	font-size: 6vmin;
-	text-shadow: 0 0 10px #3a435e;
+	/*text-shadow: 0 0 10px #3a435e;*/
 }
 
 .button
@@ -77,11 +86,11 @@ body, html
 	width: 40vmin;
 	height: 8vmin;
 
-	font-family: 'adigiana_2regular';
+	font-family: 'Arimo';
 	color: #fdfcdc;
 	font-size: 6vmin;
 	white-space: nowrap;
-	text-shadow: 0 0 10px #3a435e;
+	/*text-shadow: 0 0 10px #3a435e;*/
 }
 
 .house
@@ -90,15 +99,19 @@ body, html
 	position: absolute;
 	top: 0%;
 	left: 50%;
-	transform: translateX(-50%);
+	transform: translate(-50%, -50%);
 }
 
-.house h1
+.houseName
 {
-	font-family: 'adigiana_2regular';
+	position: absolute;
+	top: 0%;
+	left: 50%;
+	transform: translateX(-50%);
+	font-family: 'Arimo';
 	white-space: nowrap;
-	text-shadow: 0 0 2px #fdfcdc, 0 0 10px #3a435e, 0 0 10px #3a435e;
-	color: transparent;
+	/*text-shadow: 0 0 2px #fdfcdc, 0 0 10px #3a435e, 0 0 10px #3a435e;*/
+	color: #fdfcdc;
 	font-size: 5vmin;
 }
 
@@ -106,17 +119,18 @@ body, html
 {
 	0%, 100%
 	{
-		transform: none;
+		transform: translate(-50%, -50%);
 	}
 	50% 
 	{
-		transform: translateY(-4%) scaleX(.95);
+		transform: translate(-50%, -50%) translateY(-4%) scaleX(.95);
 	}
 }
 
 .monster
 {
 	display:inline-block;
+	transform: translate(-50%, -50%);
 }
 
 .monster:hover
@@ -131,14 +145,11 @@ body, html
 	display:inline-block;
 	position: absolute;
 	left: 50%;
-	top: 25%;
+	top: 45%;
 	transform: translateX(-50%);
+	font-family: 'Arimo';
+	/*text-shadow: 0 0 2px #fdfcdc, 0 0 10px #3a435e, 0 0 10px #3a435e;*/
+	color: #fdfcdc;
+	font-size: 7vmin;
 }
 
-.syllable h1 
-{
-	font-family: 'adigiana_2regular';
-	text-shadow: 0 0 2px #fdfcdc, 0 0 10px #3a435e, 0 0 10px #3a435e;
-	color: transparent;
-	font-size: 6vmin;
-}

@@ -40,54 +40,65 @@ const VOWELS_HARD = 'АУОЫЭ';
 const VOWELS_SOFT = 'ИЕЯЁЮ';
 const CONSONANTS = 'НМТКХБВГДЗЛПРСФ';
 const MONSTER_NAMES = ['monster_0', 'monster_1', 'monster_2', 'monster_3'];
+const HOUSE_HARD = 'house_hard';
+const HOUSE_SOFT = 'house_soft';
 
 const POSITION_HARD_VERTICAL = new Point(50, 100 - SIZE_OF_HOUSE * .5);
 const POSITION_HARD_HORIZONTAL = new Point(100 - SIZE_OF_HOUSE * .5, 50);
 const POSITION_SOFT_VERTICAL = new Point(50, SIZE_OF_HOUSE * .5);
 const POSITION_SOFT_HORIZONTAL = new Point(SIZE_OF_HOUSE * .5, 50);
 
+
+loadImages();
+
+
 class Element {
-	img = new Image();
+	container = document.createElement('div');
+	img;
 	pos = new Point(0, 0);
 	offImg = new Point(0, 0);
 	offDrag = new Point(0, 0);
 	scale = 0.1;
-	div = document.createElement('div');
+	
 
 	dragable = false;
 	//name of file; position in percent, scale in fraction, is draggable
-	constructor(name, position, scale, dragable) { 
-		this.img.src = 'img/' + name + '.png';
+	constructor(name, position, scale, dragable) {
+		this.img = imageLoader(name);
 		this.pos = position;
 		this.dragable = dragable;
 		this.scale = scale;
 
 		this.img.onload = function() {resize();};
 		
-		this.div.appendChild(this.img);
-		this.div.style.position = 'absolute';
+		this.container.appendChild(this.img);
+		this.container.style.position = 'absolute';
 		this.toBackground();
 
-		this.div.ondragstart = function() {return false;};
+		this.container.ondragstart = function() {return false;};
 
-		if (dragable) this.div.className = 'monster';
+		if (dragable) this.container.className = 'monster';
 
-		wrapper.appendChild(this.div);
+		this.hide();
+
+		wrapper.appendChild(this.container);
 	}
 
 	toForeground() {
-		this.div.style.zIndex = 100;
+		this.container.style.zIndex = 100;
 	}
 
 	toBackground() {
-		if (this.dragable) this.div.style.zIndex = Math.round(this.pos.y);
-		else this.div.style.zIndex = 0;
+		if (this.dragable) this.container.style.zIndex = Math.round(this.pos.y);
+		else this.container.style.zIndex = 0;
 	}
 
 	setPosition(x, y) {
-		this.pos.x = x;
-		this.pos.y = y;
+		if (x > 0 && y > 0 && x < 100 && y < 100) {
+			this.pos.x = x;
+			this.pos.y = y;
 		this.updatePosition();
+		}
 	}
 
 	moveAt(x, y) { //in percent
@@ -100,17 +111,23 @@ class Element {
 	}
 
 	updatePosition() {
-		this.div.style.left = this.pos.x - this.offImg.x + '%';
-		this.div.style.top = this.pos.y - this.offImg.y + '%';
+		this.container.style.left = this.pos.x + '%';
+		this.container.style.top = this.pos.y + '%';
 	}
 
 	resize() {
 		let t = width < height ? width : height;
 		this.img.height = t * this.scale / 100; 
 		this.img.width = t * this.scale / 100;
-		this.offImg.x = 50 * this.img.width / width;
-		this.offImg.y = 50 * this.img.height / height;
 		this.updatePosition();
+	}
+
+	show() {
+		this.container.style.display = "block";
+	}
+
+	hide() {
+		this.container.style.display = "none";
 	}
 }
 
@@ -122,7 +139,7 @@ class Monster extends Element {
 	constructor(name, position, scale, dragable, isSoft) {
 		super(name, position, scale, dragable);
 		this.textDiv.className = 'syllable';
-		this.div.appendChild(this.textDiv);
+		this.container.appendChild(this.textDiv);
 		if (isSoft) {
 			this.isSoft = true;
 			this.setText(getRandom(CONSONANTS) + getRandom(VOWELS_SOFT));
@@ -139,7 +156,7 @@ class Monster extends Element {
 
 
 	setText(text) {
-		this.textDiv.innerHTML = '<h1>'+ text + '</h1>';
+		this.textDiv.innerHTML = text;
 	}
 }
 
@@ -147,19 +164,21 @@ class House extends Element {
 	textDiv = document.createElement('div');
 	constructor(name, position, scale, dragable, text) {
 		super(name, position, scale, dragable);
-		this.textDiv.className = 'house';
-		this.textDiv.innerHTML = '<h1>'+ text + '</h1>';
-		this.div.appendChild(this.textDiv);
+		this.container.className = 'house';
+		this.textDiv.className = 'houseName';
+		this.textDiv.innerHTML = text;
+		this.container.appendChild(this.textDiv);
 	}
+
 }
 
-const houseSoft = new House('house_soft', POSITION_SOFT_HORIZONTAL, SIZE_OF_HOUSE, false, 'Мягкий дом');
-const houseHard = new House('house_hard', POSITION_HARD_HORIZONTAL, SIZE_OF_HOUSE, false, 'Твердый дом');
+const houseSoft = new House(HOUSE_SOFT, POSITION_SOFT_HORIZONTAL, SIZE_OF_HOUSE, false, 'Мягкий дом');
+const houseHard = new House(HOUSE_HARD, POSITION_HARD_HORIZONTAL, SIZE_OF_HOUSE, false, 'Твердый дом');
 
 const monsters = [];
 
 
-resize();
+
 window.addEventListener("resize", resize);
 
 window.addEventListener('mousedown', startMoving);
@@ -174,18 +193,41 @@ function startGame() {
 	hide(greeting);
 	hide(ending);
 
+	
+	resize();
 	let points = getPoints(NUM_OF_MONSTERS);
 
 	for (var i = points.length - 1; i >= 0; i--) {
 		let m = new Monster(getRandom(MONSTER_NAMES), points[i], SIZE_OF_MONSTERS, true, Math.random() > .5);
 		monsters.push(m);
 	}
+	resize();
+	showElements();
 
 }
 
 function endGame() {
+	hideElements();
 	show(ending);
 }
+
+function imageLoader(name) {
+	let out = new Image();
+	out.src = 'img/' + name + '.png';
+	return out;
+}
+
+
+
+function loadImages() {
+	imageLoader(HOUSE_SOFT);
+	imageLoader(HOUSE_HARD)
+	for (var i = MONSTER_NAMES.length - 1; i >= 0; i--) {
+		imageLoader(MONSTER_NAMES[i]);
+	}
+}
+
+
 
 
 function getRandom(source) {
@@ -311,4 +353,22 @@ function show(elem) {
 
 function hide(elem) {
 	elem.style.display = "none";
+}
+
+function showElements() {
+	houseSoft.show();
+	houseHard.show();
+
+	for (var i = monsters.length - 1; i >= 0; i--) {
+		monsters[i].show();
+	}
+}
+
+function hideElements() {
+	houseSoft.hide();
+	houseHard.hide();
+
+	for (var i = monsters.length - 1; i >= 0; i--) {
+		monsters[i].hide();
+	}
 }
