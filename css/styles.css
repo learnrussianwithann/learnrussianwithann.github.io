@@ -69,6 +69,7 @@ body, html
 
 .button
 {
+	cursor: pointer;
 	position: absolute;
 	left: 50%;
 	top: 80%;
