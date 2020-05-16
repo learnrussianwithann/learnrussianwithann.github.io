@@ -39,7 +39,7 @@ const MIN_DIST_MONSTERS = 10;
 const VOWELS_HARD = 'АУОЫЭ';
 const VOWELS_SOFT = 'ИЕЯЁЮ';
 const CONSONANTS = 'НМТКХБВГДЗЛПРСФ';
-const MONSTER_NAMES = ['monster_0', 'monster_1', 'monster_2', 'monster_3'];
+const MONSTER_NAMES = ['m0', 'm1', 'm2', 'm3', 'm4', 'm5', 'm6', 'm7'];
 const HOUSE_HARD = 'house_hard';
 const HOUSE_SOFT = 'house_soft';
 
@@ -149,7 +149,7 @@ class Monster extends Element {
 		if (Math.random() > .5) {
 			this.img.style.transform = 'scaleX(-1)';
 		}
-		let r = Math.floor(Math.random() * 50);
+		let r = Math.floor(Math.random() * 30);
 		this.img.style['-webkit-filter'] = 'hue-rotate(' + r + 'deg)';
 		this.img.style['filter'] = 'hue-rotate(' + r + 'deg)';
 	}
