@@ -149,7 +149,7 @@ class Monster extends Element {
 		if (Math.random() > .5) {
 			this.img.style.transform = 'scaleX(-1)';
 		}
-		let r = Math.floor(Math.random() * 30);
+		let r = Math.floor(Math.random() * 40);
 		this.img.style['-webkit-filter'] = 'hue-rotate(' + r + 'deg)';
 		this.img.style['filter'] = 'hue-rotate(' + r + 'deg)';
 	}
