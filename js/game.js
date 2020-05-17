@@ -11,6 +11,8 @@ const ending =  document.getElementById('ending');
 var drag = null;
 
 class Point {
+	x;
+	y;
 
 	constructor(x, y) {
 		this.x = x;
@@ -53,6 +55,7 @@ loadImages();
 
 class Element {
 	container = document.createElement('div');
+	img;
 	pos = new Point(0, 0);
 	offImg = new Point(0, 0);
 	offDrag = new Point(0, 0);
@@ -163,6 +166,7 @@ class Monster extends Element {
 class House extends Element {
 	textDiv = document.createElement('div');
 	flagDiv = document.createElement('div');
+	flagimg;
 	constructor(name, position, scale, dragable, text) {
 		super(name, position, scale, dragable);
 		this.container.className = 'house';
