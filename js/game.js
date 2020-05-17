@@ -42,6 +42,7 @@ const CONSONANTS = 'НМТКХБВГДЗЛПРСФ';
 const MONSTER_NAMES = ['m0', 'm1', 'm2', 'm3', 'm4', 'm5', 'm6', 'm7'];
 const HOUSE_HARD = 'house_hard';
 const HOUSE_SOFT = 'house_soft';
+const FLAG = 'flag';
 
 const POSITION_HARD_VERTICAL = new Point(50, 100 - SIZE_OF_HOUSE * .5);
 const POSITION_HARD_HORIZONTAL = new Point(100 - SIZE_OF_HOUSE * .5, 50);
@@ -86,11 +87,13 @@ class Element {
 
 	toForeground() {
 		this.container.style.zIndex = 100;
+		this.container.style.pointerEvents = 'none';
 	}
 
 	toBackground() {
 		if (this.dragable) this.container.style.zIndex = Math.round(this.pos.y);
 		else this.container.style.zIndex = 0;
+		this.container.style.pointerEvents = 'auto';
 	}
 
 	setPosition(x, y) {
@@ -162,13 +165,28 @@ class Monster extends Element {
 
 class House extends Element {
 	textDiv = document.createElement('div');
+	flagDiv = document.createElement('div');
+	flagimg;
 	constructor(name, position, scale, dragable, text) {
 		super(name, position, scale, dragable);
 		this.container.className = 'house';
 		this.textDiv.className = 'houseName';
 		this.textDiv.innerHTML = text;
-		this.container.appendChild(this.textDiv);
+		this.flagDiv.appendChild(this.textDiv);
+		this.flagDiv.className = 'flag';
+		this.flagimg = imageLoader(FLAG);
+
+		this.flagDiv.appendChild(this.flagimg);
+		this.container.appendChild(this.flagDiv);
 	}
+
+	resize() {
+		let t = width < height ? width : height;
+		this.img.height = t * this.scale / 100; 
+		this.img.width = t * this.scale / 100;
+		this.flagimg.width = t * this.scale / 120;
+		this.updatePosition();
+	}	
 
 }
 
@@ -221,7 +239,8 @@ function imageLoader(name) {
 
 function loadImages() {
 	imageLoader(HOUSE_SOFT);
-	imageLoader(HOUSE_HARD)
+	imageLoader(HOUSE_HARD);
+	imageLoader(FLAG);
 	for (var i = MONSTER_NAMES.length - 1; i >= 0; i--) {
 		imageLoader(MONSTER_NAMES[i]);
 	}
@@ -371,4 +390,9 @@ function hideElements() {
 	for (var i = monsters.length - 1; i >= 0; i--) {
 		monsters[i].hide();
 	}
+}
+
+function exit() {
+	hideElements();
+	hide(ending);
 }

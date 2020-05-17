@@ -38,13 +38,13 @@ body, html
 	top: 50%;
 	transform: translate(-50%, -50%);
 
-	width: 50vmin;
-	height: 50vmin;
+	width: 60vmin;
+	height: 60vmin;
 
 	border-radius: 50px;
-	box-shadow: 0 0 8px #3a435e;
+	/*box-shadow: 0 0 8px #3a435e;*/
 	color: #fdfcdc;
-	background-color: #0081a7;
+	background-color: #5d70bc;
 	text-align: center;
 	z-index: 1000;
 
@@ -53,42 +53,106 @@ body, html
 	padding: 2vmin;
 }
 
-.text
+.messagetext
 {
 	position: absolute;
 	left: 50%;
-	top: 20%;
+	top: 30%;
 	transform: translate(-50%, -30%);
 
-	width: 80%;
+	width: 90%;
 
 	font-family: 'Arimo';
-	font-size: 6vmin;
+	font-size: 4.5vmin;
 	/*text-shadow: 0 0 10px #3a435e;*/
 }
 
-.button
+.buttonStart
 {
 	cursor: pointer;
 	position: absolute;
 	left: 50%;
-	top: 80%;
+	top: 75%;
 	transform: translate(-50%, -50%);
 
 	border-radius: 10vmin;
 	border-style: hidden;
-	box-shadow: 0 0 8px #3a435e;
+	/*box-shadow: 0 0 8px #3a435e;*/
 
-	background-color: #00afb9;
+	background-color: #ff6968;
 	text-align: center;
 	width: 45vmin;
 	height: 8vmin;
 
 	font-family: 'Arimo';
 	color: #fdfcdc;
-	font-size: 5vmin;
+	font-size: 4vmin;
 	white-space: nowrap;
 	/*text-shadow: 0 0 10px #3a435e;*/
+}
+
+.buttonAgain
+{
+	cursor: pointer;
+	position: absolute;
+	left: 50%;
+	top: 65%;
+	transform: translate(-50%, -50%);
+
+	border-radius: 10vmin;
+	border-style: hidden;
+	/*box-shadow: 0 0 8px #3a435e;*/
+
+	background-color: #ff6968;
+	text-align: center;
+	width: 45vmin;
+	height: 8vmin;
+
+	font-family: 'Arimo';
+	color: #fdfcdc;
+	font-size: 4vmin;
+	white-space: nowrap;
+	/*text-shadow: 0 0 10px #3a435e;*/
+}
+
+.buttonEnd
+{
+	cursor: pointer;
+	position: absolute;
+	left: 50%;
+	top: 85%;
+	transform: translate(-50%, -50%);
+
+	border-radius: 10vmin;
+	border-style: hidden;
+	/*box-shadow: 0 0 8px #3a435e;*/
+
+	background-color: #01afba;
+	text-align: center;
+	width: 45vmin;
+	height: 8vmin;
+
+	font-family: 'Arimo';
+	color: #fdfcdc;
+	font-size: 4vmin;
+	white-space: nowrap;
+	/*text-shadow: 0 0 10px #3a435e;*/
+}
+
+.flag
+{
+	display:inline-block;
+	position: absolute;
+	top: 0%;
+	left: 10%;
+	z-index: 500;
+	opacity: 0;
+	transition-duration: .2s;
+}
+
+.house:hover .flag {
+	transform: translateY(-10%);
+	opacity: 1;
 }
 
 .house
@@ -100,17 +164,19 @@ body, html
 	transform: translate(-50%, -50%);
 }
 
+
 .houseName
 {
+	cursor: default;
 	position: absolute;
-	top: 0%;
-	left: 50%;
-	transform: translateX(-50%);
+	top: 33%;	
+	left: 45%;
+	transform: translate(-50%, -50%);
 	font-family: 'Arimo';
 	white-space: nowrap;
 	/*text-shadow: 0 0 2px #fdfcdc, 0 0 10px #3a435e, 0 0 10px #3a435e;*/
 	color: #fdfcdc;
-	font-size: 5vmin;
+	font-size: 3vmin;
 }
 
 @keyframes jump
@@ -127,6 +193,7 @@ body, html
 
 .monster
 {
+	pointer-events: auto;
 	display:inline-block;
 	transform: translate(-50%, -50%);
 }
@@ -140,6 +207,7 @@ body, html
 
 .syllable
 {
+	cursor: default;
 	display:inline-block;
 	position: absolute;
 	left: 50%;
