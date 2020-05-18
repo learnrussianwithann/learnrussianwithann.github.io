@@ -49,7 +49,11 @@ const POSITION_SOFT_HORIZONTAL = new Point(SIZE_OF_HOUSE * .5, 50);
 
 
 loadImages();
+const yes = new Audio();
+const no = new Audio();
 
+yes.src = 'audio/yes.mp3';
+no.src = 'audio/no.mp3';
 
 class Element {
 	//name of file; position in percent, scale in fraction, is draggable
@@ -294,22 +298,33 @@ function endMoving(e) {
 		if (drag.pos.distToPoint(houseSoft.pos) < 10) {
 			if (drag.isSoft) {
 				// console.log('correct');
-				remove(drag);
+				correct();
 			} else {
 				// console.log('incorrect');
+				incorrect();
 			}
 		} else if (drag.pos.distToPoint(houseHard.pos) < 10) {
 			if (!drag.isSoft) {
 				// console.log('correct');
-				remove(drag);
+				correct();
 			} else {
 				// console.log('incorrect');
+				incorrect();
 			}
 		}
 		drag.toBackground();
 		drag = null;
 		if (monsters.length == 0) show(ending);
 	}
+}
+
+function correct() {
+	yes.play();
+	remove(drag);
+}
+
+function incorrect() {
+	no.play();
 }
 
 function remove(elem) {
