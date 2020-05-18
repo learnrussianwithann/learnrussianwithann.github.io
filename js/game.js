@@ -212,8 +212,9 @@ function startGame() {
 	resize();
 	let points = getPoints(NUM_OF_MONSTERS);
 
-	for (var i = points.length - 1; i >= 0; i--) {
-		let m = new Monster(getRandom(MONSTER_NAMES), points[i], SIZE_OF_MONSTERS, true, Math.random() > .5);
+	for (var i = points.length - 1, j = 0; i >= 0; i--, j++) {
+		if (j >= MONSTER_NAMES.length) j = 0;
+		let m = new Monster(MONSTER_NAMES[j], points[i], SIZE_OF_MONSTERS, true, Math.random() > .5);
 		monsters.push(m);
 	}
 	resize();
