@@ -143,9 +143,9 @@ body, html
 {
 	display:inline-block;
 	position: absolute;
-	top: -12%;
-	left: 12%;
-	z-index: 500;
+	top: -18%;
+	left: 13%;
+	z-index: -1;
 	opacity: 1;
 	transition-duration: .2s;
 }
@@ -169,7 +169,7 @@ body, html
 {
 	cursor: default;
 	position: absolute;
-	top: 33%;	
+	top: 23%;
 	left: 45%;
 	transform: translate(-50%, -50%);
 	font-family: 'Arimo';
