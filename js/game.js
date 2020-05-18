@@ -44,7 +44,7 @@ const FLAG = 'flag';
 
 const POSITION_HARD_VERTICAL = new Point(50, 100 - SIZE_OF_HOUSE * .5);
 const POSITION_HARD_HORIZONTAL = new Point(100 - SIZE_OF_HOUSE * .5, 50);
-const POSITION_SOFT_VERTICAL = new Point(50, SIZE_OF_HOUSE * .5);
+const POSITION_SOFT_VERTICAL = new Point(50, SIZE_OF_HOUSE * .62);
 const POSITION_SOFT_HORIZONTAL = new Point(SIZE_OF_HOUSE * .5, 50);
 
 

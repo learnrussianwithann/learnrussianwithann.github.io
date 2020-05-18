@@ -143,8 +143,8 @@ body, html
 {
 	display:inline-block;
 	position: absolute;
-	top: 0%;
-	left: 10%;
+	top: -12%;
+	left: 12%;
 	z-index: 500;
 	opacity: 1;
 	transition-duration: .2s;
