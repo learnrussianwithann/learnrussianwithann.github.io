@@ -146,14 +146,14 @@ body, html
 	top: 0%;
 	left: 10%;
 	z-index: 500;
-	opacity: 0;
+	opacity: 1;
 	transition-duration: .2s;
 }
 
-.house:hover .flag {
+/*.house:hover .flag {
 	transform: translateY(-10%);
 	opacity: 1;
-}
+}*/
 
 .house
 {
