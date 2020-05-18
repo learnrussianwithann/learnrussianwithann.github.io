@@ -52,16 +52,15 @@ loadImages();
 
 
 class Element {
-	container = document.createElement('div');
-	pos = new Point(0, 0);
-	offImg = new Point(0, 0);
-	offDrag = new Point(0, 0);
-	scale = 0.1;
-	
-
-	dragable = false;
 	//name of file; position in percent, scale in fraction, is draggable
 	constructor(name, position, scale, dragable) {
+		this.container = document.createElement('div');
+		this.pos = new Point(0, 0);
+		this.offImg = new Point(0, 0);
+		this.offDrag = new Point(0, 0);
+		this.scale = 0.1;
+		this.dragable = false;
+
 		this.img = imageLoader(name);
 		this.pos = position;
 		this.dragable = dragable;
@@ -133,11 +132,10 @@ class Element {
 
 class Monster extends Element {
 
-	textDiv = document.createElement('div');
-	isSoft = false;
-
 	constructor(name, position, scale, dragable, isSoft) {
 		super(name, position, scale, dragable);
+		this.textDiv = document.createElement('div');
+		this.isSoft = false;
 		this.textDiv.className = 'syllable';
 		this.container.appendChild(this.textDiv);
 		if (isSoft) {
@@ -161,10 +159,11 @@ class Monster extends Element {
 }
 
 class House extends Element {
-	textDiv = document.createElement('div');
-	flagDiv = document.createElement('div');
+	
 	constructor(name, position, scale, dragable, text) {
 		super(name, position, scale, dragable);
+		this.textDiv = document.createElement('div');
+		this.flagDiv = document.createElement('div');
 		this.container.className = 'house';
 		this.textDiv.className = 'houseName';
 		this.textDiv.innerHTML = text;
@@ -190,8 +189,6 @@ const houseSoft = new House(HOUSE_SOFT, POSITION_SOFT_HORIZONTAL, SIZE_OF_HOUSE,
 const houseHard = new House(HOUSE_HARD, POSITION_HARD_HORIZONTAL, SIZE_OF_HOUSE, false, 'Твердый дом');
 
 const monsters = [];
-
-
 
 window.addEventListener("resize", resize);
 
