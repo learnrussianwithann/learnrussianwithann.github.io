@@ -212,9 +212,12 @@ window.addEventListener('mousedown', startMoving);
 window.addEventListener('mousemove', moving);
 window.addEventListener('mouseup', endMoving);
 
-window.addEventListener('touchstart', startMoving);
-window.addEventListener('touchmove', moving);
-window.addEventListener('touchend', endMoving);
+// window.addEventListener('touchstart', startMoving);
+// window.addEventListener('touchmove', moving);
+// window.addEventListener('touchend', endMoving);
+window.touchstart = startMoving;
+window.touchmove = moving;
+window.touchend = endMoving;
 
 function startGame() {
 	if (!firstInteraction) {
