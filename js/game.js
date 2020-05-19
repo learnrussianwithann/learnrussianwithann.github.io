@@ -2,6 +2,10 @@
 
 var width = document.body.clientWidth;
 var height = document.body.clientHeight;
+var firstInteraction = false;
+var isVertical = true;
+var lastIsVertical = true;
+var changeOrientation = false;
 
 const wrapper = document.getElementById('wrapper');
 const greeting = document.getElementById('greeting');
@@ -41,6 +45,7 @@ const MONSTER_NAMES = ['m0', 'm2', 'm4', 'm5', 'm6', 'm7'];
 const HOUSE_HARD = 'house_hard';
 const HOUSE_SOFT = 'house_soft';
 const FLAG = 'flag';
+const BACK_LIGHT = 'backlight';
 
 const POSITION_HARD_VERTICAL = new Point(50, 100 - SIZE_OF_HOUSE * .5);
 const POSITION_HARD_HORIZONTAL = new Point(100 - SIZE_OF_HOUSE * .5, 50);
@@ -51,9 +56,10 @@ const POSITION_SOFT_HORIZONTAL = new Point(SIZE_OF_HOUSE * .5, 50);
 loadImages();
 const yes = new Audio();
 const no = new Audio();
+loadAudio();
 
-yes.src = 'audio/yes.mp3';
-no.src = 'audio/no.mp3';
+
+
 
 class Element {
 	//name of file; position in percent, scale in fraction, is draggable
@@ -168,8 +174,14 @@ class House extends Element {
 		super(name, position, scale, dragable);
 		this.textDiv = document.createElement('div');
 		this.flagDiv = document.createElement('div');
+		this.backlightImg = imageLoader(BACK_LIGHT);
+
 		this.container.className = 'house';
 		this.textDiv.className = 'houseName';
+		this.backlightImg.className = 'backlight';
+
+		this.container.appendChild(this.backlightImg);
+
 		this.textDiv.innerHTML = text;
 		this.flagDiv.appendChild(this.textDiv);
 		this.flagDiv.className = 'flag';
@@ -205,6 +217,19 @@ window.addEventListener('touchmove', moving);
 window.addEventListener('touchend', endMoving);
 
 function startGame() {
+	if (!firstInteraction) {
+		//Safari fix?
+		yes.play();
+		yes.pause()
+		yes.currentTime = 0
+		no.play();
+		no.pause()
+		no.currentTime = 0
+
+
+		firstInteraction = true;
+	}
+
 	hide(greeting);
 	hide(ending);
 
@@ -239,13 +264,20 @@ function loadImages() {
 	imageLoader(HOUSE_SOFT);
 	imageLoader(HOUSE_HARD);
 	imageLoader(FLAG);
+	imageLoader(BACK_LIGHT);
 	for (var i = MONSTER_NAMES.length - 1; i >= 0; i--) {
 		imageLoader(MONSTER_NAMES[i]);
 	}
 }
 
 
+function loadAudio() {
+	yes.src = 'audio/yes.mp3';
+	no.src = 'audio/no.mp3';
 
+	yes.load();
+	no.load();
+}
 
 function getRandom(source) {
 	return source[Math.floor(source.length * Math.random())];
@@ -296,7 +328,7 @@ function moving(e) {
 function endMoving(e) {
 	if (drag) {
 		// console.log((drag.isSoft ? 'soft ' : 'hard ') + 'dist to hard  ' + drag.pos.distToPoint(houseHard.pos) + ' dist to soft ' + drag.pos.distToPoint(houseSoft.pos));
-		if (drag.pos.distToPoint(houseSoft.pos) < 10) {
+		if (drag.pos.distToPoint(houseSoft.pos) < .5 * SIZE_OF_HOUSE) {
 			if (drag.isSoft) {
 				// console.log('correct');
 				correct();
@@ -304,7 +336,7 @@ function endMoving(e) {
 				// console.log('incorrect');
 				incorrect();
 			}
-		} else if (drag.pos.distToPoint(houseHard.pos) < 10) {
+		} else if (drag.pos.distToPoint(houseHard.pos) < .5 * SIZE_OF_HOUSE) {
 			if (!drag.isSoft) {
 				// console.log('correct');
 				correct();
@@ -333,8 +365,15 @@ function remove(elem) {
 	monsters.splice(monsters.indexOf(elem), 1);
 }
 
+function checkOrientation() {
+	lastIsVertical = isVertical;
+	isVertical = width < height;
+	changeOrientation = lastIsVertical != isVertical;
+}
+
 function resize()
 {
+	checkOrientation();
 	width = document.body.clientWidth;
 	height = document.body.clientHeight;
 	if (width > height) {
@@ -349,6 +388,7 @@ function resize()
 	for (var i = monsters.length - 1; i >= 0; i--) {
 		monsters[i].resize();
 	}
+
 }
 
 function getPoints(num) {

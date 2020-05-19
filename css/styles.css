@@ -7,6 +7,10 @@ body, html
 	overflow: hidden;
 }
 
+body {
+	position: relative;
+}
+
 @font-face {
 	font-family: 'adigiana_2regular';
 	src: url('../font/Adigiana2.woff2') format('woff2'),
@@ -156,11 +160,6 @@ body, html
 	transition-duration: .2s;
 }
 
-/*.house:hover .flag {
-	transform: translateY(-10%);
-	opacity: 1;
-}*/
-
 .house
 {
 	display:inline-block;
@@ -170,6 +169,20 @@ body, html
 	transform: translate(-50%, -50%);
 }
 
+.backlight {
+	position: absolute;
+	top: 45%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 5vmin;
+	height: 5vmin;
+	z-index: -1;
+	transition-duration: .2s;
+}
+
+.house:hover .backlight {
+	transform: translate(-50%, -50%) scale(10, 10);
+}
 
 .houseName
 {
