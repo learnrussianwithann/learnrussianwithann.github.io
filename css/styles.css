@@ -42,6 +42,11 @@ body {
 	user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
 }
 
+.hover {
+	-webkit-user-select: none;
+	-webkit-touch-callout: none;
+}
+
 #m0greeting {
 	position: absolute;
 	top: 25%;
