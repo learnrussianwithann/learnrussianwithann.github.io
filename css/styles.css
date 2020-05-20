@@ -30,7 +30,7 @@ body {
 
 .wrapper
 {
-	background-color: #a8f0ad;
+	background-color: #fffde7;
 	background-size: cover;
 	width: 100%;
 	height: 100%;
@@ -42,6 +42,15 @@ body {
 	user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
 }
 
+#m0greeting {
+	position: absolute;
+	top: 25%;
+	left: 100%;
+	width: 20vmin;
+
+	transform: scaleX(-1);
+}
+
 .message
 {
 	position: absolute;
@@ -49,10 +58,10 @@ body {
 	top: 50%;
 	transform: translate(-50%, -50%);
 
-	width: 60vmin;
+	width: 50vmin;
 	height: 45vmin;
 
-	border-radius: 50px;
+	border-radius: 5vmin;
 	/*box-shadow: 0 0 8px #3a435e;*/
 	color: #fff;
 	background-color: #5d70bc;
