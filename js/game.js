@@ -11,6 +11,8 @@ const wrapper = document.getElementById('wrapper');
 const greeting = document.getElementById('greeting');
 const ending =  document.getElementById('ending');
 
+const emouseover = new Event('mouseover');
+
 // var scale = 1;
 var drag = null;
 
@@ -326,6 +328,10 @@ function moving(e) {
 }
 
 function endMoving(e) {
+	if (e.type == 'touchend') {
+		houseHard.div.dispatchEvent(emouseover);
+		houseSoft.div.dispatchEvent(emouseover);
+	}
 	if (drag) {
 		// console.log((drag.isSoft ? 'soft ' : 'hard ') + 'dist to hard  ' + drag.pos.distToPoint(houseHard.pos) + ' dist to soft ' + drag.pos.distToPoint(houseSoft.pos));
 		if (drag.pos.distToPoint(houseSoft.pos) < .5 * SIZE_OF_HOUSE) {
