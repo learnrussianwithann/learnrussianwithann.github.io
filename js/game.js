@@ -202,7 +202,7 @@ class House extends Element {
 }
 
 const houseSoft = new House(HOUSE_SOFT, POSITION_SOFT_HORIZONTAL, SIZE_OF_HOUSE, false, 'Мягкий дом');
-const houseHard = new House(HOUSE_HARD, POSITION_HARD_HORIZONTAL, SIZE_OF_HOUSE, false, 'Твердый дом');
+const houseHard = new House(HOUSE_HARD, POSITION_HARD_HORIZONTAL, SIZE_OF_HOUSE, false, 'Твёрдый дом');
 
 const monsters = [];
 
