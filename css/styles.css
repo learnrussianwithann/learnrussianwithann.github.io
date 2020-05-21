@@ -42,6 +42,12 @@ body {
 	}
 }
 
+@media (max-width: 400px) and (min-width: 350px) {
+	#ending, .buttonAgain, .buttonEnd {
+		font-size: .8cm;
+	}
+}
+
 .wrapper, button {
 	font-family: 'AlikeAngular';
 	font-size: 1cm;
