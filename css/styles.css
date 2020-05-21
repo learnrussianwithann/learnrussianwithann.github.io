@@ -35,6 +35,10 @@ body {
 	font-style: normal;
 }
 
+@media (max-height: 400px), (max-width: 350px) {
+	#emptyline {display: none;}
+}
+
 .wrapper, button {
 	font-family: 'AlikeAngular';
 	font-size: 1cm;
@@ -69,11 +73,6 @@ body {
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
-	width: 15cm;
-	height: 12cm;
-
-	max-width: 80vw;
-	max-height: 70vh;
 }
 
 #m0greeting {
@@ -86,12 +85,13 @@ body {
 	transform: translate(-50%, -53%) scaleX(-1);
 }
 
-#greetingbox {
+#greetingbox, #greeting {
 	width: 15cm;
 	height: 12cm;
 
 	max-width: 80vw;
-	max-height: 70vh;
+	max-height: 60vh;
+
 }
 
 #ending {
