@@ -237,10 +237,11 @@ function startGame() {
 		yes.play();
 		yes.pause()
 		yes.currentTime = 0
+		yes.volume = 0.8;
 		no.play();
 		no.pause()
 		no.currentTime = 0
-
+		no.volume = 0.8;
 
 		firstInteraction = true;
 	}
