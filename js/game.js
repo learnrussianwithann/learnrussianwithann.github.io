@@ -131,6 +131,7 @@ class Element {
 	updatePosition() {
 		this.container.style.left = this.pos.x + '%';
 		this.container.style.top = this.pos.y + '%';
+		if (this.dragable) this.container.style.zIndex = Math.round(this.pos.y);
 	}
 
 	resize() {
@@ -405,15 +406,15 @@ function checkOrientation() {
 
 function resize()
 {
-	checkOrientation();
 	width = document.body.clientWidth;
 	height = document.body.clientHeight;
-	if (width > height) {
-		houseHard.pos = POSITION_HARD_HORIZONTAL;
-		houseSoft.pos = POSITION_SOFT_HORIZONTAL;
-	} else {
+	checkOrientation();
+	if (isVertical) {
 		houseHard.pos = POSITION_HARD_VERTICAL;
 		houseSoft.pos = POSITION_SOFT_VERTICAL;
+	} else {
+		houseHard.pos = POSITION_HARD_HORIZONTAL;
+		houseSoft.pos = POSITION_SOFT_HORIZONTAL;
 	}
 	houseHard.resize();
 	houseSoft.resize();
