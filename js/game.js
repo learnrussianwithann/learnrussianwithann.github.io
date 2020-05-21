@@ -7,6 +7,9 @@ var isVertical = true;
 var lastIsVertical = true;
 var changeOrientation = false;
 
+var indexSoft = Math.floor(Math.random() * 5);
+var indexHard = Math.floor(Math.random() * 5);
+
 const gamefield = document.getElementById('gamefield');
 const greeting = document.getElementById('greeting');
 const ending =  document.getElementById('ending');
@@ -38,9 +41,11 @@ const NUM_OF_MONSTERS = 10;
 const SIZE_OF_HOUSE = 35;
 const SIZE_OF_MONSTERS = 20;
 const MIN_DIST_MONSTERS = 10;
-const VOWELS_HARD = 'АУОЫЭ';
-const VOWELS_SOFT = 'ИЕЯЁЮ';
-const CONSONANTS = 'НМТКХБВГДЗЛПРСФ';
+const VOWELS_HARD = 'ауоюэ';
+const VOWELS_SOFT = 'иеяёю';
+const CONSONANTS = 'нмткхбвгдзлпрсф';
+const SYLLABLES_SOFT = ['йо', 'йе', 'ча', 'чо', 'чу', 'чи', 'че', 'чё', 'ща', 'що', 'щу', 'щи', 'ще', 'щё'];
+const SYLLABLES_HARD = ['жа', 'жо', 'жу', 'жи', 'жю', 'же', 'жё', 'ша', 'шо', 'шу', 'ши', 'ше', 'шё', 'ца', 'цо', 'цу', 'ци', 'це', 'цю'];
 const MONSTER_NAMES = ['m0', 'm2', 'm4', 'm5', 'm6', 'm7'];
 const HOUSE_HARD = 'house_hard';
 const HOUSE_SOFT = 'house_soft';
@@ -150,9 +155,9 @@ class Monster extends Element {
 		this.container.appendChild(this.textDiv);
 		if (isSoft) {
 			this.isSoft = true;
-			this.setText(getRandom(CONSONANTS) + getRandom(VOWELS_SOFT));
+			this.setText(getSoftSyllable());
 		} else {
-			this.setText(getRandom(CONSONANTS) + getRandom(VOWELS_HARD));
+			this.setText(getHardSyllable());
 		}
 		if (Math.random() > .5) {
 			this.img.style.transform = 'scaleX(-1)';
@@ -243,7 +248,7 @@ function startGame() {
 
 	for (var i = points.length - 1, j = 0; i >= 0; i--, j++) {
 		if (j >= MONSTER_NAMES.length) j = 0;
-		let m = new Monster(MONSTER_NAMES[j], points[i], SIZE_OF_MONSTERS, true, Math.random() > .5);
+		let m = new Monster(MONSTER_NAMES[j], points[i], SIZE_OF_MONSTERS, true, i < points.length / 2);
 		monsters.push(m);
 	}
 	resize();
@@ -281,6 +286,22 @@ function loadAudio() {
 
 	yes.load();
 	no.load();
+}
+
+function getSoftSyllable() {
+	if (Math.random() < 0.25) {
+		return getRandom(SYLLABLES_SOFT);
+	}
+	if (indexSoft >= VOWELS_SOFT.length) indexSoft = 0;
+	return getRandom(CONSONANTS) + VOWELS_SOFT[indexSoft++];
+}
+
+function getHardSyllable() {
+	if (Math.random() < 0.25) {
+		return getRandom(SYLLABLES_HARD);
+	}
+	if (indexHard >= VOWELS_SOFT.length) indexHard = 0;
+	return getRandom(CONSONANTS) + VOWELS_HARD[indexHard++];
 }
 
 function getRandom(source) {
