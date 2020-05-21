@@ -48,6 +48,18 @@ body {
 	}
 }
 
+@media (max-height: 400px) {
+	#greeting {
+		top: 65%;
+	}
+}
+
+@media (min-height: 400px) {
+	#greeting {
+		top: 50%;
+	}
+}
+
 .wrapper, button {
 	font-family: 'AlikeAngular';
 	font-size: 1cm;
@@ -79,7 +91,6 @@ body {
 
 #greeting {
 	position: absolute;
-	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
 }
