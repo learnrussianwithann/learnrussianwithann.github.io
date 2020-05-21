@@ -256,4 +256,5 @@ body {
 	/*text-shadow: 0 0 2px #fdfcdc, 0 0 10px #3a435e, 0 0 10px #3a435e;*/
 	color: #fff;
 	font-size: 7vmin;
+	text-transform: uppercase;
 }
