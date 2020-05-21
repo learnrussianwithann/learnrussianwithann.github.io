@@ -115,6 +115,10 @@ class Element {
 		}
 	}
 
+	setPositionPoint(point) {
+		this.setPosition(point.x, point.y);
+	}
+
 	moveAt(x, y) { //in percent
 		this.setPosition(x + this.offDrag.x, y + this.offDrag.y);
 	}
@@ -413,14 +417,53 @@ function resize()
 	for (var i = monsters.length - 1; i >= 0; i--) {
 		monsters[i].resize();
 	}
-
+	if (changeOrientation) {
+		reposition();
+	}
 }
+
+function getRandomPoint() {
+	return new Point(Math.random() * 80 + 10, Math.random() * 80 + 10);
+}
+
+function checkDist(index) {
+	let p = monsters[index].pos;
+	let i = monsters.length;
+	while(i--) {
+		if (i != index && monsters[i].pos.distToPoint(p) < SIZE_OF_MONSTERS) {
+			return false;
+		}
+	}
+	return houseSoft.pos.distToPoint(p) > SIZE_OF_HOUSE && houseHard.pos.distToPoint(p) > SIZE_OF_HOUSE; 
+}
+
+function reposition() {
+	let count = 0;
+	for (var i = monsters.length - 1; i >= 0; i--) {
+		count = 0;
+		if (!checkDist(i)) {
+			while (count++ < 1000) {
+				monsters[i].setPositionPoint(getRandomPoint());
+				if (checkDist(i)) {
+					break;
+				}
+			}
+			if (count >= 1000) repositionAll();
+		}
+	}
+}
+
+function repositionAll() {
+	// body...
+}
+
+
 
 function getPoints(num) {
 	let out = [];
 	let count = 0;
 	while (count++ < 2000 && out.length < num) {
-		let p = new Point(Math.random() * 80 + 10, Math.random() * 80 + 10);
+		let p = getRandomPoint();
 		let add = true;
 		let i = out.length;
 		while(i--) {
@@ -431,7 +474,7 @@ function getPoints(num) {
 		}
 		if (houseSoft.pos.distToPoint(p) < SIZE_OF_HOUSE || houseHard.pos.distToPoint(p) < SIZE_OF_HOUSE) {
 				add = false;
-			}
+		}
 		if (add) {
 			out.push(p);
 		}
