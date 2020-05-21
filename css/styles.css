@@ -28,6 +28,18 @@ body {
 	font-style: normal;
 }
 
+@font-face {
+	font-family: 'AlikeAngular';
+	src: url('../font/AlikeAngular-Regular.ttf') format('ttf');
+	font-weight: bold;
+	font-style: normal;
+}
+
+* {
+
+	font-family: 'AlikeAngular';
+}
+
 .wrapper
 {
 	background-size: cover;
@@ -52,13 +64,33 @@ body {
 	-webkit-touch-callout: none;
 }
 
+#greeting {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 50vmin;
+	height: 50vmin;
+}
+
 #m0greeting {
 	position: absolute;
-	top: 25%;
-	left: 100%;
+	top: -10%;
+	left: 50%;
 	width: 20vmin;
+	z-index: 500;
 
-	transform: scaleX(-1);
+	transform: translate(-50%, -50%) scaleX(-1);
+}
+
+#greetingbox {
+	width: 80vmin;
+	height: 53vmin;
+}
+
+#ending {
+	width: 80vmin;
+	height: 45vmin;
 }
 
 .message
@@ -68,11 +100,7 @@ body {
 	top: 50%;
 	transform: translate(-50%, -50%);
 
-	width: 50vmin;
-	height: 45vmin;
-
 	border-radius: 5vmin;
-	/*box-shadow: 0 0 8px #3a435e;*/
 	color: #fff;
 	background-color: #5d70bc;
 	text-align: center;
@@ -92,8 +120,7 @@ body {
 
 	width: 90%;
 
-	font-family: 'Arimo';
-	font-size: 4vmin;
+	font-size: 6vmin;
 	/*text-shadow: 0 0 10px #3a435e;*/
 }
 
@@ -102,7 +129,7 @@ body {
 	cursor: pointer;
 	position: absolute;
 	left: 50%;
-	top: 75%;
+	top: 80%;
 	transform: translate(-50%, -50%);
 
 	border-radius: 10vmin;
@@ -114,9 +141,8 @@ body {
 	width: 45vmin;
 	height: 8vmin;
 
-	font-family: 'Arimo';
 	color: #fff;
-	font-size: 4vmin;
+	font-size: 6vmin;
 	white-space: nowrap;
 	/*text-shadow: 0 0 10px #3a435e;*/
 }
@@ -138,9 +164,8 @@ body {
 	width: 45vmin;
 	height: 8vmin;
 
-	font-family: 'Arimo';
 	color: #fff;
-	font-size: 4vmin;
+	font-size: 6vmin;
 	white-space: nowrap;
 	/*text-shadow: 0 0 10px #3a435e;*/
 }
@@ -162,9 +187,8 @@ body {
 	width: 45vmin;
 	height: 8vmin;
 
-	font-family: 'Arimo';
 	color: #fff;
-	font-size: 4vmin;
+	font-size: 6vmin;
 	white-space: nowrap;
 	/*text-shadow: 0 0 10px #3a435e;*/
 }
@@ -211,7 +235,6 @@ body {
 	top: 23%;
 	left: 45%;
 	transform: translate(-50%, -50%);
-	font-family: 'Arimo';
 	white-space: nowrap;
 	/*text-shadow: 0 0 2px #fdfcdc, 0 0 10px #3a435e, 0 0 10px #3a435e;*/
 	color: #fdfcdc;
@@ -252,9 +275,7 @@ body {
 	left: 50%;
 	top: 44%;
 	transform: translateX(-50%);
-	font-family: 'Arimo';
-	/*text-shadow: 0 0 2px #fdfcdc, 0 0 10px #3a435e, 0 0 10px #3a435e;*/
 	color: #fff;
-	font-size: 7vmin;
+	font-size: 6vmin;
 	text-transform: uppercase;
 }
