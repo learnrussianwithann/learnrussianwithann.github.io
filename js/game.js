@@ -7,7 +7,7 @@ var isVertical = true;
 var lastIsVertical = true;
 var changeOrientation = false;
 
-const wrapper = document.getElementById('wrapper');
+const gamefield = document.getElementById('gamefield');
 const greeting = document.getElementById('greeting');
 const ending =  document.getElementById('ending');
 
@@ -88,7 +88,7 @@ class Element {
 
 		this.hide();
 
-		wrapper.appendChild(this.container);
+		gamefield.appendChild(this.container);
 	}
 
 	toForeground() {
@@ -365,7 +365,7 @@ function incorrect() {
 }
 
 function remove(elem) {
-	wrapper.removeChild(elem.container);
+	gamefield.removeChild(elem.container);
 	monsters.splice(monsters.indexOf(elem), 1);
 }
 
