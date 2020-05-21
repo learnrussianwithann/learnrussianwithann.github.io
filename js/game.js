@@ -216,7 +216,7 @@ const houseHard = new House(HOUSE_HARD, POSITION_HARD_HORIZONTAL, SIZE_OF_HOUSE,
 const monsters = [];
 
 window.addEventListener("resize", resize);
-window.addEventListener('orientationchange', resize);
+// window.addEventListener('orientationchange', resize);
 
 window.addEventListener('mousedown', startMoving);
 window.addEventListener('mousemove', moving);
