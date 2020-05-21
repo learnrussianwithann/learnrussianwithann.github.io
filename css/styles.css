@@ -35,9 +35,9 @@ body {
 	font-style: normal;
 }
 
-* {
-
+.wrapper, button {
 	font-family: 'AlikeAngular';
+	font-size: 1cm;
 }
 
 .wrapper
@@ -69,23 +69,29 @@ body {
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
-	width: 50vmin;
-	height: 50vmin;
+	width: 15cm;
+	height: 12cm;
+
+	max-width: 80vw;
+	max-height: 70vh;
 }
 
 #m0greeting {
 	position: absolute;
-	top: -10%;
+	top: 0;
 	left: 50%;
-	width: 20vmin;
+	width: 4cm;
 	z-index: 500;
 
-	transform: translate(-50%, -50%) scaleX(-1);
+	transform: translate(-50%, -53%) scaleX(-1);
 }
 
 #greetingbox {
-	width: 80vmin;
-	height: 53vmin;
+	width: 15cm;
+	height: 12cm;
+
+	max-width: 80vw;
+	max-height: 70vh;
 }
 
 #ending {
@@ -108,7 +114,6 @@ body {
 
 	align-items: center;
 
-	padding: 2vmin;
 }
 
 .messagetext
@@ -119,9 +124,6 @@ body {
 	transform: translateX(-50%);
 
 	width: 90%;
-
-	font-size: 6vmin;
-	/*text-shadow: 0 0 10px #3a435e;*/
 }
 
 .buttonStart
@@ -138,13 +140,13 @@ body {
 
 	background-color: #ff6968;
 	text-align: center;
-	width: 45vmin;
-	height: 8vmin;
+	width: 8cm;
+	height: 1.5cm;
+
+	max-width: 70vw;
 
 	color: #fff;
-	font-size: 6vmin;
 	white-space: nowrap;
-	/*text-shadow: 0 0 10px #3a435e;*/
 }
 
 .buttonAgain
@@ -157,7 +159,6 @@ body {
 
 	border-radius: 10vmin;
 	border-style: hidden;
-	/*box-shadow: 0 0 8px #3a435e;*/
 
 	background-color: #ff6968;
 	text-align: center;
@@ -165,9 +166,7 @@ body {
 	height: 8vmin;
 
 	color: #fff;
-	font-size: 6vmin;
 	white-space: nowrap;
-	/*text-shadow: 0 0 10px #3a435e;*/
 }
 
 .buttonEnd
@@ -188,9 +187,7 @@ body {
 	height: 8vmin;
 
 	color: #fff;
-	font-size: 6vmin;
 	white-space: nowrap;
-	/*text-shadow: 0 0 10px #3a435e;*/
 }
 
 .flag
@@ -238,7 +235,7 @@ body {
 	white-space: nowrap;
 	/*text-shadow: 0 0 2px #fdfcdc, 0 0 10px #3a435e, 0 0 10px #3a435e;*/
 	color: #fdfcdc;
-	font-size: 3vmin;
+	font-size: 3.5vmin;
 }
 
 @keyframes jump
