@@ -4,7 +4,7 @@ var width = document.body.clientWidth;
 var height = document.body.clientHeight;
 var firstInteraction = false;
 var isVertical = true;
-var lastIsVertical = true;
+var lastIsVertical = false;
 var changeOrientation = false;
 
 var indexSoft = Math.floor(Math.random() * 5);
