@@ -328,18 +328,20 @@ function closest(x, y) {
 
 
 function startMoving(e) {
-	let x, y;
-	if (e.type == 'touchstart') {
-		x = 100 * e.changedTouches[0].clientX / width;
-		y = 100 * e.changedTouches[0].clientY / height;
-	} else {
-		x = 100 * e.clientX / width;
-		y = 100 * e.clientY / height;
-	}
-	drag = closest(x, y);
-	if (drag) {
-		drag.setOffset(x, y);
-		drag.toForeground();
+	if (drag == null) {
+		let x, y;
+		if (e.type == 'touchstart') {
+			x = 100 * e.changedTouches[0].clientX / width;
+			y = 100 * e.changedTouches[0].clientY / height;
+		} else {
+			x = 100 * e.clientX / width;
+			y = 100 * e.clientY / height;
+		}
+		drag = closest(x, y);
+		if (drag) {
+			drag.setOffset(x, y);
+			drag.toForeground();
+		}
 	}
 }
 
