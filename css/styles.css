@@ -37,6 +37,9 @@ body {
 
 @media (max-height: 400px), (max-width: 350px) {
 	#emptyline {display: none;}
+	#ending, .buttonAgain, .buttonEnd {
+		font-size: .7cm;
+	}
 }
 
 .wrapper, button {
@@ -95,8 +98,12 @@ body {
 }
 
 #ending {
-	width: 80vmin;
-	height: 45vmin;
+	width: 15cm;
+	height: 8cm;
+
+	max-width: 80vw;
+	max-height: 70vh;
+
 }
 
 .message
@@ -126,6 +133,17 @@ body {
 	width: 90%;
 }
 
+.buttonStart, .buttonAgain, .buttonEnd {
+	text-align: center;
+	width: 8cm;
+	height: 1.5cm;
+
+	max-width: 70vw;
+
+	white-space: nowrap;
+	color: #fff;
+}
+
 .buttonStart
 {
 	cursor: pointer;
@@ -136,17 +154,8 @@ body {
 
 	border-radius: 10vmin;
 	border-style: hidden;
-	/*box-shadow: 0 0 8px #3a435e;*/
 
 	background-color: #ff6968;
-	text-align: center;
-	width: 8cm;
-	height: 1.5cm;
-
-	max-width: 70vw;
-
-	color: #fff;
-	white-space: nowrap;
 }
 
 .buttonAgain
@@ -154,19 +163,13 @@ body {
 	cursor: pointer;
 	position: absolute;
 	left: 50%;
-	top: 60%;
+	top: 50%;
 	transform: translate(-50%, -50%);
 
 	border-radius: 10vmin;
 	border-style: hidden;
 
 	background-color: #ff6968;
-	text-align: center;
-	width: 45vmin;
-	height: 8vmin;
-
-	color: #fff;
-	white-space: nowrap;
 }
 
 .buttonEnd
@@ -174,20 +177,13 @@ body {
 	cursor: pointer;
 	position: absolute;
 	left: 50%;
-	top: 75%;
-	transform: translateX(-50%);
+	top: 80%;
+	transform: translate(-50%, -50%);
 
 	border-radius: 10vmin;
 	border-style: hidden;
-	/*box-shadow: 0 0 8px #3a435e;*/
 
 	background-color: #01afba;
-	text-align: center;
-	width: 45vmin;
-	height: 8vmin;
-
-	color: #fff;
-	white-space: nowrap;
 }
 
 .flag
