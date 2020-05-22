@@ -14,7 +14,7 @@ body {
 
 @font-face {
 	font-family: 'OpenSans';
-	src: url('../font/OpenSans-Regular.ttf') format('ttf');
+	src: url('../font/OpenSans-Regular.ttf');
 	font-weight: bold;
 	font-style: normal;
 }
@@ -233,12 +233,12 @@ body {
 {
 	cursor: default;
 	position: absolute;
-	top: 23%;
-	left: 45%;
+	top: 20%;
+	left: 46%;
 	transform: translate(-50%, -50%);
 	white-space: nowrap;
 	color: #fff;
-	font-size: 4.4vmin;
+	font-size: 4vmin;
 }
 
 @keyframes jump
@@ -273,7 +273,7 @@ body {
 	display:inline-block;
 	position: absolute;
 	left: 50%;
-	top: 48%;
+	top: 43%;
 	transform: translateX(-50%);
 	color: #fff;
 	font-size: 6vmin;
