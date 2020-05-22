@@ -35,14 +35,14 @@ body {
 	font-style: normal;
 }
 
-@media (max-height: 400px), (max-width: 350px) {
+@media (max-height: 400px), (max-width: 380px) {
 	#emptyline {display: none;}
 	#ending, .buttonAgain, .buttonEnd {
 		font-size: .7cm;
 	}
 }
 
-@media (max-width: 400px) and (min-width: 350px) {
+@media (max-width: 430px) and (min-width: 380px) {
 	#ending, .buttonAgain, .buttonEnd {
 		font-size: .8cm;
 	}
@@ -62,7 +62,7 @@ body {
 
 .wrapper, button {
 	font-family: 'AlikeAngular';
-	font-size: 1cm;
+	font-size: .9cm;
 }
 
 .wrapper
@@ -82,6 +82,9 @@ body {
 	background-color: #c1f6c5;
 	width: 100%;
 	height: 100%;
+	transition: .5s;
+	-webkit-filter: grayscale(.5);
+	filter: grayscale(.5);
 }
 
 .hover {
@@ -152,8 +155,6 @@ body {
 
 .buttonStart, .buttonAgain, .buttonEnd {
 	text-align: center;
-	width: 8cm;
-	height: 1.5cm;
 
 	max-width: 70vw;
 
@@ -161,8 +162,15 @@ body {
 	color: #fff;
 }
 
+.buttonAgain, .buttonEnd {
+	width: 8cm;
+	height: 1.5cm;
+}
+
 .buttonStart
 {
+	width: 8cm;
+	height: 1.5cm;
 	cursor: pointer;
 	position: absolute;
 	left: 50%;
@@ -180,7 +188,7 @@ body {
 	cursor: pointer;
 	position: absolute;
 	left: 50%;
-	top: 50%;
+	top: 54%;
 	transform: translate(-50%, -50%);
 
 	border-radius: 10vmin;
@@ -194,7 +202,7 @@ body {
 	cursor: pointer;
 	position: absolute;
 	left: 50%;
-	top: 80%;
+	top: 81%;
 	transform: translate(-50%, -50%);
 
 	border-radius: 10vmin;
@@ -246,9 +254,8 @@ body {
 	left: 45%;
 	transform: translate(-50%, -50%);
 	white-space: nowrap;
-	/*text-shadow: 0 0 2px #fdfcdc, 0 0 10px #3a435e, 0 0 10px #3a435e;*/
-	color: #fdfcdc;
-	font-size: 3.5vmin;
+	color: #fff;
+	font-size: 4.4vmin;
 }
 
 @keyframes jump

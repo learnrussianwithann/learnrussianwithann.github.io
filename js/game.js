@@ -232,6 +232,7 @@ window.ontouchmove = moving;
 window.ontouchend = endMoving;
 
 function startGame() {
+	fadein();
 	if (!firstInteraction) {
 		//Safari fix?
 		yes.play();
@@ -264,6 +265,7 @@ function startGame() {
 }
 
 function endGame() {
+	fadeout();
 	hideElements();
 	show(ending);
 }
@@ -381,7 +383,10 @@ function endMoving(e) {
 		}
 		drag.toBackground();
 		drag = null;
-		if (monsters.length == 0) show(ending);
+		if (monsters.length == 0) {
+			fadeout();
+			show(ending);
+		}
 	}
 }
 
@@ -453,16 +458,9 @@ function reposition() {
 					break;
 				}
 			}
-			if (count >= 1000) repositionAll();
 		}
 	}
 }
-
-function repositionAll() {
-	// body...
-}
-
-
 
 function getPoints(num) {
 	let out = [];
@@ -512,6 +510,16 @@ function hideElements() {
 	for (var i = monsters.length - 1; i >= 0; i--) {
 		monsters[i].hide();
 	}
+}
+
+function fadeout() {
+	gamefield.style['-webkit-filter'] = 'grayscale(' + .5 + ')';
+	gamefield.style['filter'] = 'grayscale(' + .5 + ')';
+}
+
+function fadein() {
+	gamefield.style['-webkit-filter'] = 'grayscale(' + 0 + ')';
+	gamefield.style['filter'] = 'grayscale(' + 0 + ')';
 }
 
 function exit() {
