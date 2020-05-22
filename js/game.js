@@ -1,5 +1,20 @@
 'use strict';
 
+const NUM_OF_MONSTERS = 10;
+const SIZE_OF_HOUSE = 35;
+const SIZE_OF_MONSTERS = 20;
+const MIN_DIST_MONSTERS = 10;
+const VOWELS_HARD = 'аоуэы';
+const VOWELS_SOFT = 'иеяёю';
+const CONSONANTS = 'нмткхбвгдзлпрсф';
+const SYLLABLES_SOFT = ['йо', 'йе', 'ча', 'чо', 'чу', 'чи', 'че', 'чё', 'ща', 'що', 'щу', 'щи', 'ще', 'щё'];
+const SYLLABLES_HARD = ['жа', 'жо', 'жу', 'жи', 'жю', 'же', 'жё', 'ша', 'шо', 'шу', 'ши', 'ше', 'шё', 'ца', 'цо', 'цу', 'ци', 'це', 'цю'];
+const MONSTER_NAMES = ['m0', 'm2', 'm4', 'm5', 'm6', 'm7'];
+const HOUSE_HARD = 'house_hard';
+const HOUSE_SOFT = 'house_soft';
+const FLAG = 'flag';
+const BACK_LIGHT = 'backlight';
+
 var width = document.body.clientWidth;
 var height = document.body.clientHeight;
 var firstInteraction = false;
@@ -9,6 +24,7 @@ var changeOrientation = false;
 
 var indexSoft = Math.floor(Math.random() * 5);
 var indexHard = Math.floor(Math.random() * 5);
+var indexMonster = Math.floor(Math.random() * MONSTER_NAMES.length);
 
 const gamefield = document.getElementById('gamefield');
 const greeting = document.getElementById('greeting');
@@ -37,20 +53,7 @@ class Point {
 	}
 }
 
-const NUM_OF_MONSTERS = 10;
-const SIZE_OF_HOUSE = 35;
-const SIZE_OF_MONSTERS = 20;
-const MIN_DIST_MONSTERS = 10;
-const VOWELS_HARD = 'аоуэы';
-const VOWELS_SOFT = 'иеяёю';
-const CONSONANTS = 'нмткхбвгдзлпрсф';
-const SYLLABLES_SOFT = ['йо', 'йе', 'ча', 'чо', 'чу', 'чи', 'че', 'чё', 'ща', 'що', 'щу', 'щи', 'ще', 'щё'];
-const SYLLABLES_HARD = ['жа', 'жо', 'жу', 'жи', 'жю', 'же', 'жё', 'ша', 'шо', 'шу', 'ши', 'ше', 'шё', 'ца', 'цо', 'цу', 'ци', 'це', 'цю'];
-const MONSTER_NAMES = ['m0', 'm2', 'm4', 'm5', 'm6', 'm7'];
-const HOUSE_HARD = 'house_hard';
-const HOUSE_SOFT = 'house_soft';
-const FLAG = 'flag';
-const BACK_LIGHT = 'backlight';
+
 
 const POSITION_HARD_VERTICAL = new Point(50, 100 - SIZE_OF_HOUSE * .5);
 const POSITION_HARD_HORIZONTAL = new Point(100 - SIZE_OF_HOUSE * .5, 50);
@@ -62,9 +65,6 @@ loadImages();
 const yes = new Audio();
 const no = new Audio();
 loadAudio();
-
-
-
 
 class Element {
 	//name of file; position in percent, scale in fraction, is draggable
@@ -254,9 +254,8 @@ function startGame() {
 	resize();
 	let points = getPoints(NUM_OF_MONSTERS);
 
-	for (var i = points.length - 1, j = 0; i >= 0; i--, j++) {
-		if (j >= MONSTER_NAMES.length) j = 0;
-		let m = new Monster(MONSTER_NAMES[j], points[i], SIZE_OF_MONSTERS, true, i < points.length / 2);
+	for (var i = points.length - 1; i >= 0; i--) {
+		let m = new Monster(getMonsterName(), points[i], SIZE_OF_MONSTERS, true, i < points.length / 2);
 		monsters.push(m);
 	}
 	resize();
@@ -295,6 +294,11 @@ function loadAudio() {
 
 	yes.load();
 	no.load();
+}
+
+function getMonsterName() {
+	if (indexMonster >= MONSTER_NAMES.length) indexMonster = 0;
+	return MONSTER_NAMES[indexMonster++];
 }
 
 function getSoftSyllable() {
