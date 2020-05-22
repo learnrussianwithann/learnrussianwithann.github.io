@@ -517,13 +517,11 @@ function hideElements() {
 }
 
 function fadeout() {
-	gamefield.style['-webkit-filter'] = 'grayscale(' + .5 + ')';
-	gamefield.style['filter'] = 'grayscale(' + .5 + ')';
+	gamefield.style['opacity'] = '.5';
 }
 
 function fadein() {
-	gamefield.style['-webkit-filter'] = 'grayscale(' + 0 + ')';
-	gamefield.style['filter'] = 'grayscale(' + 0 + ')';
+	gamefield.style['opacity'] = '1';
 }
 
 function exit() {
