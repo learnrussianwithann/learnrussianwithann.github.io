@@ -253,6 +253,10 @@ function startGame() {
 	
 	resize();
 	let points = getPoints(NUM_OF_MONSTERS);
+	let count = 0;
+	while (points.length < NUM_OF_MONSTERS && count++ < 20) {
+		points = getPoints(NUM_OF_MONSTERS);
+	}
 
 	for (var i = points.length - 1; i >= 0; i--) {
 		let m = new Monster(getMonsterName(), points[i], SIZE_OF_MONSTERS, true, i < points.length / 2);
@@ -469,7 +473,7 @@ function reposition() {
 function getPoints(num) {
 	let out = [];
 	let count = 0;
-	while (count++ < 2000 && out.length < num) {
+	while (count++ < 1000 && out.length < num) {
 		let p = getRandomPoint();
 		let add = true;
 		let i = out.length;
@@ -479,7 +483,7 @@ function getPoints(num) {
 				break;
 			}
 		}
-		if (houseSoft.pos.distToPoint(p) < SIZE_OF_HOUSE || houseHard.pos.distToPoint(p) < SIZE_OF_HOUSE) {
+		if (houseSoft.pos.distToPoint(p) < SIZE_OF_HOUSE * .9 || houseHard.pos.distToPoint(p) < SIZE_OF_HOUSE * .9) {
 				add = false;
 		}
 		if (add) {
