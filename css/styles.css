@@ -92,7 +92,7 @@ body {
 }
 
 #greetingbox, #greeting {
-	width: 15cm;
+	width: 18cm;
 	height: 12cm;
 
 	max-width: 80vw;
@@ -101,8 +101,8 @@ body {
 }
 
 #ending {
-	width: 15cm;
-	height: 8cm;
+	width: 18cm;
+	height: 12cm;
 
 	max-width: 80vw;
 	max-height: 70vh;
@@ -171,7 +171,7 @@ body {
 	cursor: pointer;
 	position: absolute;
 	left: 50%;
-	top: 54%;
+	top: 59%;
 	transform: translate(-50%, -50%);
 
 	border-radius: 10vmin;
@@ -185,7 +185,7 @@ body {
 	cursor: pointer;
 	position: absolute;
 	left: 50%;
-	top: 81%;
+	top: 82%;
 	transform: translate(-50%, -50%);
 
 	border-radius: 10vmin;
