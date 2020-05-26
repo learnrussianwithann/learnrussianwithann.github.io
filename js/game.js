@@ -180,6 +180,10 @@ class Monster extends Element {
 	setText(text) {
 		this.textDiv.innerHTML = text;
 	}
+
+	getText() {
+		return this.textDiv.innerHTML;
+	}
 }
 
 class House extends Element {
@@ -308,7 +312,9 @@ function getSoftSyllable() {
 		return getRandom(SYLLABLES_SOFT);
 	}
 	if (indexSoft >= VOWELS_SOFT.length) indexSoft = 0;
-	return getRandom(CONSONANTS) + VOWELS_SOFT[indexSoft++];
+	let out = getRandom(CONSONANTS) + VOWELS_SOFT[indexSoft++]
+	if (checkSyllable(out)) return out;
+	else return getSoftSyllable();
 }
 
 function getHardSyllable() {
@@ -316,7 +322,20 @@ function getHardSyllable() {
 		return getRandom(SYLLABLES_HARD);
 	}
 	if (indexHard >= VOWELS_SOFT.length) indexHard = 0;
-	return getRandom(CONSONANTS) + VOWELS_HARD[indexHard++];
+	let out = getRandom(CONSONANTS) + VOWELS_HARD[indexHard++];
+	if (checkSyllable(out)) return out;
+	else return getSoftSyllable();
+}
+
+function checkSyllable(syl) {
+	let pass = true;
+	for (var i = monsters.length - 1; i >= 0; i--) {
+		if (monsters[i].getText() == syl) {
+			pass = false;
+			break;
+		}
+	}
+	return pass;
 }
 
 function getRandom(source) {
