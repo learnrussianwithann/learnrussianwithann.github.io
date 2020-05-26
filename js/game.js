@@ -28,7 +28,7 @@ var indexMonster = Math.floor(Math.random() * MONSTER_NAMES.length);
 
 const gamefield = document.getElementById('gamefield');
 const greeting = document.getElementById('greeting');
-const ending =  document.getElementById('ending');
+const ending = document.getElementById('ending');
 
 // var scale = 1;
 var drag = null;
@@ -81,13 +81,17 @@ class Element {
 		this.dragable = dragable;
 		this.scale = scale;
 
-		this.img.onload = function() {resize();};
-		
+		this.img.onload = function() {
+			resize();
+		};
+
 		this.container.appendChild(this.img);
 		this.container.style.position = 'absolute';
 		this.toBackground();
 
-		this.container.ondragstart = function() {return false;};
+		this.container.ondragstart = function() {
+			return false;
+		};
 
 		if (dragable) this.container.className = 'monster';
 
@@ -111,7 +115,7 @@ class Element {
 		if (x > 0 && y > 0 && x < 100 && y < 100) {
 			this.pos.x = x;
 			this.pos.y = y;
-		this.updatePosition();
+			this.updatePosition();
 		}
 	}
 
@@ -136,7 +140,7 @@ class Element {
 
 	resize() {
 		let t = width < height ? width : height;
-		this.img.height = t * this.scale / 100; 
+		this.img.height = t * this.scale / 100;
 		this.img.width = t * this.scale / 100;
 		this.updatePosition();
 	}
@@ -179,7 +183,7 @@ class Monster extends Element {
 }
 
 class House extends Element {
-	
+
 	constructor(name, position, scale, dragable, text) {
 		super(name, position, scale, dragable);
 		this.textDiv = document.createElement('div');
@@ -203,11 +207,11 @@ class House extends Element {
 
 	resize() {
 		let t = width < height ? width : height;
-		this.img.height = t * this.scale / 100; 
+		this.img.height = t * this.scale / 100;
 		this.img.width = t * this.scale / 100;
 		this.flagimg.width = t * this.scale / 120;
 		this.updatePosition();
-	}	
+	}
 
 }
 
@@ -250,7 +254,6 @@ function startGame() {
 	hide(greeting);
 	hide(ending);
 
-	
 	resize();
 	let points = genPoints(NUM_OF_MONSTERS, 200);
 
@@ -260,7 +263,6 @@ function startGame() {
 	}
 	resize();
 	showElements();
-
 }
 
 function endGame() {
@@ -329,7 +331,7 @@ function closest(x, y) {
 		if (t < r) {
 			r = t;
 			out = monsters[i];
-		} 
+		}
 	}
 	if (r < SIZE_OF_MONSTERS * .45) return out;
 	else return null;
@@ -358,7 +360,7 @@ function moving(e) {
 	if (drag != null) {
 		if (e.type == 'touchmove') {
 			drag.moveAt(100 * e.changedTouches[0].clientX / width,
-						100 * e.changedTouches[0].clientY / height);
+				100 * e.changedTouches[0].clientY / height);
 		} else {
 			drag.moveAt(100 * e.clientX / width, 100 * e.clientY / height);
 		}
@@ -414,8 +416,7 @@ function checkOrientation() {
 	changeOrientation = lastIsVertical != isVertical;
 }
 
-function resize()
-{
+function resize() {
 	width = document.body.clientWidth;
 	height = document.body.clientHeight;
 	checkOrientation();
@@ -443,12 +444,12 @@ function getRandomPoint() {
 function checkDist(index) {
 	let p = monsters[index].pos;
 	let i = monsters.length;
-	while(i--) {
+	while (i--) {
 		if (i != index && monsters[i].pos.distToPoint(p) < SIZE_OF_MONSTERS) {
 			return false;
 		}
 	}
-	return houseSoft.pos.distToPoint(p) > SIZE_OF_HOUSE *.9 && houseHard.pos.distToPoint(p) > SIZE_OF_HOUSE * .9; 
+	return houseSoft.pos.distToPoint(p) > SIZE_OF_HOUSE * .9 && houseHard.pos.distToPoint(p) > SIZE_OF_HOUSE * .9;
 }
 
 function reposition() {
@@ -505,14 +506,14 @@ function genPoints(num, depth, out) {
 		let p = getRandomPoint();
 		let add = true;
 		let i = out.length;
-		while(i--) {
+		while (i--) {
 			if (out[i].distToPoint(p) < SIZE_OF_MONSTERS) {
 				add = false;
 				break;
 			}
 		}
 		if (houseSoft.pos.distToPoint(p) < SIZE_OF_HOUSE * .9 || houseHard.pos.distToPoint(p) < SIZE_OF_HOUSE * .9) {
-				add = false;
+			add = false;
 		}
 		if (add) {
 			out.push(p);
