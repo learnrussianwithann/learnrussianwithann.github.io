@@ -1,0 +1,13 @@
+body, html
+{
+	width: 100%;
+	height: 100%;
+	padding: 0px;
+	margin: 0px;
+	overflow: hidden;
+}
+
+#game {
+    width: 100%;
+    height: 100%;
+}
