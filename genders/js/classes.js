@@ -43,9 +43,10 @@ class Point {
 }
 
 class ElementInfo extends Point {
-	constructor(x, y, w) {
+	constructor(x, y, w, byHeight) {
 		super(x, y);
 		this.width = w;
+		this.byHeight = byHeight;
 	}
 }
 
@@ -54,16 +55,7 @@ class Element {
 		this.sprites = [];
 		this.container = new PIXI.Container();
 
-		this.container
-			.on('pointerdown', onDragStart)
-			.on('pointerup', onDragEnd)
-			.on('pointerupoutside', onDragEnd)
-			.on('pointermove', onDragMove);
-	}
-
-	setInteractive(set) {
-		this.container.interactive = set;
-		this.container.buttonMode = set;
+		setMoveable(this.container);
 	}
 
 	put(elem) {
@@ -104,10 +96,11 @@ class Viewport {
 		if (ratio) this.ratio = ratio;
 		else this.ratio = 16 / 9;
 		container.addChild(this.container);
+		
 	}
 
-	add(elem, x, y, w) {
-		let pos = new ElementInfo(x, y, w);
+	add(elem, x, y, w, byHeight) {
+		let pos = new ElementInfo(x, y, w, byHeight);
 		this.info[this.container.children.length] = pos;
 		this.container.addChild(elem);
 	}
@@ -124,10 +117,18 @@ class Viewport {
 			let e = this.container.children[i];
 			let eratio = e.width / e.height;
 			let einfo = this.info[i];
-			e.width = w * einfo.width;
-			e.height = e.width / eratio;
-			e.x = w * einfo.x + c.x;
-			e.y = h * einfo.y + c.y;
+
+			if (einfo.byHeight) {
+				e.height = w * einfo.width;
+				e.width = e.height * eratio;
+				e.x = w * einfo.x + c.x;
+				e.y = h * einfo.y + c.y;
+			} else {
+				e.width = w * einfo.width;
+				e.height = e.width / eratio;
+				e.x = w * einfo.x + c.x;
+				e.y = h * einfo.y + c.y;
+			}
 		}
 	}
 
