@@ -37,8 +37,12 @@ function onDragEnd() {
 function onDragMove() {
 	if (this.dragging) {
 		const newPosition = this.data.getLocalPosition(this.parent);
+		let x = newPosition.x + this.offset.x;
+		let y = newPosition.y + this.offset.y;
+		if (x > 50 && y > 10 && x < app.screen.width - 50 && y < app.screen.height - 10) {
 		this.x = newPosition.x + this.offset.x;
 		this.y = newPosition.y + this.offset.y;
+		}
 		// console.log(this.x, this.y);
 	}
 }

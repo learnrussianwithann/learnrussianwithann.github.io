@@ -25,7 +25,7 @@ const style = new PIXI.TextStyle({
 	fill: '#ffffff',
 	wordWrap: false,
 });
-const text = new PIXI.Text(getRandom(), style);
+const text = new PIXI.Text('', style);
 
 const styleName = new PIXI.TextStyle({
 	fontFamily: 'Arial',
@@ -77,6 +77,7 @@ loader.add('hole', 'img/hole.png')
 var scale = 1;
 var cheese_texture;
 var moew = false;
+var new_word = true;
 
 window.addEventListener('resize', resize);
 
@@ -122,7 +123,12 @@ function init() {
 
 	setMoveable(word);
 
-	setButton(cheese, function () { newWord(text); });
+	setButton(cheese, function () { 
+		if (new_word) {
+			newWord(text);
+			new_word = false;
+		} 
+	});
 
 	setButton(cat.container, function () {
 		if (!moew) {
