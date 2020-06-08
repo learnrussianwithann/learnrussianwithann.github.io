@@ -15,8 +15,6 @@ body {
 @font-face {
 	font-family: 'OpenSans';
 	src: url('../font/OpenSans-Regular.ttf');
-	font-weight: bold;
-	font-style: normal;
 }
 
 @media (max-height: 400px), (max-width: 380px) {
@@ -47,6 +45,8 @@ body {
 .wrapper, button {
 	font-family: 'OpenSans';
 	font-size: .9cm;
+	font-weight: 700;
+	letter-spacing: -.02em;
 }
 
 .wrapper
@@ -116,7 +116,7 @@ body {
 	top: 50%;
 	transform: translate(-50%, -50%);
 
-	border-radius: 5vmin;
+	border-radius: 1.5cm;
 	color: #fff;
 	background-color: #5d70bc;
 	text-align: center;
@@ -140,6 +140,7 @@ body {
 	text-align: center;
 
 	max-width: 70vw;
+	
 
 	white-space: nowrap;
 	color: #fff;
@@ -147,13 +148,15 @@ body {
 
 .buttonAgain, .buttonEnd {
 	width: 8cm;
-	height: 1.5cm;
+	height: 2cm;
+	max-height: 14vh;
 }
 
 .buttonStart
 {
 	width: 8cm;
-	height: 1.5cm;
+	height: 2cm;
+	max-height: 18vh;
 	cursor: pointer;
 	position: absolute;
 	left: 50%;
