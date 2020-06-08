@@ -14,7 +14,8 @@ body {
 
 @font-face {
 	font-family: 'OpenSans';
-	src: url('../font/OpenSans-Regular.ttf');
+	src: url('../font/OpenSans-Regular.ttf'),
+	url('../font/OpenSans-Regular.woff') format('woff');
 }
 
 @media (max-height: 400px), (max-width: 380px) {
