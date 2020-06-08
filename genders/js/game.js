@@ -1,9 +1,9 @@
 const gamefield = document.getElementById('game');
-const app = new PIXI.Application({ 
-	resizeTo: gamefield, 
-	backgroundColor: 0x1e99bb, 	
-	resolution:window.devicePixelRatio, 
-	autoDensity:true
+const app = new PIXI.Application({
+	resizeTo: gamefield,
+	backgroundColor: 0x1e99bb,
+	resolution: window.devicePixelRatio,
+	autoDensity: true
 });
 
 const vport = new Viewport(app.stage, 16 / 9);
@@ -14,24 +14,25 @@ const mouseF = new Element();
 const mouseM = new Element()
 const mouseN = new Element()
 const cat = new Element();
+const sound_meow = PIXI.sound.Sound.from('audio/meow.mp3');
 
 const word = new PIXI.Container();
 const style = new PIXI.TextStyle({
-    fontFamily: 'Arial',
-    fontSize: 100,
-    fontStyle: 'italic',
+	fontFamily: 'Arial',
+	fontSize: 100,
+	fontStyle: 'italic',
 	fontWeight: 'bold',
 	fill: '#ffffff',
-    wordWrap: false,
+	wordWrap: false,
 });
 const text = new PIXI.Text(getRandom(), style);
 
 const styleName = new PIXI.TextStyle({
-    fontFamily: 'Arial',
-    fontSize: 50,
+	fontFamily: 'Arial',
+	fontSize: 50,
 	fontWeight: 'bold',
 	fill: '#ffffff',
-    wordWrap: false,
+	wordWrap: false,
 });
 const textF = new PIXI.Text('Женский род', styleName);
 const textN = new PIXI.Text('Средний род', styleName);
@@ -75,12 +76,11 @@ loader.add('hole', 'img/hole.png')
 
 var scale = 1;
 var cheese_texture;
-
+var moew = false;
 
 window.addEventListener('resize', resize);
 
 function resize() {
-	text.text = app.screen.width + ' ' + app.screen.height + ' ' + window.devicePixelRatio + ' ' + app.renderer.resolution;
 	vport.resize();
 	app.resize();
 }
@@ -90,25 +90,25 @@ function init() {
 
 	vport.add(holes[0], -.38, -.32, .12);
 	vport.add(holes[1], -.38, -.02, .12);
-	vport.add(holes[2], -.38,  .28, .12);
+	vport.add(holes[2], -.38, .28, .12);
 	holes[0].anchor.set(0.5);
 	holes[1].anchor.set(0.5);
 	holes[2].anchor.set(0.5);
 
 	vport.add(textF, -.38, -.46, .025, true);
 	vport.add(textN, -.38, -.16, .025, true);
-	vport.add(textM, -.38,  .14, .025, true);
+	vport.add(textM, -.38, .14, .025, true);
 	textF.anchor.set(0.5);
 	textN.anchor.set(0.5);
 	textM.anchor.set(0.5);
 
 
-	vport.add(cheese, -.05,0.3, .3);
+	vport.add(cheese, -.05, 0.3, .3);
 	cheese.anchor.set(0.5);
 
 	vport.add(mouseF.container, -.38, -.3, .09);
 	vport.add(mouseN.container, -.38, -.0, .09);
-	vport.add(mouseM.container, -.38,  .3, .09);
+	vport.add(mouseM.container, -.38, .3, .09);
 
 	vport.add(cat.container, .13, .0, .35);
 
@@ -122,7 +122,20 @@ function init() {
 
 	setMoveable(word);
 
-	setButton(cheese, function() { newWord(text);});
+	setButton(cheese, function () { newWord(text); });
+
+	setButton(cat.container, function () {
+		if (!moew) {
+			moew = true;
+			cat.show('eyes_open');
+			sound_meow.play();
+			setTimeout(function () { 
+				cat.hide('eyes_open');
+				moew = false;
+			}, 1000);
+		}
+
+	})
 
 	app.stage.sortChildren();
 }
