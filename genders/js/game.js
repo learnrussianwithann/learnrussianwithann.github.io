@@ -78,9 +78,10 @@ var scale = 1;
 var cheese_texture;
 var moew = false;
 var new_word = true;
+var current_word = '';
 
-window.addEventListener('resize', resize);
-PIXI.shared.ticker.stop();
+
+
 
 function resize() {
 	vport.resize();
@@ -145,4 +146,7 @@ function init() {
 	})
 
 	app.stage.sortChildren();
+	window.addEventListener('resize', resize);
+
+	PIXI.Ticker.shared.stop();
 }

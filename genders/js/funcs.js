@@ -15,11 +15,18 @@ function genMask() {
 	return mask;
 }
 
+function dist(x1, y1, x2, y2) {
+	return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+}
+
+function distElement(a, b) {
+	return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
+}
+
 function onDragStart(event) {
 	// store a reference to the data
 	// the reason for this is because of multitouch
 	// we want to track the movement of this particular touch
-	console.log(this);
 	this.data = event.data;
 	// this.alpha = 0.5;
 	this.dragging = true;
@@ -31,7 +38,15 @@ function onDragEnd() {
 	this.dragging = false;
 	// set the interaction data to null
 	this.data = null;
-	console.log(this.x, this.y);
+	// console.log('mouse f ', distElement(this, mouseF.container), 0.04 * vport.h);
+	let max_dist = 0.06 * vport.h;
+	if (distElement(this, mouseF.container) < max_dist && current_word == 'f') {
+		correct();
+	} else if (distElement(this, mouseN.container) <  max_dist && current_word == 'n') {
+		correct();
+	} else if (distElement(this, mouseM.container) <  max_dist && current_word == 'm') {
+		correct();
+	}
 }
 
 function onDragMove() {
@@ -62,12 +77,15 @@ function getRandom() {
 	switch (Math.floor(Math.random() * 3)) {
 		case 0:
 			if (++indexF >= wordsF.length) indexF = 0;
+			current_word = 'f';
 			return wordsF[indexF];
 		case 1:
 			if (++indexN >= wordsN.length) indexN = 0;
+			current_word = 'n';
 			return wordsN[indexN];
 		case 2:
 			if (++indexM >= wordsM.length) indexM = 0;
+			current_word = 'm';
 			return wordsM[indexM];
 	}
 }
@@ -92,4 +110,10 @@ function setButton(element, event) {
 function appering(element, start, end, time) {
 	element.scale.set(time/(this.counter * PIXI.Ticker.shared.deltaMS))
 	this.couter++;	
+}
+
+function correct() {
+	text.text = '';
+	vport.resizeElement(word);
+	new_word = true;	
 }

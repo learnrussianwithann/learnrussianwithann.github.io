@@ -85,51 +85,54 @@ class Element {
 		this.getByName(name).visible = true;
 	}
 
-	
+
 
 }
 
 class Viewport {
 	constructor(container, ratio) { //ratio width/height
 		this.container = new PIXI.Container();
-		this.info = [];
+		this.w = 100;
+		this.h = 100;
+		this.c = new Point(this.w / 2, this.h / 2);
 		if (ratio) this.ratio = ratio;
 		else this.ratio = 16 / 9;
 		container.addChild(this.container);
 	}
 
 	add(elem, x, y, w, byHeight) {
-		let pos = new ElementInfo(x, y, w, byHeight);
-		this.info[this.container.children.length] = pos;
+		elem.info = new ElementInfo(x, y, w, byHeight);
 		this.container.addChild(elem);
 	}
 
-	resize() {
-		let w = app.screen.width, h = app.screen.height, c = new Point(w / 2, h / 2);
-		if (w / this.ratio < h) {
-			h = w / this.ratio;
+	resizeElement(e) {
+		let eratio = e.width / e.height;
+
+		if (e.info.byHeight) {
+			e.height = this.w * e.info.width;
+			e.width = e.height * eratio;
+			e.x = this.w * e.info.x + this.c.x;
+			e.y = this.h * e.info.y + this.c.y;
 		} else {
-			w = h * this.ratio;
-		}
-
-		for (let i = 0; i < this.container.children.length; i++) {
-			let e = this.container.children[i];
-			let eratio = e.width / e.height;
-			let einfo = this.info[i];
-
-			if (einfo.byHeight) {
-				e.height = w * einfo.width;
-				e.width = e.height * eratio;
-				e.x = w * einfo.x + c.x;
-				e.y = h * einfo.y + c.y;
-			} else {
-				e.width = w * einfo.width;
-				e.height = e.width / eratio;
-				e.x = w * einfo.x + c.x;
-				e.y = h * einfo.y + c.y;
-			}
+			e.width = this.w * e.info.width;
+			e.height = e.width / eratio;
+			e.x = this.w * e.info.x + this.c.x;
+			e.y = this.h * e.info.y + this.c.y;
 		}
 	}
 
+	resize() {
+		this.w = app.screen.width;
+		this.h = app.screen.height;
+		this.c.set(this.w / 2, this.h / 2);
+		if (this.w / this.ratio < this.h) {
+			this.h = this.w / this.ratio;
+		} else {
+			this.w = this.h * this.ratio;
+		}
+		this.container.children.forEach(element => {
+			this.resizeElement(element)
+		});
+	}
 }
 
