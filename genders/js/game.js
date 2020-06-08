@@ -1,10 +1,8 @@
 const gamefield = document.getElementById('game');
-const app = new PIXI.Application({ resizeTo: gamefield, backgroundColor: 0x1e99bb });
+const app = new PIXI.Application({ resizeTo: gamefield, backgroundColor: 0x1e99bb, antialias: true });
 
 const vport = new Viewport(app.stage, 16 / 9);
 
-// const floor = new PIXI.Sprite();
-// const wall = new PIXI.Sprite();
 const holes = [new PIXI.Sprite(), new PIXI.Sprite(), new PIXI.Sprite()];
 const cheese = new PIXI.Sprite();
 const mouseF = new Element();
@@ -36,8 +34,6 @@ loader.add('hole', 'img/hole.png')
 		mouseN.put(genSprite(resources.m2.texture, 'body', .5));
 		mouseM.put(genSprite(resources.m3.texture, 'body', .5));
 
-		// floor.texture = new PIXI.Texture(resources.holes.texture.baseTexture, new PIXI.Rectangle(resources.holes.texture.orig.width - 1, resources.holes.texture.orig.height - 1, 1, 1));
-		// wall.texture = new PIXI.Texture(resources.holes.texture.baseTexture, new PIXI.Rectangle(0, 0, 1, 1));
 		holes[0].texture = resources.hole.texture;
 		holes[1].texture = resources.hole.texture;
 		holes[2].texture = resources.hole.texture;
@@ -68,20 +64,12 @@ var cheese_texture;
 window.addEventListener('resize', resize);
 
 function resize() {
+	text.text = app.screen.width + ' ' + app.screen.height;
 	vport.resize();
 }
 
 function init() {
 	gamefield.appendChild(app.view);
-
-	// vport.add(floor, 0, 0, 5);
-	// floor.anchor.set(0.5);
-	// floor.zIndex = -10;
-
-	// vport.add(wall, -.2, -1.949, 2);
-	// wall.rotation = -0.401;
-	// wall.anchor.set(0.5);
-	// wall.zIndex = -9;
 
 	vport.add(holes[0], -.38, -.32, .14);
 	vport.add(holes[1], -.38, -.02, .14);

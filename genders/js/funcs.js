@@ -84,3 +84,8 @@ function setButton(element, event) {
 	element.interactive = true;
 	element.buttonMode = true;
 }
+
+function appering(element, start, end, time) {
+	element.scale.set(time/(this.counter * PIXI.Ticker.shared.deltaMS))
+	this.couter++;	
+}
