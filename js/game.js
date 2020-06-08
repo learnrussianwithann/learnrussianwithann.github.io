@@ -30,6 +30,10 @@ const gamefield = document.getElementById('gamefield');
 const greeting = document.getElementById('greeting');
 const ending = document.getElementById('ending');
 
+const butStart = document.getElementById('startButton');
+const butAgain = document.getElementById('againButton');
+const butEnd = document.getElementById('endButton');
+
 // var scale = 1;
 var drag = null;
 
@@ -238,6 +242,13 @@ window.addEventListener('mouseup', endMoving);
 window.ontouchstart = startMoving;;
 window.ontouchmove = moving;
 window.ontouchend = endMoving;
+
+butStart.addEventListener('click', startGame);
+butStart.addEventListener('touchstart', startGame);
+butAgain.addEventListener('click', startGame);
+butAgain.addEventListener('touchstart', startGame);
+butEnd.addEventListener('click', exit);
+butEnd.addEventListener('touchstart', exit);
 
 function startGame() {
 	fadein();

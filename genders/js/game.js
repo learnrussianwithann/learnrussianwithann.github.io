@@ -118,7 +118,7 @@ function init() {
 	word.addChild(cheese_texture);
 	word.addChild(text);
 	cheese_texture.mask = text;
-	vport.add(word, .0, -.2, .1, true);
+	vport.add(word, .0, -.2, .05, true);
 
 	setMoveable(word);
 
