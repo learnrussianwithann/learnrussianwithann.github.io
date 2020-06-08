@@ -20,7 +20,7 @@ body {
 	
 }
 
-@media (max-height: 400px), (max-width: 380px) {
+/* @media (max-height: 400px), (max-width: 380px) {
 	#emptyline {display: none;}
 	#ending, .buttonAgain, .buttonEnd {
 		font-size: .7cm;
@@ -28,12 +28,14 @@ body {
 }
 
 @media (max-width: 430px) and (min-width: 380px) {
+	#emptyline {display: none;}
 	#ending, .buttonAgain, .buttonEnd {
-		font-size: .8cm;
+		font-size: .7cm;
 	}
-}
+} */
 
-@media (max-height: 400px) {
+@media (max-height: 500px) {
+	#emptyline {display: none;}
 	#greeting {
 		top: 65%;
 	}
@@ -45,10 +47,30 @@ body {
 	}
 }
 
+@media (max-width: 625px) {
+	#emptyline {display: none;}
+	#greeting, #ending, button {
+		font-size: 5vw;
+	}
+	button {
+		width: 10vw;
+	}
+}
+
+@media (min-width: 625px) {
+	#greeting, #ending {
+		font-size: 0.9cm;
+	}
+
+	button {
+		font-size: 0.8cm;
+	}
+}
+
 .wrapper, button {
 	font-family: 'OpenSans';
-	font-size: 0.9cm;
 	font-weight: 600;
+	letter-spacing: -0.02rem;
 }
 
 .wrapper
@@ -138,12 +160,14 @@ body {
 	width: 90%;
 }
 
-.buttonStart, .buttonAgain, .buttonEnd {
+button {
 	text-align: center;
 
 	cursor: pointer;
 	max-width: 70vw;
 	
+	border-radius: 1cm;
+	border-style: hidden;
 
 	white-space: nowrap;
 	color: #fff;
@@ -164,9 +188,6 @@ body {
 	left: 50%;
 	top: 80%;
 	transform: translate(-50%, -50%);
-
-	border-radius: 10vmin;
-	border-style: hidden;
 
 	background-color: #ff6968;
 }
