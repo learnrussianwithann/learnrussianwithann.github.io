@@ -87,16 +87,6 @@ class Element {
 
 }
 
-class Mouse extends Element {
-
-}
-
-class Cat extends Element {
-
-}
-
-
-
 class Viewport {
 	constructor(container, ratio) { //ratio width/height
 		this.container = new PIXI.Container();
