@@ -64,7 +64,7 @@ var cheese_texture;
 window.addEventListener('resize', resize);
 
 function resize() {
-	text.text = app.screen.width + ' ' + app.screen.height;
+	text.text = app.screen.width + ' ' + app.screen.height + ' ' + window.devicePixelRatio;
 	vport.resize();
 }
 
