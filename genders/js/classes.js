@@ -55,7 +55,7 @@ class Element {
 		this.sprites = [];
 		this.container = new PIXI.Container();
 
-		setMoveable(this.container);
+		// setMoveable(this.container);
 	}
 
 	put(elem) {
@@ -75,6 +75,14 @@ class Element {
 
 	getByName(name) {
 		return this.container.getChildByName(name);
+	}
+
+	hide(name) {
+		this.getByName(name).visible = false;
+	}
+
+	show(name) {
+		this.getByName(name).visible = true;
 	}
 
 }

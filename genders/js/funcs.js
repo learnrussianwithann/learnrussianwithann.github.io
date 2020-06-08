@@ -31,6 +31,7 @@ function onDragEnd() {
 	this.dragging = false;
 	// set the interaction data to null
 	this.data = null;
+	console.log(this.x, this.y);
 }
 
 function onDragMove() {
@@ -38,12 +39,18 @@ function onDragMove() {
 		const newPosition = this.data.getLocalPosition(this.parent);
 		this.x = newPosition.x + this.offset.x;
 		this.y = newPosition.y + this.offset.y;
+		// console.log(this.x, this.y);
 	}
 }
 
-function genSprite(texture, name) {
+function newWord(text) {
+	text.text = getRandom();
+}
+
+function genSprite(texture, name, anchor) {
 	let out = new PIXI.Sprite(texture);
 	out.name = name;
+	if (anchor != null) out.anchor.set(anchor);
 	return out;
 }
 
@@ -66,6 +73,13 @@ function setMoveable(element) {
 		.on('pointerup', onDragEnd)
 		.on('pointerupoutside', onDragEnd)
 		.on('pointermove', onDragMove);
+
+	element.interactive = true;
+	element.buttonMode = true;
+}
+
+function setButton(element, event) {
+	element.on('pointerdown', event);
 
 	element.interactive = true;
 	element.buttonMode = true;
