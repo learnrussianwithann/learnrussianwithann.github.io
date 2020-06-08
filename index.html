@@ -14,14 +14,14 @@
 		<div id="greeting" >
 			<div class="message" id="greetingbox">
 				<div class="messagetext">Монстрики потерялись.<br><span id="emptyline"><br></span>Поможешь найти их дом?</div>
-				<button class="buttonStart" onclick='javascript:startGame();'>Помогу!</button>
+				<button class="buttonStart" id="startButton" onclick='javascript:startGame();' onpointerdown='javascript:startGame();'>Помогу!</button>
 			</div>
 			<img src="img/m0.png" id="m0greeting">
 		</div>
 		<div class="message" id="ending" style="display: none;">
 			<div class="messagetext">Все монстрики дома!</div>
-			<button class="buttonAgain" onclick='javascript:startGame();'>Поискать еще!</button>
-			<button class="buttonEnd" onclick='javascript:exit();'>Закончить игру</button>
+			<button class="buttonAgain" onclick='javascript:startGame();' onpointerdown='javascript:startGame();'>Поискать еще!</button>
+			<button class="buttonEnd" onclick='javascript:exit();' onpointerdown='javascript:exit();'>Закончить игру</button>
 		</div>
 	</div>
 	<script src="js/game.js"></script>
