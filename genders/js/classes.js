@@ -104,7 +104,6 @@ class Viewport {
 		if (ratio) this.ratio = ratio;
 		else this.ratio = 16 / 9;
 		container.addChild(this.container);
-		
 	}
 
 	add(elem, x, y, w, byHeight) {

@@ -1,5 +1,10 @@
 const gamefield = document.getElementById('game');
-const app = new PIXI.Application({ resizeTo: gamefield, backgroundColor: 0x1e99bb, antialias: true });
+const app = new PIXI.Application({ 
+	resizeTo: gamefield, 
+	backgroundColor: 0x1e99bb, 	
+	resolution:window.devicePixelRatio, 
+	autoDensity:true
+});
 
 const vport = new Viewport(app.stage, 16 / 9);
 
@@ -66,6 +71,7 @@ window.addEventListener('resize', resize);
 function resize() {
 	text.text = app.screen.width + ' ' + app.screen.height + ' ' + window.devicePixelRatio + ' ' + app.renderer.resolution;
 	vport.resize();
+	app.resize();
 }
 
 function init() {
