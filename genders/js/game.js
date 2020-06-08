@@ -26,6 +26,17 @@ const style = new PIXI.TextStyle({
 });
 const text = new PIXI.Text(getRandom(), style);
 
+const styleName = new PIXI.TextStyle({
+    fontFamily: 'Arial',
+    fontSize: 50,
+	fontWeight: 'bold',
+	fill: '#ffffff',
+    wordWrap: false,
+});
+const textF = new PIXI.Text('Женский род', styleName);
+const textN = new PIXI.Text('Средний род', styleName);
+const textM = new PIXI.Text('Мужской род', styleName);
+
 const loader = PIXI.Loader.shared;
 loader.add('hole', 'img/hole.png')
 	.add('m1', 'img/m1.png')
@@ -77,19 +88,27 @@ function resize() {
 function init() {
 	gamefield.appendChild(app.view);
 
-	vport.add(holes[0], -.38, -.32, .14);
-	vport.add(holes[1], -.38, -.02, .14);
-	vport.add(holes[2], -.38,  .28, .14);
+	vport.add(holes[0], -.38, -.32, .12);
+	vport.add(holes[1], -.38, -.02, .12);
+	vport.add(holes[2], -.38,  .28, .12);
 	holes[0].anchor.set(0.5);
 	holes[1].anchor.set(0.5);
 	holes[2].anchor.set(0.5);
 
+	vport.add(textF, -.38, -.46, .025, true);
+	vport.add(textN, -.38, -.16, .025, true);
+	vport.add(textM, -.38,  .14, .025, true);
+	textF.anchor.set(0.5);
+	textN.anchor.set(0.5);
+	textM.anchor.set(0.5);
+
+
 	vport.add(cheese, -.05,0.3, .3);
 	cheese.anchor.set(0.5);
 
-	vport.add(mouseF.container, -.38, -.3, .10);
-	vport.add(mouseN.container, -.38, -.0, .10);
-	vport.add(mouseM.container, -.38,  .3, .10);
+	vport.add(mouseF.container, -.38, -.3, .09);
+	vport.add(mouseN.container, -.38, -.0, .09);
+	vport.add(mouseM.container, -.38,  .3, .09);
 
 	vport.add(cat.container, .13, .0, .35);
 
