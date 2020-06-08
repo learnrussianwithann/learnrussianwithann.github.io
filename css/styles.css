@@ -5,6 +5,7 @@ body, html
 	padding: 0px;
 	margin: 0px;
 	overflow: hidden;
+	position: fixed;
 }
 
 body {
@@ -14,7 +15,9 @@ body {
 
 @font-face {
 	font-family: 'OpenSans';
-	src: url('../font/OpenSans-Regular.woff') format('woff');
+	src: url('../font/OpenSans-Regular.woff') format('woff'),
+	url('../font/OpenSans-Regular.ttf') format('truetype');
+	
 }
 
 @media (max-height: 400px), (max-width: 380px) {
@@ -44,9 +47,8 @@ body {
 
 .wrapper, button {
 	font-family: 'OpenSans';
-	font-size: .9cm;
-	font-weight: 700;
-	letter-spacing: -.02em;
+	font-size: 0.9cm;
+	font-weight: 600;
 }
 
 .wrapper
@@ -239,8 +241,8 @@ body {
 	transform: translate(-50%, -50%);
 	white-space: nowrap;
 	color: #fff;
-	font-size: 4vmin;
-	letter-spacing: -.02em;
+	font-size: 3vmin;
+	
 }
 
 @keyframes jump
