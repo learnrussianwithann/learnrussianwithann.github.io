@@ -80,6 +80,7 @@ var moew = false;
 var new_word = true;
 
 window.addEventListener('resize', resize);
+PIXI.shared.ticker.stop();
 
 function resize() {
 	vport.resize();
