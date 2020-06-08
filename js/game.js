@@ -79,6 +79,7 @@ class Element {
 		this.offDrag = new Point(0, 0);
 		this.scale = 0.1;
 		this.dragable = false;
+		this.isDrag = false;
 
 		this.img = imageLoader(name);
 		this.pos = position;
@@ -107,12 +108,14 @@ class Element {
 	toForeground() {
 		this.container.style.zIndex = 100;
 		this.container.style.pointerEvents = 'none';
+		this.isDrag = true;
 	}
 
 	toBackground() {
 		if (this.dragable) this.container.style.zIndex = Math.round(this.pos.y);
 		else this.container.style.zIndex = 0;
 		this.container.style.pointerEvents = 'auto';
+		this.isDrag = false;
 	}
 
 	setPosition(x, y) {
@@ -139,7 +142,7 @@ class Element {
 	updatePosition() {
 		this.container.style.left = this.pos.x + '%';
 		this.container.style.top = this.pos.y + '%';
-		if (this.dragable) this.container.style.zIndex = Math.round(this.pos.y);
+		if (this.dragable && !this.isDrag) this.container.style.zIndex = Math.round(this.pos.y);
 	}
 
 	resize() {
