@@ -47,9 +47,13 @@ loader.add('hole', 'img/hole.png')
 	.add('cheese', 'img/cheese.png')
 	.add('cheese_texture', 'img/cheese_texture.png')
 	.load((loader, resources) => {
-		mouseF.put(genSprite(resources.m1.texture, 'body', .5));
-		mouseN.put(genSprite(resources.m2.texture, 'body', .5));
-		mouseM.put(genSprite(resources.m3.texture, 'body', .5));
+		mouseF.put(genSprite(resources.hole.texture, 'hole', .5));
+		mouseN.put(genSprite(resources.hole.texture, 'hole', .5));
+		mouseM.put(genSprite(resources.hole.texture, 'hole', .5));
+
+		mouseF.put(genSprite(resources.m1.texture, 'body', .5, .65, new Point(0, 60)));
+		mouseN.put(genSprite(resources.m2.texture, 'body', .5, .65, new Point(0, 60)));
+		mouseM.put(genSprite(resources.m3.texture, 'body', .5, .65, new Point(0, 60)));
 
 		holes[0].texture = resources.hole.texture;
 		holes[1].texture = resources.hole.texture;
@@ -91,29 +95,25 @@ function resize() {
 function init() {
 	gamefield.appendChild(app.view);
 
-	vport.add(holes[0], -.38, -.32, .12);
-	vport.add(holes[1], -.38, -.02, .12);
-	vport.add(holes[2], -.38, .28, .12);
-	holes[0].anchor.set(0.5);
-	holes[1].anchor.set(0.5);
-	holes[2].anchor.set(0.5);
-
-	vport.add(textF, -.38, -.46, .025, true);
-	vport.add(textN, -.38, -.16, .025, true);
-	vport.add(textM, -.38, .14, .025, true);
-	textF.anchor.set(0.5);
-	textN.anchor.set(0.5);
-	textM.anchor.set(0.5);
+	mouseF.put(textF);
+	mouseN.put(textN);
+	mouseM.put(textM);
+	textF.scale.set(3);
+	textN.scale.set(3);
+	textM.scale.set(3);
+	textF.anchor.set(0.5, 3.5);
+	textN.anchor.set(0.5, 3.5);
+	textM.anchor.set(0.5, 3.5);
 
 
-	vport.add(cheese, -.05, 0.3, .3);
+	vport.add(cheese, -.05, 0.322, .3);
 	cheese.anchor.set(0.5);
 
-	vport.add(mouseF.container, -.38, -.3, .09);
-	vport.add(mouseN.container, -.38, -.0, .09);
-	vport.add(mouseM.container, -.38, .3, .09);
+	vport.add(mouseF.container, -.38, -.345, .13);
+	vport.add(mouseN.container, -.38, -.0, .13);
+	vport.add(mouseM.container, -.38, .36, .13);
 
-	vport.add(cat.container, .13, .0, .35);
+	vport.add(cat.container, .13, .07, .35);
 
 
 	cheese_texture.anchor.set(.5);
@@ -125,11 +125,11 @@ function init() {
 
 	setMoveable(word);
 
-	setButton(cheese, function () { 
+	setButton(cheese, function () {
 		if (new_word) {
 			newWord(text);
 			new_word = false;
-		} 
+		}
 	});
 
 	setButton(cat.container, function () {
@@ -137,7 +137,7 @@ function init() {
 			moew = true;
 			cat.show('eyes_open');
 			sound_meow.play();
-			setTimeout(function () { 
+			setTimeout(function () {
 				cat.hide('eyes_open');
 				moew = false;
 			}, 1000);

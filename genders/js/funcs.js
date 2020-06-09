@@ -39,7 +39,7 @@ function onDragEnd() {
 	// set the interaction data to null
 	this.data = null;
 	// console.log('mouse f ', distElement(this, mouseF.container), 0.04 * vport.h);
-	let max_dist = 0.06 * vport.h;
+	let max_dist = 0.08 * vport.h;
 	if (distElement(this, mouseF.container) < max_dist && current_word == 'f') {
 		correct();
 	} else if (distElement(this, mouseN.container) <  max_dist && current_word == 'n') {
@@ -66,10 +66,15 @@ function newWord(text) {
 	text.text = getRandom();
 }
 
-function genSprite(texture, name, anchor) {
+function genSprite(texture, name, anchor, scale, position) {
 	let out = new PIXI.Sprite(texture);
 	out.name = name;
 	if (anchor != null) out.anchor.set(anchor);
+	if (scale != null) out.scale.set(scale);
+	if (position != null)  {
+		out.x = position.x;
+		out.y = position.y;	
+	}
 	return out;
 }
 
