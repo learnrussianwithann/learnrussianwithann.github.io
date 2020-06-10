@@ -7,6 +7,8 @@ const app = new PIXI.Application({
 });
 
 const vport = new Viewport(app.stage, 16 / 9);
+const ticker = PIXI.Ticker.shared;
+
 
 const holes = [new PIXI.Sprite(), new PIXI.Sprite(), new PIXI.Sprite()];
 const cheese = new PIXI.Sprite();
@@ -148,5 +150,7 @@ function init() {
 	app.stage.sortChildren();
 	window.addEventListener('resize', resize);
 
-	PIXI.Ticker.shared.stop();
+
+	ticker.autoStart = false;
+	ticker.stop();
 }
