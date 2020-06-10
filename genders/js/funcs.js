@@ -40,11 +40,11 @@ function onDragEnd() {
 	this.data = null;
 	// console.log('mouse f ', distElement(this, mouseF.container), 0.04 * vport.h);
 	let max_dist = 0.08 * vport.h;
-	if (distElement(this, mouseF.container) < max_dist && current_word == 'f') {
+	if (distElement(this, mouseF) < max_dist && current_word == 'f') {
 		correct();
-	} else if (distElement(this, mouseN.container) <  max_dist && current_word == 'n') {
+	} else if (distElement(this, mouseN) <  max_dist && current_word == 'n') {
 		correct();
-	} else if (distElement(this, mouseM.container) <  max_dist && current_word == 'm') {
+	} else if (distElement(this, mouseM) <  max_dist && current_word == 'm') {
 		correct();
 	}
 }

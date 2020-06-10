@@ -13,12 +13,12 @@ const ticker = PIXI.Ticker.shared;
 const holes = [new PIXI.Sprite(), new PIXI.Sprite(), new PIXI.Sprite()];
 const cheese = new PIXI.Sprite();
 const mouseF = new Element();
-const mouseM = new Element()
-const mouseN = new Element()
+const mouseM = new Element();
+const mouseN = new Element();
 const cat = new Element();
 const sound_meow = PIXI.sound.Sound.from('audio/meow.mp3');
 
-const word = new PIXI.Container();
+const word = new Element();
 const style = new PIXI.TextStyle({
 	fontFamily: 'Arial',
 	fontSize: 100,
@@ -111,11 +111,11 @@ function init() {
 	vport.add(cheese, -.05, 0.322, .3);
 	cheese.anchor.set(0.5);
 
-	vport.add(mouseF.container, -.38, -.345, .13);
-	vport.add(mouseN.container, -.38, -.0, .13);
-	vport.add(mouseM.container, -.38, .36, .13);
+	vport.add(mouseF, -.38, -.345, .13);
+	vport.add(mouseN, -.38, -.0, .13);
+	vport.add(mouseM, -.38, .36, .13);
 
-	vport.add(cat.container, .13, .07, .35);
+	vport.add(cat, .13, .07, .35);
 
 
 	cheese_texture.anchor.set(.5);
@@ -130,11 +130,12 @@ function init() {
 	setButton(cheese, function () {
 		if (new_word) {
 			newWord(text);
+			word.updateHitArea();
 			new_word = false;
 		}
 	});
 
-	setButton(cat.container, function () {
+	setButton(cat, function () {
 		if (!moew) {
 			moew = true;
 			cat.show('eyes_open');

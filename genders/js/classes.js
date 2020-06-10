@@ -50,32 +50,27 @@ class ElementInfo extends Point {
 	}
 }
 
-class Element {
+class Element extends PIXI.Container {
 	constructor() {
+		super();
 		this.sprites = [];
-		this.container = new PIXI.Container();
-		this.container.interactiveChildren = false;
+		// this.container = new PIXI.Container();
+		this.interactiveChildren = false;
 		// setMoveable(this.container);
 	}
 
 	put(elem) {
-		this.container.addChild(elem);
-		this.container.hitArea = this.container.getBounds();
+		this.addChild(elem);
+		this.updateHitArea();
 	}
 
-	setMask(mask) {
-		this.container.parent.addChild(mask);
-		this.container.mask = mask;
-		this.mask = mask;
-	}
-
-	switchMask() {
-		if (this.container.mask) this.container.mask = null;
-		else this.container.mask = this.mask;
+	updateHitArea() {
+		this.calculateBounds();
+		this.hitArea = this.getLocalBounds();
 	}
 
 	getByName(name) {
-		return this.container.getChildByName(name);
+		return this.getChildByName(name);
 	}
 
 	hide(name) {
