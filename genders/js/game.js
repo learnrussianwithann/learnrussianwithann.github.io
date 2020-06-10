@@ -9,7 +9,6 @@ const app = new PIXI.Application({
 const vport = new Viewport(app.stage, 16 / 9);
 const ticker = PIXI.Ticker.shared;
 
-
 const holes = [new PIXI.Sprite(), new PIXI.Sprite(), new PIXI.Sprite()];
 const cheese = new PIXI.Sprite();
 const mouseF = new Element();
@@ -85,9 +84,6 @@ var cheese_texture;
 var moew = false;
 var new_word = true;
 var current_word = '';
-
-
-
 
 function resize() {
 	vport.resize();

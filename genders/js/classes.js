@@ -12,7 +12,6 @@ class Point {
 				this.y = y;
 			}
 		}
-
 	}
 
 	set(x, y) {
@@ -115,7 +114,7 @@ class Viewport {
 			e.x = this.w * e.info.x + this.c.x;
 			e.y = this.h * e.info.y + this.c.y;
 		}
-		
+
 	}
 
 	resize() {

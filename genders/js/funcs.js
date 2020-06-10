@@ -38,7 +38,6 @@ function onDragEnd() {
 	this.dragging = false;
 	// set the interaction data to null
 	this.data = null;
-	// console.log('mouse f ', distElement(this, mouseF.container), 0.04 * vport.h);
 	let max_dist = 0.08 * vport.h;
 	if (distElement(this, mouseF) < max_dist && current_word == 'f') {
 		correct();
@@ -58,7 +57,6 @@ function onDragMove() {
 		this.x = newPosition.x + this.offset.x;
 		this.y = newPosition.y + this.offset.y;
 		}
-		// console.log(this.x, this.y);
 	}
 }
 
