@@ -54,12 +54,13 @@ class Element {
 	constructor() {
 		this.sprites = [];
 		this.container = new PIXI.Container();
-
+		this.container.interactiveChildren = false;
 		// setMoveable(this.container);
 	}
 
 	put(elem) {
 		this.container.addChild(elem);
+		this.container.hitArea = this.container.getBounds();
 	}
 
 	setMask(mask) {
@@ -119,6 +120,7 @@ class Viewport {
 			e.x = this.w * e.info.x + this.c.x;
 			e.y = this.h * e.info.y + this.c.y;
 		}
+		
 	}
 
 	resize() {
