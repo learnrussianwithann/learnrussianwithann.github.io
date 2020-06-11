@@ -38,12 +38,12 @@ function onDragEnd() {
 	// set the interaction data to null
 	this.data = null;
 	let max_dist = 0.1 * vport.h;
-	if (distElement(this, mouseF) < max_dist && current_word == 'f') {
-		correct(mouseF);
-	} else if (distElement(this, mouseN) < max_dist && current_word == 'n') {
-		correct(mouseN);
-	} else if (distElement(this, mouseM) < max_dist && current_word == 'm') {
-		correct(mouseM);
+	if (distElement(this, window.mouseF) < max_dist && current_word == 'f') {
+		correct(window.mouseF);
+	} else if (distElement(this, window.mouseN) < max_dist && current_word == 'n') {
+		correct(window.mouseN);
+	} else if (distElement(this, window.mouseM) < max_dist && current_word == 'm') {
+		correct(window.mouseM);
 	}
 }
 
@@ -132,24 +132,19 @@ function setButton(element, event) {
 	element.buttonMode = true;
 }
 
-function appering(element, start, end, time) {
-	element.scale.set(time / (this.counter * PIXI.Ticker.shared.deltaMS))
-	this.couter++;
-}
-
 function correct(mouse) {
-	word.interactive = false;
-	animator.addNewAnimationMove(word, null, mouse.position, .3);
-	animator.addNewAnimationScale(word, new Point(-.4), new Point(0), .3, function () {
-		text.text = '';
+	window.word.interactive = false;
+	window.animator.addNewAnimationMove(window.word, null, mouse.position, .3);
+	window.animator.addNewAnimationScale(window.word, new Point(-.4), new Point(0), .3, function () {
+		window.text.text = '';
 		new_word = true;
 	});
 	let body = mouse.getChildByName('body');
 	let scale = new Point(body.scale.x);
 	setTimeout(function () {
-		animator.addNewAnimationScale(body, null, new Point(.95 * scale.x, 1.1 * scale.y), .1, function () {
-			animator.addNewAnimationScale(body, null, new Point(1.1 * scale.x, .95 * scale.y), .1, function () {
-				animator.addNewAnimationScale(body, null, scale, 0.1);
+		window.animator.addNewAnimationScale(body, null, new Point(.95 * scale.x, 1.1 * scale.y), .1, function () {
+			window.animator.addNewAnimationScale(body, null, new Point(1.1 * scale.x, .95 * scale.y), .1, function () {
+				window.animator.addNewAnimationScale(body, null, scale, 0.1);
 			});
 		});
 	});

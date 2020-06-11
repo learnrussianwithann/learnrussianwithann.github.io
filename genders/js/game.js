@@ -1,3 +1,4 @@
+'use strict';
 const gamefield = document.getElementById('game');
 const app = new PIXI.Application({
 	resizeTo: gamefield,
@@ -6,8 +7,7 @@ const app = new PIXI.Application({
 	autoDensity: true
 });
 const animator = new Animator(app, 40);
-const vport = new Viewport(app.stage, 16 / 9);
-const ticker = PIXI.Ticker.shared;
+const vport = new Viewport(app, 16 / 9);
 
 const holes = [new PIXI.Sprite(), new PIXI.Sprite(), new PIXI.Sprite()];
 const cheese = new PIXI.Sprite();
@@ -63,8 +63,6 @@ loader.add('hole', 'img/hole.png')
 		mouseN.put(genSprite(resources.m2.texture, 'body', .5, .65, new Point(0, 60)));
 		mouseM.put(genSprite(resources.m3.texture, 'body', .5, .65, new Point(0, 60)));
 
-		
-
 		mouseF.put(genCloud(resources.cloud.texture, 'Она моя!', styleCloud, { x: -.7, y: 2.1 }));
 		mouseN.put(genCloud(resources.cloud.texture, 'Оно мое!', styleCloud, { x: -.7, y: 2.1 }));
 		mouseM.put(genCloud(resources.cloud.texture, 'Он мой!', styleCloud, { x: -.9, y: 2.1 }));
@@ -98,10 +96,16 @@ var moew = false;
 var new_word = true;
 var current_word = '';
 
+window.word = word;
+window.text = text;
+window.mouseF = mouseF;
+window.mouseN = mouseN;
+window.mouseM = mouseM;
+
 function resize() {
 	vport.resize();
 	app.resize();
-	app.render();
+	updater();
 }
 
 function init() {

@@ -107,14 +107,15 @@ class Element extends PIXI.Container {
 }
 
 class Viewport {
-	constructor(container, ratio) { //ratio width/height
+	constructor(application, ratio) { //ratio width/height
+		this.app = application;
 		this.container = new PIXI.Container();
 		this.w = 100;
 		this.h = 100;
 		this.c = new Point(this.w / 2, this.h / 2);
 		if (ratio) this.ratio = ratio;
 		else this.ratio = 16 / 9;
-		container.addChild(this.container);
+		this.app.stage.addChild(this.container);
 	}
 
 	add(elem, x, y, w, byHeight) {
@@ -139,8 +140,8 @@ class Viewport {
 	}
 
 	resize() {
-		this.w = app.screen.width;
-		this.h = app.screen.height;
+		this.w = this.app.screen.width;
+		this.h = this.app.screen.height;
 		this.c.set(this.w / 2, this.h / 2);
 		if (this.w / this.ratio < this.h) {
 			this.h = this.w / this.ratio;
