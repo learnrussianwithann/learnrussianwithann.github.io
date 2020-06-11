@@ -11,7 +11,6 @@ function genMask() {
 	mask.beginFill(0xff5555);
 	mask.drawEllipse(0, 0, 20, 20);
 	mask.endFill();
-
 	return mask;
 }
 
@@ -38,13 +37,13 @@ function onDragEnd() {
 	this.dragging = false;
 	// set the interaction data to null
 	this.data = null;
-	let max_dist = 0.08 * vport.h;
+	let max_dist = 0.1 * vport.h;
 	if (distElement(this, mouseF) < max_dist && current_word == 'f') {
-		correct();
-	} else if (distElement(this, mouseN) <  max_dist && current_word == 'n') {
-		correct();
-	} else if (distElement(this, mouseM) <  max_dist && current_word == 'm') {
-		correct();
+		correct(mouseF);
+	} else if (distElement(this, mouseN) < max_dist && current_word == 'n') {
+		correct(mouseN);
+	} else if (distElement(this, mouseM) < max_dist && current_word == 'm') {
+		correct(mouseM);
 	}
 }
 
@@ -54,8 +53,8 @@ function onDragMove() {
 		let x = newPosition.x + this.offset.x;
 		let y = newPosition.y + this.offset.y;
 		if (x > 50 && y > 10 && x < app.screen.width - 50 && y < app.screen.height - 10) {
-		this.x = newPosition.x + this.offset.x;
-		this.y = newPosition.y + this.offset.y;
+			this.x = newPosition.x + this.offset.x;
+			this.y = newPosition.y + this.offset.y;
 		}
 	}
 }
@@ -69,9 +68,9 @@ function genSprite(texture, name, anchor, scale, position) {
 	out.name = name;
 	if (anchor != null) out.anchor.set(anchor);
 	if (scale != null) out.scale.set(scale);
-	if (position != null)  {
+	if (position != null) {
 		out.x = position.x;
-		out.y = position.y;	
+		out.y = position.y;
 	}
 	return out;
 }
@@ -93,11 +92,15 @@ function getRandom() {
 	}
 }
 
-function setMoveable(element) {
+function setMoveable(element, updFunc) {
 	element.on('pointerdown', onDragStart)
+		.on('pointerdown', updFunc)
 		.on('pointerup', onDragEnd)
+		.on('pointerup', updFunc)
 		.on('pointerupoutside', onDragEnd)
-		.on('pointermove', onDragMove);
+		.on('pointerupoutside', updFunc)
+		.on('pointermove', onDragMove)
+		.on('pointermove', updFunc);
 
 	element.interactive = true;
 	element.buttonMode = true;
@@ -105,18 +108,45 @@ function setMoveable(element) {
 
 function setButton(element, event) {
 	element.on('pointerdown', event);
-
 	element.interactive = true;
 	element.buttonMode = true;
 }
 
 function appering(element, start, end, time) {
-	element.scale.set(time/(this.counter * PIXI.Ticker.shared.deltaMS))
-	this.couter++;	
+	element.scale.set(time / (this.counter * PIXI.Ticker.shared.deltaMS))
+	this.couter++;
 }
 
-function correct() {
-	text.text = '';
-	vport.resizeElement(word);
-	new_word = true;	
+function correct(mouse) {
+	word.interactive = false;
+	animator.addNewAnimationMove(word, null, mouse.position, .3);
+	animator.addNewAnimationScale(word, new Point(-.4), new Point(0), .3, function () {
+		text.text = '';
+		new_word = true;
+	});
+	let body = mouse.getChildByName('body');
+	let scale = new Point(body.scale.x);
+	setTimeout(function () {
+		animator.addNewAnimationScale(body, null, new Point(.95 * scale.x, 1.1 * scale.y), .1, function () {
+			animator.addNewAnimationScale(body, null, new Point(1.1 * scale.x, .95 * scale.y), .1, function () {
+				animator.addNewAnimationScale(body, null, scale, 0.1);
+			});
+		});
+	});
+
+}
+
+function fmove(element, arg, steps) {
+	element.x += arg.x * steps;
+	element.y += arg.y * steps;
+}
+
+function falpha(element, arg, steps) {
+	element.alpha += arg * steps;
+	console.log('alpha', element.alpha);
+}
+
+function fscale(element, arg, steps) {
+	element.scale.x += arg.x * steps;
+	element.scale.y += arg.y * steps;
 }

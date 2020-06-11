@@ -5,7 +5,7 @@ const app = new PIXI.Application({
 	resolution: window.devicePixelRatio,
 	autoDensity: true
 });
-
+const animator = new Animator(app, 40);
 const vport = new Viewport(app.stage, 16 / 9);
 const ticker = PIXI.Ticker.shared;
 
@@ -88,6 +88,7 @@ var current_word = '';
 function resize() {
 	vport.resize();
 	app.resize();
+	app.render();
 }
 
 function init() {
@@ -103,10 +104,6 @@ function init() {
 	textN.anchor.set(0.5, 3.5);
 	textM.anchor.set(0.5, 3.5);
 
-
-	vport.add(cheese, -.05, 0.322, .3);
-	cheese.anchor.set(0.5);
-
 	vport.add(mouseF, -.38, -.345, .13);
 	vport.add(mouseN, -.38, -.0, .13);
 	vport.add(mouseM, -.38, .36, .13);
@@ -121,13 +118,22 @@ function init() {
 	cheese_texture.mask = text;
 	vport.add(word, .0, -.2, .05, true);
 
-	setMoveable(word);
+	vport.add(cheese, -.05, 0.322, .3);
+	cheese.anchor.set(0.5);
+
+	setMoveable(word, updater);
 
 	setButton(cheese, function () {
 		if (new_word) {
 			newWord(text);
-			word.updateHitArea();
+			vport.resizeElement(word);
 			new_word = false;
+			
+			animator.addNewAnimationMove(word, new Point(.05 * vport.w, -.5 * vport.h), word, .5);
+			animator.addNewAnimationScale(word, new Point(.2), word.scale, .5, function() {
+				word.updateHitArea();
+				word.interactive = true;
+			});
 		}
 	});
 
@@ -139,15 +145,21 @@ function init() {
 			setTimeout(function () {
 				cat.hide('eyes_open');
 				moew = false;
+				updater();
 			}, 1000);
+			updater();
 		}
-
-	})
+	});
 
 	app.stage.sortChildren();
 	window.addEventListener('resize', resize);
 
+	// ticker.autoStart = false;
+	// ticker.stop();
+	app.stop();
+}
 
-	ticker.autoStart = false;
-	ticker.stop();
+
+function updater() {
+	app.render();
 }
