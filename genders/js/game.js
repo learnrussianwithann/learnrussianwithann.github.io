@@ -9,15 +9,15 @@ const app = new PIXI.Application({
 const animator = new Animator(app, 40);
 const vport = new Viewport(app, 16 / 9);
 
-const holes = [new PIXI.Sprite(), new PIXI.Sprite(), new PIXI.Sprite()];
 const cheese = new PIXI.Sprite();
 const mouseF = new Element();
 const mouseM = new Element();
 const mouseN = new Element();
 const cat = new Element();
+const word = new Element();
+
 const sound_meow = PIXI.sound.Sound.from('audio/meow.mp3');
 
-const word = new Element();
 const style = new PIXI.TextStyle({
 	fontFamily: 'RubikMonoOne',
 	fontSize: 100,
@@ -66,10 +66,6 @@ loader.add('hole', 'img/hole.png')
 		mouseF.put(genCloud(resources.cloud.texture, 'Она моя!', styleCloud, { x: -.7, y: 2.1 }));
 		mouseN.put(genCloud(resources.cloud.texture, 'Оно мое!', styleCloud, { x: -.7, y: 2.1 }));
 		mouseM.put(genCloud(resources.cloud.texture, 'Он мой!', styleCloud, { x: -.9, y: 2.1 }));
-
-		holes[0].texture = resources.hole.texture;
-		holes[1].texture = resources.hole.texture;
-		holes[2].texture = resources.hole.texture;
 
 		cheese.texture = resources.cheese.texture;
 
@@ -124,17 +120,16 @@ function init() {
 	vport.add(mouseF, -.38, -.345, .13, true);
 	vport.add(mouseN, -.38, -.0, .13, true);
 	vport.add(mouseM, -.38, .36, .13, true);
-
 	vport.add(cat, .13, .07, .35);
+	vport.add(cheese, -.05, 0.322, .3);
+	vport.add(word, .0, -.2, .05, true);
 
 	cheese_texture.anchor.set(.5);
 	text.anchor.set(.5);
 	word.addChild(cheese_texture);
 	word.addChild(text);
 	cheese_texture.mask = text;
-	vport.add(cheese, -.05, 0.322, .3);
 	cheese.anchor.set(0.5);
-	vport.add(word, .0, -.2, .05, true);
 
 	setMoveable(word, updater);
 
