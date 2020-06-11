@@ -19,10 +19,8 @@ const sound_meow = PIXI.sound.Sound.from('audio/meow.mp3');
 
 const word = new Element();
 const style = new PIXI.TextStyle({
-	fontFamily: 'Arial',
+	fontFamily: 'RubikMonoOne',
 	fontSize: 100,
-	fontStyle: 'italic',
-	fontWeight: 'bold',
 	fill: '#ffffff',
 	wordWrap: false,
 });
