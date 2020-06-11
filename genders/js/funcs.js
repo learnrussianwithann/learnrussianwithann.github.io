@@ -63,11 +63,31 @@ function newWord(text) {
 	text.text = getRandom();
 }
 
+function genCloud(texture, text, style, anchor) {
+	let cloud = new PIXI.Container();
+	cloud.name = 'cloud';
+	cloud.addChild(genSprite(texture, 'cloud', { x: -0.1, y: 1 }, 3));
+	let cloudName = new PIXI.Text(text, style);
+	cloudName.anchor.set(anchor.x, anchor.y);
+	cloud.addChild(cloudName);
+	return cloud;
+}
+
 function genSprite(texture, name, anchor, scale, position) {
 	let out = new PIXI.Sprite(texture);
 	out.name = name;
-	if (anchor != null) out.anchor.set(anchor);
-	if (scale != null) out.scale.set(scale);
+	if (anchor != null) {
+		if (anchor.hasOwnProperty('x')) {
+			out.anchor.x = anchor.x;
+			out.anchor.y = anchor.y;
+		} else out.anchor.set(anchor);
+	}
+	if (scale != null) {
+		if (scale.hasOwnProperty('x')) {
+			out.scale.x = scale.x;
+			out.scale.y = scale.y;
+		} else out.scale.set(scale);
+	}
 	if (position != null) {
 		out.x = position.x;
 		out.y = position.y;

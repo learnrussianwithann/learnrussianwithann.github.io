@@ -37,6 +37,14 @@ const textF = new PIXI.Text('Женский род', styleName);
 const textN = new PIXI.Text('Средний род', styleName);
 const textM = new PIXI.Text('Мужской род', styleName);
 
+const styleCloud = new PIXI.TextStyle({
+	fontFamily: 'Arial',
+	fontSize: 200,
+	fontWeight: 'bold',
+	fill: '#999999',
+	wordWrap: false,
+});
+
 const loader = PIXI.Loader.shared;
 loader.add('hole', 'img/hole.png')
 	.add('m1', 'img/m1.png')
@@ -45,6 +53,7 @@ loader.add('hole', 'img/hole.png')
 	.add('cat', 'img/cat.png')
 	.add('cheese', 'img/cheese.png')
 	.add('cheese_texture', 'img/cheese_texture.png')
+	.add('cloud', 'img/cloud.png')
 	.load((loader, resources) => {
 		mouseF.put(genSprite(resources.hole.texture, 'hole', .5));
 		mouseN.put(genSprite(resources.hole.texture, 'hole', .5));
@@ -53,6 +62,12 @@ loader.add('hole', 'img/hole.png')
 		mouseF.put(genSprite(resources.m1.texture, 'body', .5, .65, new Point(0, 60)));
 		mouseN.put(genSprite(resources.m2.texture, 'body', .5, .65, new Point(0, 60)));
 		mouseM.put(genSprite(resources.m3.texture, 'body', .5, .65, new Point(0, 60)));
+
+		
+
+		mouseF.put(genCloud(resources.cloud.texture, 'Она моя!', styleCloud, { x: -.7, y: 2.1 }));
+		mouseN.put(genCloud(resources.cloud.texture, 'Оно мое!', styleCloud, { x: -.7, y: 2.1 }));
+		mouseM.put(genCloud(resources.cloud.texture, 'Он мой!', styleCloud, { x: -.9, y: 2.1 }));
 
 		holes[0].texture = resources.hole.texture;
 		holes[1].texture = resources.hole.texture;
@@ -102,9 +117,9 @@ function init() {
 	textN.anchor.set(0.5, 3.5);
 	textM.anchor.set(0.5, 3.5);
 
-	vport.add(mouseF, -.38, -.345, .13);
-	vport.add(mouseN, -.38, -.0, .13);
-	vport.add(mouseM, -.38, .36, .13);
+	vport.add(mouseF, -.38, -.345, .13, true);
+	vport.add(mouseN, -.38, -.0, .13, true);
+	vport.add(mouseM, -.38, .36, .13, true);
 
 	vport.add(cat, .13, .07, .35);
 
