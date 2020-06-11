@@ -110,16 +110,14 @@ function init() {
 
 	vport.add(cat, .13, .07, .35);
 
-
 	cheese_texture.anchor.set(.5);
 	text.anchor.set(.5);
 	word.addChild(cheese_texture);
 	word.addChild(text);
 	cheese_texture.mask = text;
-	vport.add(word, .0, -.2, .05, true);
-
 	vport.add(cheese, -.05, 0.322, .3);
 	cheese.anchor.set(0.5);
+	vport.add(word, .0, -.2, .05, true);
 
 	setMoveable(word, updater);
 

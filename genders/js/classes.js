@@ -156,7 +156,7 @@ class Viewport {
 class Animator {
 	constructor(application, fps) {
 		this.application = application;
-		this.application.animator = this;
+		window.animator = this;
 		this.animations = { next: null };
 		this.isRun = false;
 		if (fps == null) this.fps = 60;
@@ -206,7 +206,7 @@ class Animator {
 	start() {
 		if (!this.isRun) {
 			this.isRun = true;
-			this.timerId = setInterval(function () { animator.tick() }, 1000 / this.fps);
+			this.timerId = setInterval(function () { window.animator.tick() }, 1000 / this.fps);
 		}
 	}
 
