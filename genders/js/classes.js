@@ -217,22 +217,22 @@ class Animator {
 	}
 
 	addAnimationJump(elem) {
-		let tprep = .2;
-		let tup = .2;
-		let tdown = .2;
-		let ttonormal = .2;
+		let tprep = .1;
+		let tup = .1;
+		let tdown = .1;
+		let ttonormal = .1;
 		let h = elem.getLocalBounds().height;
-		let start = elem.position;
 		setTimeout(function () {
-			window.animator.addNewAnimationMove(elem, null, new Point(0, -.02 * h), tup, function () {
-				window.animator.addNewAnimationMove(elem, null, new Point(0, 0), tdown);
+			window.animator.addNewAnimationMove(elem, null, { x: 0, y: -.05 * h }, tup, function () {
+				window.animator.addNewAnimationMove(elem, null, { x: 0, y: .01 * h }, tdown + tprep, function () {
+					window.animator.addNewAnimationMove(elem, null, { x: 0, y: 0}, ttonormal);
+				});
 			});
 		}, tprep * 1000);
 
-		let scale = new Point(elem.scale.x);
-		this.addNewAnimationScale(elem, null, new Point(1.1 * scale.x, .95 * scale.y), tprep, function () {
-			window.animator.addNewAnimationScale(elem, null, new Point(.95 * scale.x, 1.1 * scale.y), tdown, function () {
-				window.animator.addNewAnimationScale(elem, null, scale, ttonormal);
+		this.addNewAnimationScale(elem, null, { x: 1.05, y: .95 }, tprep, function () {
+			window.animator.addNewAnimationScale(elem, null, { x: .95, y: 1.05 }, tup, function () {
+				window.animator.addNewAnimationScale(elem, null, { x: 1, y: 1 }, tdown);
 			});
 		});
 	}

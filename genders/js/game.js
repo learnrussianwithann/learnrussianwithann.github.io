@@ -20,13 +20,13 @@ const help = new Element();
 
 const sound_meow = PIXI.sound.Sound.from('audio/meow.mp3');
 
-const style = new PIXI.TextStyle({
+const styleCheese = new PIXI.TextStyle({
 	fontFamily: 'RubikMonoOne',
-	fontSize: 200,
+	fontSize: 80,
 	fill: '#ffffff',
 	wordWrap: false,
 });
-const text = new PIXI.Text('', style);
+const text = new PIXI.Text('', styleCheese);
 
 const styleName = new PIXI.TextStyle({
 	fontFamily: 'Arial',
@@ -70,17 +70,17 @@ loader.add('hole', 'img/hole.png')
 		helpText.anchor.set(.5);
 		help.put(helpText);
 
-		mouseF.put(genSprite(resources.hole.texture, 'hole', .5));
-		mouseN.put(genSprite(resources.hole.texture, 'hole', .5));
-		mouseM.put(genSprite(resources.hole.texture, 'hole', .5));
+		mouseF.put(genSprite(resources.hole.texture, 'hole', .5, 1.5));
+		mouseN.put(genSprite(resources.hole.texture, 'hole', .5, 1.5));
+		mouseM.put(genSprite(resources.hole.texture, 'hole', .5, 1.5));
 
-		mouseF.put(genSprite(resources.m1.texture, 'body', { x: .5, y: .4 }, .65));
-		mouseN.put(genSprite(resources.m2.texture, 'body', { x: .5, y: .4 }, .65));
-		mouseM.put(genSprite(resources.m3.texture, 'body', { x: .5, y: .4 }, .65));
+		mouseF.put(genSprite(resources.m1.texture, 'body', { x: .5, y: .4 }));
+		mouseN.put(genSprite(resources.m2.texture, 'body', { x: .5, y: .4 }));
+		mouseM.put(genSprite(resources.m3.texture, 'body', { x: .5, y: .4 }));
 
-		mouseF.put(genCloud(resources.cloud.texture, 'Она моя!', styleCloud, { x: -.7, y: 2.1 }));
-		mouseN.put(genCloud(resources.cloud.texture, 'Оно мое!', styleCloud, { x: -.7, y: 2.1 }));
-		mouseM.put(genCloud(resources.cloud.texture, 'Он мой!', styleCloud, { x: -.9, y: 2.1 }));
+		mouseF.put(genCloud(resources.cloud.texture, 'Она моя!', styleCloud, { x: -1, y: .5 }));
+		mouseN.put(genCloud(resources.cloud.texture, 'Оно мое!', styleCloud, { x: -1, y: .5 }));
+		mouseM.put(genCloud(resources.cloud.texture, 'Он мой!', styleCloud, { x: -1.27, y: .5 }));
 
 		cheese.texture = resources.cheese.texture;
 
@@ -88,10 +88,7 @@ loader.add('hole', 'img/hole.png')
 		cat.put(genSprite(new PIXI.Texture(resources.cat.texture.baseTexture, new PIXI.Rectangle(0, 0, 1436, 1021)), 'body', .5));
 		cat.put(genSprite(new PIXI.Texture(resources.cat.texture.baseTexture, new PIXI.Rectangle(186, 1021, 445, 133)), 'eyes_close', { x: 1.35, y: 1.3 }));
 		cat.put(genSprite(new PIXI.Texture(resources.cat.texture.baseTexture, new PIXI.Rectangle(192, 1154, 439, 194)), 'eyes_open', { x: 1.36, y: 1.1 }));
-		// cat.getByName('leg').anchor.set(-65, 626);
-		// cat.getByName('eyes_close').position.set(114, 326);
-		// cat.getByName('eyes_open').position.set(118, 288);
-		// cat.alpha = .5;
+
 		cat.hide('eyes_open');
 
 		cheese_texture = new PIXI.TilingSprite(resources.cheese_texture.texture, 2000, 500);
@@ -130,9 +127,9 @@ function init() {
 	textF.scale.set(3);
 	textN.scale.set(3);
 	textM.scale.set(3);
-	textF.anchor.set(0.5, 3.5);
-	textN.anchor.set(0.5, 3.5);
-	textM.anchor.set(0.5, 3.5);
+	textF.anchor.set(0.5, 4.5);
+	textN.anchor.set(0.5, 4.5);
+	textM.anchor.set(0.5, 4.5);
 
 	vport.add(help, .34, -.4, .3);
 	vport.add(mouseF, -.38, -.345, .13, true);
@@ -189,8 +186,6 @@ function init() {
 	app.stage.sortChildren();
 	window.addEventListener('resize', resize);
 
-	// ticker.autoStart = false;
-	// ticker.stop();
 	app.stop();
 }
 
@@ -208,7 +203,7 @@ function showCloud(cloud) {
 }
 
 function whichMouse() {
-	if (!new_word || !isShowingCloud) {
+	if (!new_word && !isShowingCloud) {
 		isShowingCloud = true;
 		switch (current_word) {
 			case 'f':

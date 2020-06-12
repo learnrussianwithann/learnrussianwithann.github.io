@@ -22,6 +22,10 @@ function distElement(a, b) {
 	return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
 }
 
+function distToMouse(word, mouse) {
+	return Math.abs(mouse.x - word.x) < word.width / 2 && Math.abs(mouse.y - word.y) < word.height;
+}
+
 function onDragStart(event) {
 	// store a reference to the data
 	// the reason for this is because of multitouch
@@ -38,11 +42,11 @@ function onDragEnd() {
 	// set the interaction data to null
 	this.data = null;
 	let max_dist = 0.1 * vport.h;
-	if (distElement(this, window.mouseF) < max_dist && current_word == 'f') {
+	if (distToMouse(this, window.mouseF) && current_word == 'f') {
 		correct(window.mouseF);
-	} else if (distElement(this, window.mouseN) < max_dist && current_word == 'n') {
+	} else if (distToMouse(this, window.mouseN) && current_word == 'n') {
 		correct(window.mouseN);
-	} else if (distElement(this, window.mouseM) < max_dist && current_word == 'm') {
+	} else if (distToMouse(this, window.mouseM) && current_word == 'm') {
 		correct(window.mouseM);
 	}
 }
@@ -66,7 +70,7 @@ function newWord(text) {
 function genCloud(texture, text, style, anchor) {
 	let cloud = new PIXI.Container();
 	cloud.name = 'cloud';
-	cloud.addChild(genSprite(texture, 'cloud', { x: -0.1, y: 1 }, 3));
+	cloud.addChild(genSprite(texture, 'cloud', { x: -.3, y: .5 }, 3.6));
 	let cloudName = new PIXI.Text(text, style);
 	cloudName.anchor.set(anchor.x, anchor.y);
 	cloud.addChild(cloudName);
