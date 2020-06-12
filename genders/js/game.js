@@ -10,7 +10,7 @@ const app = new PIXI.Application({
 const animator = new Animator(app, 40);
 const vport = new Viewport(app, 16 / 9);
 
-const cheese = new PIXI.Sprite();
+const cheese = new Element();
 const mouseF = new Element();
 const mouseM = new Element();
 const mouseN = new Element();
@@ -82,7 +82,7 @@ loader.add('hole', 'img/hole.png')
 		mouseN.put(genCloud(resources.cloud.texture, 'Оно мое!', styleCloud, { x: -1, y: .5 }));
 		mouseM.put(genCloud(resources.cloud.texture, 'Он мой!', styleCloud, { x: -1.27, y: .5 }));
 
-		cheese.texture = resources.cheese.texture;
+		cheese.put(genSprite(resources.cheese.texture, 'cheese', .5))
 
 		cat.put(genSprite(new PIXI.Texture(resources.cat.texture.baseTexture, new PIXI.Rectangle(686, 1076, 750, 167)), 'leg', { x: .9, y: -.8 }));
 		cat.put(genSprite(new PIXI.Texture(resources.cat.texture.baseTexture, new PIXI.Rectangle(0, 0, 1436, 1021)), 'body', .5));
@@ -142,11 +142,10 @@ function init() {
 	vport.add(word, .0, -.2, .05, true);
 
 	cheese_texture.anchor.set(.5);
+	cheese_texture.mask = text;
 	text.anchor.set(.5);
 	word.addChild(cheese_texture);
 	word.addChild(text);
-	cheese_texture.mask = text;
-	cheese.anchor.set(0.5);
 
 	setMoveable(word, updater);
 
@@ -161,6 +160,7 @@ function init() {
 				word.updateHitArea();
 				word.interactive = true;
 			});
+			animator.addAnimationJump(cheese.getByName('cheese'));
 		}
 	});
 
