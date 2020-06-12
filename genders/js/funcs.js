@@ -42,12 +42,17 @@ function onDragEnd() {
 	// set the interaction data to null
 	this.data = null;
 	let max_dist = 0.1 * vport.h;
-	if (distToMouse(this, window.mouseF) && current_word == 'f') {
-		correct(window.mouseF);
-	} else if (distToMouse(this, window.mouseN) && current_word == 'n') {
-		correct(window.mouseN);
-	} else if (distToMouse(this, window.mouseM) && current_word == 'm') {
-		correct(window.mouseM);
+	if (distToMouse(this, window.mouseF)) {
+		if (current_word == 'f') correct(window.mouseF);
+		else incorrect(window.mouseF);
+	} else if (distToMouse(this, window.mouseN)) {
+		if (current_word == 'n') correct(window.mouseN);
+		else incorrect(window.mouseN);
+	} else if (distToMouse(this, window.mouseM)) {
+		if (current_word == 'm') correct(window.mouseM);
+		else incorrect(window.mouseM);
+	} else if (distToMouse(this, window.cat)) {
+		window.catMeow();
 	}
 }
 
@@ -161,7 +166,10 @@ function correct(mouse) {
 			window.animator.addNewAnimationScale(body, null, scale, .1);
 		});
 	}, 200);
+}
 
+function incorrect(mouse) {
+	window.animator.addNewAnimationAlpha(mouse.getByName('body'), -1, .2);
 }
 
 function fmove(element, arg, steps) {

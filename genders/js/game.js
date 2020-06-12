@@ -110,7 +110,9 @@ window.text = text;
 window.mouseF = mouseF;
 window.mouseN = mouseN;
 window.mouseM = mouseM;
+window.cat = cat;
 window.current_word = current_word;
+window.catMeow = catMeow;
 
 function resize() {
 	vport.resize();
@@ -153,7 +155,7 @@ function init() {
 			newWord(text);
 			vport.resizeElement(word);
 			new_word = false;
-
+			showMouses();
 			animator.addNewAnimationMove(word, new Point(.05 * vport.w, -.5 * vport.h), word, .5);
 			animator.addNewAnimationScale(word, new Point(.2), word.scale, .5, function () {
 				word.updateHitArea();
@@ -162,24 +164,7 @@ function init() {
 		}
 	});
 
-	setButton(cat, function () {
-		if (!moew) {
-			whichMouse();
-			moew = true;
-			cat.show('eyes_open');
-			sound_meow.play();
-			let leg = cat.getByName('leg');
-			let w = leg.width;
-			animator.addNewAnimationMove(leg, null, new Point(-.1 * w, 0), .2, function () {
-				animator.addNewAnimationMove(leg, null, new Point(), .8, function () {
-					cat.hide('eyes_open');
-					moew = false;
-					updater();
-				});
-			});
-			updater();
-		}
-	});
+	setButton(cat, catMeow);
 
 	setButton(help, whichMouse);
 
@@ -219,5 +204,30 @@ function whichMouse() {
 				animator.addAnimationJump(mouseM.getByName('body'));
 				break;
 		}
+	}
+}
+
+function showMouses() {
+	if (mouseF.getByName('body').alpha < .9) animator.addNewAnimationAlpha(mouseF.getByName('body'), 1, .2);
+	if (mouseN.getByName('body').alpha < .9) animator.addNewAnimationAlpha(mouseN.getByName('body'), 1, .2);
+	if (mouseM.getByName('body').alpha < .9) animator.addNewAnimationAlpha(mouseM.getByName('body'), 1, .2);
+}
+
+function catMeow() {
+	if (!moew) {
+		whichMouse();
+		moew = true;
+		cat.show('eyes_open');
+		sound_meow.play();
+		let leg = cat.getByName('leg');
+		let w = leg.width;
+		animator.addNewAnimationMove(leg, null, new Point(-.1 * w, 0), .2, function () {
+			animator.addNewAnimationMove(leg, null, new Point(), .8, function () {
+				cat.hide('eyes_open');
+				moew = false;
+				updater();
+			});
+		});
+		updater();
 	}
 }
