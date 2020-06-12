@@ -6,12 +6,12 @@ var indexN = Math.floor(Math.random() * wordsN.length);
 var indexF = Math.floor(Math.random() * wordsF.length);
 var indexM = Math.floor(Math.random() * wordsM.length);
 
-function genMask() {
-	let mask = new PIXI.Graphics();
-	mask.beginFill(0xff5555);
-	mask.drawEllipse(0, 0, 20, 20);
-	mask.endFill();
-	return mask;
+function getDrawRect(w, h, r) {
+	let out = new PIXI.Graphics();
+	out.beginFill(0xff6868);
+	out.drawRoundedRect(-w / 2, -h / 2, w, h, r);
+	out.endFill();
+	return out;
 }
 
 function dist(x1, y1, x2, y2) {
@@ -70,6 +70,7 @@ function genCloud(texture, text, style, anchor) {
 	let cloudName = new PIXI.Text(text, style);
 	cloudName.anchor.set(anchor.x, anchor.y);
 	cloud.addChild(cloudName);
+	cloud.alpha = 0;
 	return cloud;
 }
 
@@ -137,17 +138,25 @@ function correct(mouse) {
 	window.animator.addNewAnimationMove(window.word, null, mouse.position, .3);
 	window.animator.addNewAnimationScale(window.word, new Point(-.4), new Point(0), .3, function () {
 		window.text.text = '';
+		window.current_word = '';
 		new_word = true;
 	});
 	let body = mouse.getChildByName('body');
 	let scale = new Point(body.scale.x);
+	let h = body.getBounds().height;
+
 	setTimeout(function () {
-		window.animator.addNewAnimationScale(body, null, new Point(.95 * scale.x, 1.1 * scale.y), .1, function () {
-			window.animator.addNewAnimationScale(body, null, new Point(1.1 * scale.x, .95 * scale.y), .1, function () {
-				window.animator.addNewAnimationScale(body, null, scale, 0.1);
-			});
+		window.animator.addNewAnimationMove(body, null, new Point(0, .05 * h), .1, function () {
+			window.animator.addNewAnimationMove(body, null, new Point(), .1);
 		});
-	});
+	}, 200);
+
+
+	setTimeout(function () {
+		window.animator.addNewAnimationScale(body, null, new Point(1.1 * scale.x, .95 * scale.y), .1, function () {
+			window.animator.addNewAnimationScale(body, null, scale, .1);
+		});
+	}, 200);
 
 }
 
@@ -158,7 +167,6 @@ function fmove(element, arg, steps) {
 
 function falpha(element, arg, steps) {
 	element.alpha += arg * steps;
-	console.log('alpha', element.alpha);
 }
 
 function fscale(element, arg, steps) {

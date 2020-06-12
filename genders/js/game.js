@@ -4,7 +4,8 @@ const app = new PIXI.Application({
 	resizeTo: gamefield,
 	backgroundColor: 0x1e99bb,
 	resolution: window.devicePixelRatio,
-	autoDensity: true
+	autoDensity: true,
+	antialias: true
 });
 const animator = new Animator(app, 40);
 const vport = new Viewport(app, 16 / 9);
@@ -15,12 +16,13 @@ const mouseM = new Element();
 const mouseN = new Element();
 const cat = new Element();
 const word = new Element();
+const help = new Element();
 
 const sound_meow = PIXI.sound.Sound.from('audio/meow.mp3');
 
 const style = new PIXI.TextStyle({
 	fontFamily: 'RubikMonoOne',
-	fontSize: 100,
+	fontSize: 200,
 	fill: '#ffffff',
 	wordWrap: false,
 });
@@ -45,6 +47,14 @@ const styleCloud = new PIXI.TextStyle({
 	wordWrap: false,
 });
 
+const styleHelp = new PIXI.TextStyle({
+	fontFamily: 'Arial',
+	fontSize: 50,
+	fontWeight: 'bold',
+	fill: '#ffffff',
+	wordWrap: false,
+});
+
 const loader = PIXI.Loader.shared;
 loader.add('hole', 'img/hole.png')
 	.add('m1', 'img/m1.png')
@@ -55,13 +65,18 @@ loader.add('hole', 'img/hole.png')
 	.add('cheese_texture', 'img/cheese_texture.png')
 	.add('cloud', 'img/cloud.png')
 	.load((loader, resources) => {
+		help.put(getDrawRect(1000, 200, 220));
+		let helpText = new PIXI.Text('Для какой мышки это слово?', styleHelp);
+		helpText.anchor.set(.5);
+		help.put(helpText);
+
 		mouseF.put(genSprite(resources.hole.texture, 'hole', .5));
 		mouseN.put(genSprite(resources.hole.texture, 'hole', .5));
 		mouseM.put(genSprite(resources.hole.texture, 'hole', .5));
 
-		mouseF.put(genSprite(resources.m1.texture, 'body', .5, .65, new Point(0, 60)));
-		mouseN.put(genSprite(resources.m2.texture, 'body', .5, .65, new Point(0, 60)));
-		mouseM.put(genSprite(resources.m3.texture, 'body', .5, .65, new Point(0, 60)));
+		mouseF.put(genSprite(resources.m1.texture, 'body', { x: .5, y: .4 }, .65));
+		mouseN.put(genSprite(resources.m2.texture, 'body', { x: .5, y: .4 }, .65));
+		mouseM.put(genSprite(resources.m3.texture, 'body', { x: .5, y: .4 }, .65));
 
 		mouseF.put(genCloud(resources.cloud.texture, 'Она моя!', styleCloud, { x: -.7, y: 2.1 }));
 		mouseN.put(genCloud(resources.cloud.texture, 'Оно мое!', styleCloud, { x: -.7, y: 2.1 }));
@@ -69,17 +84,17 @@ loader.add('hole', 'img/hole.png')
 
 		cheese.texture = resources.cheese.texture;
 
-		cat.put(genSprite(new PIXI.Texture(resources.cat.texture.baseTexture, new PIXI.Rectangle(686, 1076, 750, 167)), 'leg'));
-		cat.put(genSprite(new PIXI.Texture(resources.cat.texture.baseTexture, new PIXI.Rectangle(0, 0, 1436, 1021)), 'body'));
-		cat.put(genSprite(new PIXI.Texture(resources.cat.texture.baseTexture, new PIXI.Rectangle(186, 1021, 445, 133)), 'eyes_close'));
-		cat.put(genSprite(new PIXI.Texture(resources.cat.texture.baseTexture, new PIXI.Rectangle(192, 1154, 439, 194)), 'eyes_open'));
-		cat.getByName('leg').position.set(-65, 626);
-		cat.getByName('eyes_close').position.set(114, 326);
-		cat.getByName('eyes_open').position.set(118, 288);
-
+		cat.put(genSprite(new PIXI.Texture(resources.cat.texture.baseTexture, new PIXI.Rectangle(686, 1076, 750, 167)), 'leg', { x: .9, y: -.8 }));
+		cat.put(genSprite(new PIXI.Texture(resources.cat.texture.baseTexture, new PIXI.Rectangle(0, 0, 1436, 1021)), 'body', .5));
+		cat.put(genSprite(new PIXI.Texture(resources.cat.texture.baseTexture, new PIXI.Rectangle(186, 1021, 445, 133)), 'eyes_close', { x: 1.35, y: 1.3 }));
+		cat.put(genSprite(new PIXI.Texture(resources.cat.texture.baseTexture, new PIXI.Rectangle(192, 1154, 439, 194)), 'eyes_open', { x: 1.36, y: 1.1 }));
+		// cat.getByName('leg').anchor.set(-65, 626);
+		// cat.getByName('eyes_close').position.set(114, 326);
+		// cat.getByName('eyes_open').position.set(118, 288);
+		// cat.alpha = .5;
 		cat.hide('eyes_open');
 
-		cheese_texture = new PIXI.TilingSprite(resources.cheese_texture.texture, 1000, 500);
+		cheese_texture = new PIXI.TilingSprite(resources.cheese_texture.texture, 2000, 500);
 		cheese_texture.texture = resources.cheese_texture.texture;
 
 		init();
@@ -91,12 +106,14 @@ var cheese_texture;
 var moew = false;
 var new_word = true;
 var current_word = '';
+var isShowingCloud = false;
 
 window.word = word;
 window.text = text;
 window.mouseF = mouseF;
 window.mouseN = mouseN;
 window.mouseM = mouseM;
+window.current_word = current_word;
 
 function resize() {
 	vport.resize();
@@ -117,10 +134,11 @@ function init() {
 	textN.anchor.set(0.5, 3.5);
 	textM.anchor.set(0.5, 3.5);
 
+	vport.add(help, .34, -.4, .3);
 	vport.add(mouseF, -.38, -.345, .13, true);
 	vport.add(mouseN, -.38, -.0, .13, true);
 	vport.add(mouseM, -.38, .36, .13, true);
-	vport.add(cat, .13, .07, .35);
+	vport.add(cat, .26, .27, .35);
 	vport.add(cheese, -.05, 0.322, .3);
 	vport.add(word, .0, -.2, .05, true);
 
@@ -138,9 +156,9 @@ function init() {
 			newWord(text);
 			vport.resizeElement(word);
 			new_word = false;
-			
+
 			animator.addNewAnimationMove(word, new Point(.05 * vport.w, -.5 * vport.h), word, .5);
-			animator.addNewAnimationScale(word, new Point(.2), word.scale, .5, function() {
+			animator.addNewAnimationScale(word, new Point(.2), word.scale, .5, function () {
 				word.updateHitArea();
 				word.interactive = true;
 			});
@@ -149,17 +167,24 @@ function init() {
 
 	setButton(cat, function () {
 		if (!moew) {
+			whichMouse();
 			moew = true;
 			cat.show('eyes_open');
 			sound_meow.play();
-			setTimeout(function () {
-				cat.hide('eyes_open');
-				moew = false;
-				updater();
-			}, 1000);
+			let leg = cat.getByName('leg');
+			let w = leg.width;
+			animator.addNewAnimationMove(leg, null, new Point(-.1 * w, 0), .2, function () {
+				animator.addNewAnimationMove(leg, null, new Point(), .8, function () {
+					cat.hide('eyes_open');
+					moew = false;
+					updater();
+				});
+			});
 			updater();
 		}
 	});
+
+	setButton(help, whichMouse);
 
 	app.stage.sortChildren();
 	window.addEventListener('resize', resize);
@@ -169,7 +194,35 @@ function init() {
 	app.stop();
 }
 
-
 function updater() {
 	app.render();
+}
+
+function showCloud(cloud) {
+	animator.addNewAnimationAlpha(cloud, 1, .2, function () {
+		setTimeout(function () {
+			animator.addNewAnimationAlpha(cloud, -1, .2);
+			isShowingCloud = false;
+		}, 3000);
+	});
+}
+
+function whichMouse() {
+	if (!new_word || !isShowingCloud) {
+		isShowingCloud = true;
+		switch (current_word) {
+			case 'f':
+				showCloud(mouseF.getByName('cloud'));
+				animator.addAnimationJump(mouseF.getByName('body'));
+				break;
+			case 'n':
+				showCloud(mouseN.getByName('cloud'));
+				animator.addAnimationJump(mouseN.getByName('body'));
+				break;
+			case 'm':
+				showCloud(mouseM.getByName('cloud'));
+				animator.addAnimationJump(mouseM.getByName('body'));
+				break;
+		}
+	}
 }

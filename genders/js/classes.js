@@ -215,6 +215,27 @@ class Animator {
 		this.isRun = false;
 		clearInterval(this.timerId);
 	}
+
+	addAnimationJump(elem) {
+		let tprep = .2;
+		let tup = .2;
+		let tdown = .2;
+		let ttonormal = .2;
+		let h = elem.getLocalBounds().height;
+		let start = elem.position;
+		setTimeout(function () {
+			window.animator.addNewAnimationMove(elem, null, new Point(0, -.02 * h), tup, function () {
+				window.animator.addNewAnimationMove(elem, null, new Point(0, 0), tdown);
+			});
+		}, tprep * 1000);
+
+		let scale = new Point(elem.scale.x);
+		this.addNewAnimationScale(elem, null, new Point(1.1 * scale.x, .95 * scale.y), tprep, function () {
+			window.animator.addNewAnimationScale(elem, null, new Point(.95 * scale.x, 1.1 * scale.y), tdown, function () {
+				window.animator.addNewAnimationScale(elem, null, scale, ttonormal);
+			});
+		});
+	}
 }
 
 class EAnimation {
