@@ -5,7 +5,7 @@ const app = new PIXI.Application({
 	backgroundColor: 0x1e99bb,
 	resolution: window.devicePixelRatio,
 	autoDensity: true,
-	antialias: true
+	antialias: false
 });
 const animator = new Animator(app, 40);
 const vport = new Viewport(app, 16 / 9);
