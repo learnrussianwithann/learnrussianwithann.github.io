@@ -6,9 +6,10 @@ var indexN = Math.floor(Math.random() * wordsN.length);
 var indexF = Math.floor(Math.random() * wordsF.length);
 var indexM = Math.floor(Math.random() * wordsM.length);
 
-function getDrawRect(w, h, r) {
+function getDrawRect(w, h, r, color) {
 	let out = new PIXI.Graphics();
-	out.beginFill(0xff6868);
+	if (color) out.beginFill(color);
+	else out.beginFill(0xff6868);
 	out.drawRoundedRect(-w / 2, -h / 2, w, h, r);
 	out.endFill();
 	return out;
@@ -26,56 +27,56 @@ function distToMouse(word, mouse) {
 	return Math.abs(mouse.x - word.x) < word.width / 2 && Math.abs(mouse.y - word.y) < word.height;
 }
 
-function onDragStart(event) {
-	// store a reference to the data
-	// the reason for this is because of multitouch
-	// we want to track the movement of this particular touch
-	this.data = event.data;
-	// this.alpha = 0.5;
-	this.dragging = true;
-	this['offset'] = this.data.getLocalPosition(this.parent);
-	this.offset.set(this.x - this.offset.x, this.y - this.offset.y);
-}
+// function onDragStart(event) {
+// 	// store a reference to the data
+// 	// the reason for this is because of multitouch
+// 	// we want to track the movement of this particular touch
+// 	this.data = event.data;
+// 	// this.alpha = 0.5;
+// 	this.dragging = true;
+// 	this['offset'] = this.data.getLocalPosition(this.parent);
+// 	this.offset.set(this.x - this.offset.x, this.y - this.offset.y);
+// }
 
-function onDragEnd() {
-	this.dragging = false;
-	// set the interaction data to null
-	this.data = null;
-	let max_dist = 0.1 * vport.h;
-	if (distToMouse(this, window.mouseF)) {
-		if (current_word == 'f') correct(window.mouseF);
-		else incorrect(window.mouseF);
-	} else if (distToMouse(this, window.mouseN)) {
-		if (current_word == 'n') correct(window.mouseN);
-		else incorrect(window.mouseN);
-	} else if (distToMouse(this, window.mouseM)) {
-		if (current_word == 'm') correct(window.mouseM);
-		else incorrect(window.mouseM);
-	} else if (distToMouse(this, window.cat)) {
-		window.catMeow();
-	}
-}
+// function onDragEnd() {
+// 	this.dragging = false;
+// 	// set the interaction data to null
+// 	this.data = null;
+// 	let max_dist = 0.1 * viewGame.h;
+// 	if (distToMouse(this, window.mouseF)) {
+// 		if (curWordGender == 'f') correct(window.mouseF);
+// 		else incorrect(window.mouseF);
+// 	} else if (distToMouse(this, window.mouseN)) {
+// 		if (curWordGender == 'n') correct(window.mouseN);
+// 		else incorrect(window.mouseN);
+// 	} else if (distToMouse(this, window.mouseM)) {
+// 		if (curWordGender == 'm') correct(window.mouseM);
+// 		else incorrect(window.mouseM);
+// 	} else if (distToMouse(this, window.cat)) {
+// 		window.catMeow();
+// 	}
+// }
 
-function onDragMove() {
-	if (this.dragging) {
-		const newPosition = this.data.getLocalPosition(this.parent);
-		let x = newPosition.x + this.offset.x;
-		let y = newPosition.y + this.offset.y;
-		if (x > 50 && y > 10 && x < app.screen.width - 50 && y < app.screen.height - 10) {
-			this.x = newPosition.x + this.offset.x;
-			this.y = newPosition.y + this.offset.y;
-		}
-	}
-}
+// function onDragMove() {
+// 	if (this.dragging) {
+// 		const newPosition = this.data.getLocalPosition(this.parent);
+// 		let x = newPosition.x + this.offset.x;
+// 		let y = newPosition.y + this.offset.y;
+// 		if (x > 50 && y > 10 && x < app.screen.width - 50 && y < app.screen.height - 10) {
+// 			this.x = newPosition.x + this.offset.x;
+// 			this.y = newPosition.y + this.offset.y;
+// 		}
+// 	}
+// }
 
-function newWord(text) {
+function writeNewWord(text) {
 	text.text = getRandom();
 }
 
-function genCloud(texture, text, style, anchor) {
+function genCloud(texture, text, style, anchor, scale = 3.6) {
 	let cloud = new PIXI.Container();
 	cloud.name = 'cloud';
-	cloud.addChild(genSprite(texture, 'cloud', { x: -.3, y: .5 }, 3.6));
+	cloud.addChild(genSprite(texture, 'cloud', { x: -.3, y: .5 }, scale));
 	let cloudName = new PIXI.Text(text, style);
 	cloudName.anchor.set(anchor.x, anchor.y);
 	cloud.addChild(cloudName);
@@ -105,32 +106,42 @@ function genSprite(texture, name, anchor, scale, position) {
 	return out;
 }
 
+function genButton(text, style, bcolor) {
+	let out = new Element();
+	let t = new PIXI.Text(text, style);
+	t.anchor.set(0.5);
+
+	out.add(getDrawRect(1.2 * t.width, 2 * t.height, 2 * t.height, bcolor));
+	out.add(t);
+	return out;
+}
+
 function getRandom() {
 	switch (Math.floor(Math.random() * 3)) {
 		case 0:
 			if (++indexF >= wordsF.length) indexF = 0;
-			current_word = 'f';
+			curWordGender = 'f';
 			return wordsF[indexF];
 		case 1:
 			if (++indexN >= wordsN.length) indexN = 0;
-			current_word = 'n';
+			curWordGender = 'n';
 			return wordsN[indexN];
 		case 2:
 			if (++indexM >= wordsM.length) indexM = 0;
-			current_word = 'm';
+			curWordGender = 'm';
 			return wordsM[indexM];
 	}
 }
 
-function setMoveable(element, updFunc) {
+function setMoveable(element, onDragStart, onDragMove, onDragEnd, updateFunction) {
 	element.on('pointerdown', onDragStart)
-		.on('pointerdown', updFunc)
+		.on('pointerdown', updateFunction)
 		.on('pointerup', onDragEnd)
-		.on('pointerup', updFunc)
+		.on('pointerup', updateFunction)
 		.on('pointerupoutside', onDragEnd)
-		.on('pointerupoutside', updFunc)
+		.on('pointerupoutside', updateFunction)
 		.on('pointermove', onDragMove)
-		.on('pointermove', updFunc);
+		.on('pointermove', updateFunction);
 
 	element.interactive = true;
 	element.buttonMode = true;
@@ -142,46 +153,3 @@ function setButton(element, event) {
 	element.buttonMode = true;
 }
 
-function correct(mouse) {
-	window.word.interactive = false;
-	window.animator.addNewAnimationMove(window.word, null, mouse.position, .3);
-	window.animator.addNewAnimationScale(window.word, new Point(-.4), new Point(0), .3, function () {
-		window.text.text = '';
-		window.current_word = '';
-		new_word = true;
-	});
-	let body = mouse.getChildByName('body');
-	let scale = new Point(body.scale.x);
-	let h = body.getBounds().height;
-
-	setTimeout(function () {
-		window.animator.addNewAnimationMove(body, null, new Point(0, .05 * h), .1, function () {
-			window.animator.addNewAnimationMove(body, null, new Point(), .1);
-		});
-	}, 200);
-
-
-	setTimeout(function () {
-		window.animator.addNewAnimationScale(body, null, new Point(1.1 * scale.x, .95 * scale.y), .1, function () {
-			window.animator.addNewAnimationScale(body, null, scale, .1);
-		});
-	}, 200);
-}
-
-function incorrect(mouse) {
-	window.animator.addNewAnimationAlpha(mouse.getByName('body'), -1, .2);
-}
-
-function fmove(element, arg, steps) {
-	element.x += arg.x * steps;
-	element.y += arg.y * steps;
-}
-
-function falpha(element, arg, steps) {
-	element.alpha += arg * steps;
-}
-
-function fscale(element, arg, steps) {
-	element.scale.x += arg.x * steps;
-	element.scale.y += arg.y * steps;
-}

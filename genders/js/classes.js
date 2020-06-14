@@ -33,10 +33,8 @@ class Point {
 		return this;
 	}
 
-	subtractPoint(d) {
-		this.x -= d.x;
-		this.y -= d.y;
-		return this;
+	static subtractPoint(a, b) {
+		return new Point(a.x - b.x, a.y - b.y);
 	}
 
 	sumPoint(d) {
@@ -66,24 +64,16 @@ class Point {
 	}
 }
 
-class ElementInfo extends Point {
-	constructor(x, y, w, byHeight) {
-		super(x, y);
-		this.width = w;
-		this.byHeight = byHeight;
-	}
-}
-
 class Element extends PIXI.Container {
-	constructor() {
+	constructor(name) {
 		super();
 		this.sprites = [];
-		// this.container = new PIXI.Container();
 		this.interactiveChildren = false;
-		// setMoveable(this.container);
+		this.ratio = 1;
+		if (name) this.name = name;
 	}
 
-	put(elem) {
+	add(elem) {
 		this.addChild(elem);
 		this.updateHitArea();
 	}
@@ -119,21 +109,26 @@ class Viewport {
 	}
 
 	add(elem, x, y, w, byHeight) {
-		elem.info = new ElementInfo(x, y, w, byHeight);
+		elem.info = {x:x, y:y, size:w, byHeight:byHeight};
 		this.container.addChild(elem);
 	}
 
-	resizeElement(e) {
-		let eratio = e.width / e.height;
+	getContainer() {
+		return this.container;
+	}
 
+	resizeElement(e) {
+		e.calculateBounds();
+		e.scale.set(1);
+		e.ratio = e.width / e.height;
 		if (e.info.byHeight) {
-			e.height = this.w * e.info.width;
-			e.width = e.height * eratio;
+			e.height = this.w * e.info.size;
+			e.width = e.height * e.ratio;
 			e.x = this.w * e.info.x + this.c.x;
 			e.y = this.h * e.info.y + this.c.y;
 		} else {
-			e.width = this.w * e.info.width;
-			e.height = e.width / eratio;
+			e.width = this.w * e.info.size;
+			e.height = e.width / e.ratio;
 			e.x = this.w * e.info.x + this.c.x;
 			e.y = this.h * e.info.y + this.c.y;
 		}
@@ -152,6 +147,14 @@ class Viewport {
 			this.resizeElement(element)
 		});
 	}
+
+	show() {
+		this.container.visible = true;
+	}
+
+	hide() {
+		this.container.visible = false;
+	}
 }
 
 class Animator {
@@ -162,39 +165,67 @@ class Animator {
 		this.isRun = false;
 		if (fps == null) this.fps = 60;
 		else this.fps = fps;
+		this.endFunc = null;
 	}
 
-	addNewAnimationMove(elem, disp, end, time, endFunc) {
-		if (disp != null) {
-			elem.x = end.x - disp.x;
-			elem.y = end.y - disp.y;
-		} else {
-			disp = new Point(end.x - elem.x, end.y - elem.y);
-		}
+	fmove(element, arg, steps) {
+		element.x += arg.x * steps;
+		element.y += arg.y * steps;
+	}
+
+	falpha(element, arg, steps) {
+		element.alpha += arg * steps;
+	}
+
+	fscale(element, arg, steps) {
+		element.scale.x += arg.x * steps;
+		element.scale.y += arg.y * steps;
+	}
+
+	frotate(element, arg, steps) {
+		element.rotation += arg * steps;
+	}
+
+	addNewAnimationMove(elem, start, end, time, endFunc) {
+		if (start == null) start = new Point(elem.x, elem.y);
 		let steps = Math.ceil(time * this.fps);
-		let step = disp.multiple(1 / steps);
-		new EAnimation(this.animations, elem, fmove, steps, step, endFunc);
+		let step = Point.subtractPoint(end, start).multiple(1 / steps);
+		elem.position.set(start.x, start.y);
+		new EAnimation(this.animations, elem, this.fmove, steps, step, endFunc);
 		this.start();
 	}
 
-	addNewAnimationAlpha(elem, agr, time, endFunc) {
+	addNewAnimationAlpha(elem, start, end, time, endFunc) {
 		let steps = Math.ceil(time * this.fps);
-		let disp = agr / steps;
-		new EAnimation(this.animations, elem, falpha, steps, disp, endFunc);
+		let disp = (end - start) / steps;
+		elem.alpha = start;
+		new EAnimation(this.animations, elem, this.falpha, steps, disp, endFunc);
 		this.start();
 	}
 
-	addNewAnimationScale(elem, disp, end, time, endFunc) {
-		if (disp != null) {
-			elem.scale.x = end.x - disp.x;
-			elem.scale.y = end.y - disp.y;
-		} else {
-			disp = new Point(end.x - elem.scale.x, end.y - elem.scale.y);
+	addNewAnimationScale(elem, startScale, endScale, baseScale, time, endFunc) {
+		if (startScale == null) startScale = elem.scale;
+		else {
+			if (!startScale.hasOwnProperty('x')) startScale = { x: startScale, y: startScale };
+			startScale.x *= baseScale.x;
+			startScale.y *= baseScale.y;
 		}
+		if (!endScale.hasOwnProperty('x')) endScale = { x: endScale, y: endScale };
+
+		endScale.x *= baseScale.x;
+		endScale.y *= baseScale.y;
 
 		let steps = Math.ceil(time * this.fps);
-		let step = disp.multiple(1 / steps);
-		new EAnimation(this.animations, elem, fscale, steps, step, endFunc);
+		let step = Point.subtractPoint(endScale, startScale).multiple(1 / steps);
+		new EAnimation(this.animations, elem, this.fscale, steps, step, endFunc);
+		this.start();
+	}
+
+	addNewAnimationRotation(elem, startAngle = elem.rotation, endAngle, time, endFunc) { 
+		let steps = Math.ceil(time * this.fps);
+		let step = (endAngle - startAngle) / steps;
+		if (elem.rotation != startAngle) elem.rotation == startAngle;
+		new EAnimation(this.animations, elem, this.frotate, steps, step, endFunc);
 		this.start();
 	}
 
@@ -214,29 +245,47 @@ class Animator {
 	stop() {
 		this.isRun = false;
 		clearInterval(this.timerId);
+		if (this.endFunc != null) this.endFunc();
+		this.endFunc = null;
 	}
 
 	addAnimationJump(elem) {
-		let tprep = .1;
+		let tprep = 0.1;
 		let tup = .1;
 		let tdown = .1;
 		let ttonormal = .1;
 		let h = elem.getLocalBounds().height;
+		let fMove = this.addNewAnimationMove.bind(this);
 		setTimeout(function () {
-			window.animator.addNewAnimationMove(elem, null, { x: 0, y: -.05 * h }, tup, function () {
-				window.animator.addNewAnimationMove(elem, null, { x: 0, y: .01 * h }, tdown + tprep, function () {
-					window.animator.addNewAnimationMove(elem, null, { x: 0, y: 0}, ttonormal);
+			fMove(elem, null, { x: 0, y: -.05 * h }, tup, () => {
+				fMove(elem, null, { x: 0, y: .01 * h }, tdown + tprep, () => {
+					fMove(elem, null, { x: 0, y: 0 }, ttonormal);
 				});
 			});
 		}, tprep * 1000);
 
-		this.addNewAnimationScale(elem, null, { x: 1.05, y: .95 }, tprep, function () {
-			window.animator.addNewAnimationScale(elem, null, { x: .95, y: 1.05 }, tup, function () {
-				window.animator.addNewAnimationScale(elem, null, { x: 1, y: 1 }, tdown);
-			});
-		});
+		let fScale = this.addNewAnimationScale.bind(this);
+		let baseScale = elem.scale.clone();
+		fScale(elem, null, { x: 1.05, y: .95 }, baseScale, tprep, () => {
+			fScale(elem, null, { x: .95, y: 1.05 }, baseScale, tup, () => {
+				fScale(elem, null, 1, baseScale, tdown);
+			})
+		})
+		// this.addNewAnimationScale(elem, { x: 2.05, y: .95 }, tprep, function () {
+		// 	animator.addNewAnimationScale(elem, { x: .95, y: 1.05 }, tup, function () {
+		// 		animator.addNewAnimationScale(elem, { x: 1, y: 1 }, tdown);
+		// 	});
+		// });
+	}
+
+	doAll() {
+		while(this.animations.next !=null) {
+			this.animations.next.doAll();
+		}
 	}
 }
+
+
 
 class EAnimation {
 	constructor(prev, element, func, steps, arg, endFunc) {
@@ -267,13 +316,14 @@ class EAnimation {
 		this.func(this.element, this.arg, this.count);
 		this.count = -1;
 		this.end();
+		if (this.next != null) this.next.doAll();
 	}
 
 	end() {
+		if (this.next) this.next.prev = this.prev;
+		this.prev.next = this.next;
 		if (this.endFunc != null) {
 			this.endFunc();
 		}
-		if (this.next) this.next.prev = this.prev;
-		this.prev.next = this.next;
 	}
 }
