@@ -1,30 +1,156 @@
-const wordsF = ['морковь', 'пыль', 'лошадь', 'кровать', 'зелень', 'дверь', 'игра', 'пила', 'картина', 'туча', 'погода', 'ягода', 'голова', 'мечта', 'мысль', 'речь', 'ночь', 'дочь', 'ручка', 'причёска', 'юбка', 'футболка', 'бабушка', 'сестра', 'семья', 'вилка', 'сказка', 'книга', 'школа', 'улыбка', 'песня', 'музыка', 'каша', 'фея', 'комната', 'подруга', 'тень', 'помощь', 'дочь', 'вещь'];
-const wordsN = ['поле', 'море', 'пальто', 'радио', 'кино', 'кафе', 'варенье', 'небо', 'одеяло', 'зеркало', 'стекло', 'слово', 'дупло', 'плечо', 'молоко ', 'метро', 'кимоно', 'пюре', 'пианино', 'блюдо', 'шоссе', 'желе', 'меню', 'яблоко', 'ухо', 'эхо', 'дерево', 'колено', 'лето', 'письмо', 'зерно', 'гнездо', 'платье', 'солнце', 'полотенце', 'время', 'племя', 'пламя', 'чтение', 'отражение'];
-const wordsM = ['папа', 'дядя', 'друг', 'брат', 'урок', 'луч', 'меч', 'заяц', 'куст', 'лес', 'крик', 'сон', 'глаз', 'стол', 'карандаш', 'лист', 'вес', 'магазин', 'поход', 'дождь', 'день', 'ремень', 'огонь', 'шампунь', 'голубь', 'конь', 'мост', 'экран', 'герой', 'рассказ', 'воздух', 'ключ', 'медведь', 'снег', 'тюлень', 'мотоцикл', 'фонтан', 'путь', 'мужчина', 'ботинок'];
+const wordsF = [
+	'морковь',
+	'пыль',
+	'лошадь',
+	'кровать',
+	'зелень',
+	'дверь',
+	'игра',
+	'пила',
+	'картина',
+	'туча',
+	'погода',
+	'ягода',
+	'голова',
+	'мечта',
+	'мысль',
+	'речь',
+	'ночь',
+	'дочь',
+	'ручка',
+	'причёска',
+	'юбка',
+	'футболка',
+	'бабушка',
+	'сестра',
+	'семья',
+	'вилка',
+	'сказка',
+	'книга',
+	'школа',
+	'улыбка',
+	'песня',
+	'музыка',
+	'каша',
+	'фея',
+	'комната',
+	'подруга',
+	'тень',
+	'помощь',
+	'дочь',
+	'вещь',
+]
+const wordsN = [
+	'поле',
+	'море',
+	'пальто',
+	'радио',
+	'кино',
+	'кафе',
+	'варенье',
+	'небо',
+	'одеяло',
+	'зеркало',
+	'стекло',
+	'слово',
+	'дупло',
+	'плечо',
+	'молоко ',
+	'метро',
+	'кимоно',
+	'пюре',
+	'пианино',
+	'блюдо',
+	'шоссе',
+	'желе',
+	'меню',
+	'яблоко',
+	'ухо',
+	'эхо',
+	'дерево',
+	'колено',
+	'лето',
+	'письмо',
+	'зерно',
+	'гнездо',
+	'платье',
+	'солнце',
+	'полотенце',
+	'время',
+	'племя',
+	'пламя',
+	'чтение',
+	'отражение',
+]
+const wordsM = [
+	'папа',
+	'дядя',
+	'друг',
+	'брат',
+	'урок',
+	'луч',
+	'меч',
+	'заяц',
+	'куст',
+	'лес',
+	'крик',
+	'сон',
+	'глаз',
+	'стол',
+	'карандаш',
+	'лист',
+	'вес',
+	'магазин',
+	'поход',
+	'дождь',
+	'день',
+	'ремень',
+	'огонь',
+	'шампунь',
+	'голубь',
+	'конь',
+	'мост',
+	'экран',
+	'герой',
+	'рассказ',
+	'воздух',
+	'ключ',
+	'медведь',
+	'снег',
+	'тюлень',
+	'мотоцикл',
+	'фонтан',
+	'путь',
+	'мужчина',
+	'ботинок',
+]
 
-var indexN = Math.floor(Math.random() * wordsN.length);
-var indexF = Math.floor(Math.random() * wordsF.length);
-var indexM = Math.floor(Math.random() * wordsM.length);
+var indexN = Math.floor(Math.random() * wordsN.length)
+var indexF = Math.floor(Math.random() * wordsF.length)
+var indexM = Math.floor(Math.random() * wordsM.length)
 
 function getDrawRect(w, h, r, color) {
-	let out = new PIXI.Graphics();
-	if (color) out.beginFill(color);
-	else out.beginFill(0xff6868);
-	out.drawRoundedRect(-w / 2, -h / 2, w, h, r);
-	out.endFill();
-	return out;
+	let out = new PIXI.Graphics()
+	if (color) out.beginFill(color)
+	else out.beginFill(0xff6868)
+	out.drawRoundedRect(-w / 2, -h / 2, w, h, r)
+	out.endFill()
+	return out
 }
 
 function dist(x1, y1, x2, y2) {
-	return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+	return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2))
 }
 
 function distElement(a, b) {
-	return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
+	return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2))
 }
 
 function distToMouse(word, mouse) {
-	return Math.abs(mouse.x - word.x) < word.width / 2 && Math.abs(mouse.y - word.y) < word.height;
+	return (
+		Math.abs(mouse.x - word.x) < word.width / 2 &&
+		Math.abs(mouse.y - word.y) < word.height
+	)
 }
 
 // function onDragStart(event) {
@@ -70,86 +196,138 @@ function distToMouse(word, mouse) {
 // }
 
 function writeNewWord(text) {
-	text.text = getRandom();
+	text.text = getRandom()
+}
+
+function getWordF() {
+	if (++indexF >= wordsF.length) indexF = 0
+	return wordsF[indexF]
+}
+
+function getWordN() {
+	if (++indexN >= wordsN.length) indexN = 0
+	return wordsN[indexN]
+}
+
+function getWordM() {
+	if (++indexM >= wordsM.length) indexM = 0
+	return wordsM[indexM]
+}
+
+function genWords() {
+	let out = []
+	let countf = 0,
+		countn = 0,
+		countm = 0;
+	while (countf < 4 || countm < 4 || countn < 4) {
+		switch (Math.floor(Math.random() * 3)) {
+			case 0:
+				if (countf < 4) {
+					countf++;
+					out.push({word:getWordF(), gender:'f'});
+				}
+				break
+			case 1:
+				if (countn < 4) {
+					countn++;
+					out.push({word:getWordN(), gender:'n'});
+				}
+				break
+			case 2:
+				if (countm < 4) {
+					countm++;
+					out.push({word:getWordM(), gender:'m'});
+				}
+				break
+		}
+	}
+	return out;
 }
 
 function genCloud(texture, text, style, anchor, scale = 3.6) {
-	let cloud = new PIXI.Container();
-	cloud.name = 'cloud';
-	cloud.addChild(genSprite(texture, 'cloud', { x: -.3, y: .5 }, scale));
-	let cloudName = new PIXI.Text(text, style);
-	cloudName.anchor.set(anchor.x, anchor.y);
-	cloud.addChild(cloudName);
-	cloud.alpha = 0;
-	return cloud;
+	let cloud = new PIXI.Container()
+	cloud.name = 'cloud'
+	cloud.addChild(genSprite(texture, 'cloud', { x: -0.3, y: 0.5 }, scale))
+	let cloudName = new PIXI.Text(text, style)
+	cloudName.anchor.set(anchor.x, anchor.y)
+	cloud.addChild(cloudName)
+	cloud.alpha = 0
+	cloud.zIndex = 10;
+	return cloud
 }
 
 function genSprite(texture, name, anchor, scale, position) {
-	let out = new PIXI.Sprite(texture);
-	out.name = name;
+	let out = new PIXI.Sprite(texture)
+	out.name = name
 	if (anchor != null) {
 		if (anchor.hasOwnProperty('x')) {
-			out.anchor.x = anchor.x;
-			out.anchor.y = anchor.y;
-		} else out.anchor.set(anchor);
+			out.anchor.x = anchor.x
+			out.anchor.y = anchor.y
+		} else out.anchor.set(anchor)
 	}
 	if (scale != null) {
 		if (scale.hasOwnProperty('x')) {
-			out.scale.x = scale.x;
-			out.scale.y = scale.y;
-		} else out.scale.set(scale);
+			out.scale.x = scale.x
+			out.scale.y = scale.y
+		} else out.scale.set(scale)
 	}
 	if (position != null) {
-		out.x = position.x;
-		out.y = position.y;
+		out.x = position.x
+		out.y = position.y
 	}
-	return out;
+	return out
 }
 
 function genButton(text, style, bcolor) {
-	let out = new Element();
-	let t = new PIXI.Text(text, style);
-	t.anchor.set(0.5);
+	let out = new Element()
+	let t = new PIXI.Text(text, style)
+	t.anchor.set(0.5)
 
-	out.add(getDrawRect(1.2 * t.width, 2 * t.height, 2 * t.height, bcolor));
-	out.add(t);
-	return out;
+	out.add(getDrawRect(1.2 * t.width, 2 * t.height, 2 * t.height, bcolor))
+	out.add(t)
+	return out
 }
 
 function getRandom() {
 	switch (Math.floor(Math.random() * 3)) {
 		case 0:
-			if (++indexF >= wordsF.length) indexF = 0;
-			curWordGender = 'f';
-			return wordsF[indexF];
+			if (++indexF >= wordsF.length) indexF = 0
+			curWordGender = 'f'
+			return wordsF[indexF]
 		case 1:
-			if (++indexN >= wordsN.length) indexN = 0;
-			curWordGender = 'n';
-			return wordsN[indexN];
+			if (++indexN >= wordsN.length) indexN = 0
+			curWordGender = 'n'
+			return wordsN[indexN]
 		case 2:
-			if (++indexM >= wordsM.length) indexM = 0;
-			curWordGender = 'm';
-			return wordsM[indexM];
+			if (++indexM >= wordsM.length) indexM = 0
+			curWordGender = 'm'
+			return wordsM[indexM]
 	}
 }
 
-function setMoveable(element, onDragStart, onDragMove, onDragEnd, updateFunction) {
-	element.on('pointerdown', onDragStart)
+function setMoveable(
+	element,
+	onDragStart,
+	onDragMove,
+	onDragEnd,
+	updateFunction,
+) {
+	element
+		.on('pointerdown', onDragStart)
 		.on('pointerdown', updateFunction)
 		.on('pointerup', onDragEnd)
 		.on('pointerup', updateFunction)
 		.on('pointerupoutside', onDragEnd)
 		.on('pointerupoutside', updateFunction)
 		.on('pointermove', onDragMove)
-		.on('pointermove', updateFunction);
+		.on('pointermove', updateFunction)
 
-	element.interactive = true;
-	element.buttonMode = true;
+	element.interactive = true
+	element.buttonMode = true
 }
 
 function setButton(element, event) {
-	element.on('pointerdown', event);
-	element.interactive = true;
-	element.buttonMode = true;
+	element.on('pointerdown', event)
+	element.interactive = true
+	element.buttonMode = true
 }
-

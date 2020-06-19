@@ -67,7 +67,6 @@ class Point {
 class Element extends PIXI.Container {
 	constructor(name) {
 		super();
-		this.sprites = [];
 		this.interactiveChildren = false;
 		this.ratio = 1;
 		if (name) this.name = name;
@@ -96,21 +95,46 @@ class Element extends PIXI.Container {
 	}
 }
 
+class MaskText extends Element {
+	constructor(name, texture, textStyle) {
+		super(name);
+		this.add(texture);
+		this.text = new PIXI.Text('', textStyle);
+		this.text.anchor.set(.5);
+		this.add(this.text);
+		this.mask = this.text;
+		this.gender = '';
+	}
+
+	setText(word) {
+		this.text.text = word.word;
+		this.gender = word.gender;
+	}
+}
+
 class Viewport {
 	constructor(application, ratio) { //ratio width/height
 		this.app = application;
 		this.container = new PIXI.Container();
 		this.w = 100;
 		this.h = 100;
-		this.c = new Point(this.w / 2, this.h / 2);
+		this.c = new Point(0, 0);
 		if (ratio) this.ratio = ratio;
 		else this.ratio = 16 / 9;
 		this.app.stage.addChild(this.container);
 	}
 
 	add(elem, x, y, w, byHeight) {
-		elem.info = {x:x, y:y, size:w, byHeight:byHeight};
+		elem.info = { x: x, y: y, size: w, byHeight: byHeight };
 		this.container.addChild(elem);
+	}
+
+	removeAll() {
+		this.container.removeChildren(0, this.container.children.lenght);
+	}
+
+	remove(elem) {
+		this.container.removeChild(elem);
 	}
 
 	getContainer() {
@@ -143,8 +167,10 @@ class Viewport {
 		} else {
 			this.w = this.h * this.ratio;
 		}
+		this.c.x -= this.w / 2;
+		this.c.y -= this.h / 2;
 		this.container.children.forEach(element => {
-			this.resizeElement(element)
+			this.resizeElement(element);
 		});
 	}
 
@@ -166,6 +192,7 @@ class Animator {
 		if (fps == null) this.fps = 60;
 		else this.fps = fps;
 		this.endFunc = null;
+		this.jumping = [];
 	}
 
 	fmove(element, arg, steps) {
@@ -221,7 +248,8 @@ class Animator {
 		this.start();
 	}
 
-	addNewAnimationRotation(elem, startAngle = elem.rotation, endAngle, time, endFunc) { 
+	addNewAnimationRotation(elem, startAngle, endAngle, time, endFunc) {
+		if (startAngle == null) startAngle = elem.rotation;
 		let steps = Math.ceil(time * this.fps);
 		let step = (endAngle - startAngle) / steps;
 		if (elem.rotation != startAngle) elem.rotation == startAngle;
@@ -250,36 +278,35 @@ class Animator {
 	}
 
 	addAnimationJump(elem) {
-		let tprep = 0.1;
-		let tup = .1;
-		let tdown = .1;
-		let ttonormal = .1;
-		let h = elem.getLocalBounds().height;
-		let fMove = this.addNewAnimationMove.bind(this);
-		setTimeout(function () {
-			fMove(elem, null, { x: 0, y: -.05 * h }, tup, () => {
-				fMove(elem, null, { x: 0, y: .01 * h }, tdown + tprep, () => {
-					fMove(elem, null, { x: 0, y: 0 }, ttonormal);
+		if (!this.jumping.includes(elem)) {
+			let jumping = this.jumping;
+			jumping.push(elem);
+			let tprep = 0.1;
+			let tup = .1;
+			let tdown = .1;
+			let ttonormal = .1;
+			let h = elem.getLocalBounds().height;
+			let fMove = this.addNewAnimationMove.bind(this);
+			setTimeout(function () {
+				fMove(elem, null, { x: 0, y: -.05 * h }, tup, () => {
+					fMove(elem, null, { x: 0, y: .01 * h }, tdown + tprep, () => {
+						fMove(elem, null, { x: 0, y: 0 }, ttonormal, () => {jumping.splice(jumping.indexOf(elem), 1);});
+					});
 				});
-			});
-		}, tprep * 1000);
+			}, tprep * 1000);
 
-		let fScale = this.addNewAnimationScale.bind(this);
-		let baseScale = elem.scale.clone();
-		fScale(elem, null, { x: 1.05, y: .95 }, baseScale, tprep, () => {
-			fScale(elem, null, { x: .95, y: 1.05 }, baseScale, tup, () => {
-				fScale(elem, null, 1, baseScale, tdown);
+			let fScale = this.addNewAnimationScale.bind(this);
+			let baseScale = elem.scale.clone();
+			fScale(elem, null, { x: 1.05, y: .95 }, baseScale, tprep, () => {
+				fScale(elem, null, { x: .95, y: 1.05 }, baseScale, tup, () => {
+					fScale(elem, null, 1, baseScale, tdown);
+				})
 			})
-		})
-		// this.addNewAnimationScale(elem, { x: 2.05, y: .95 }, tprep, function () {
-		// 	animator.addNewAnimationScale(elem, { x: .95, y: 1.05 }, tup, function () {
-		// 		animator.addNewAnimationScale(elem, { x: 1, y: 1 }, tdown);
-		// 	});
-		// });
+		}
 	}
 
 	doAll() {
-		while(this.animations.next !=null) {
+		while (this.animations.next != null) {
 			this.animations.next.doAll();
 		}
 	}
