@@ -251,8 +251,9 @@ function genCloud(texture, text, style, anchor, scale = 3.6) {
 	let cloudName = new PIXI.Text(text, style)
 	cloudName.anchor.set(anchor.x, anchor.y)
 	cloud.addChild(cloudName)
-	cloud.alpha = 0
+	cloud.alpha = 0;
 	cloud.zIndex = 10;
+	cloud.getChildByName('cloud').anchor.set(-.4,1);
 	return cloud
 }
 
@@ -278,12 +279,12 @@ function genSprite(texture, name, anchor, scale, position) {
 	return out
 }
 
-function genButton(text, style, bcolor) {
+function genButton(text, style, bcolor, k1 = 1.2, k2 = 2) {
 	let out = new Element()
 	let t = new PIXI.Text(text, style)
 	t.anchor.set(0.5)
 
-	out.add(getDrawRect(1.2 * t.width, 2 * t.height, 2 * t.height, bcolor))
+	out.add(getDrawRect(k1 * t.width, k2 * t.height, k2 * t.height, bcolor))
 	out.add(t)
 	return out
 }

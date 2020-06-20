@@ -27,6 +27,8 @@ const clock = new Element();
 const glade = getDrawRect(20, 20, 20, 0xff0000);
 
 const sound_meow = PIXI.sound.Sound.from('audio/meow.mp3');
+const sound_yummy = PIXI.sound.Sound.from('audio/yummy.mp3');
+const sound_no = PIXI.sound.Sound.from('audio/no.mp3');
 
 const styleCheese = new PIXI.TextStyle({
 	fontFamily: 'RubikMonoOne',
@@ -51,7 +53,7 @@ const textM = new PIXI.Text('МУЖСКОЙ РОД', styleName);
 
 const styleCloud = new PIXI.TextStyle({
 	fontFamily: 'Arial',
-	fontSize: 200,
+	fontSize: 150,
 	fontWeight: 'bold',
 	fill: '#344072',
 	wordWrap: false,
@@ -130,13 +132,13 @@ function initViewStart(resources) {
 	viewGame.getContainer().zIndex = 0;
 
 
-	let greeting = new PIXI.Text("Привет\nпокорми мышек\nтретья строка", styleMessage);
+	let greeting = new PIXI.Text("Мышки проголодались\n\nпомоги покормить мышек", styleMessage);
 	greeting.anchor.set(.5);
 
-	let startButton = genButton("Покормить", styleMessage, 0xff6968);
+	let startButton = genButton("Помогу", styleMessage, 0xff6968, 2);
 	setButton(startButton, startGame);
 
-	viewStart.add(getDrawRect(300, 200, 30, 0x1e2949), 0.5, 0.5, .6);
+	viewStart.add(getDrawRect(300, 200, 30, 0x5d70bc), 0.5, 0.5, .6);
 	viewStart.add(greeting, 0.5, .35, .4);
 	viewStart.add(startButton, 0.5, .7, .2);
 }
@@ -153,38 +155,41 @@ function initViewEnd(resources) {
 	let endButton = genButton("Закончить игру", styleMessage, 0x3d55b7);
 	setButton(endButton, exitGame);
 
+
+	let c1 = genCloud(resources.cloud.texture, 'Вкуснятина!', styleCloud, { x: 1.75, y: 2.75 }, { x: -1.5, y: 1 });
+	let c2 = genCloud(resources.cloud.texture, 'А я бы поел ещё!', styleCloud, { x: -.7, y: 2.75 }, { x: 2, y: 1 });
+
+	c1.name = 'c1';
+	c2.name = 'c2';
+
 	let m1 = new Element('m1');
-	m1.add(genSprite(resources.hole.texture, null, 0.5, 1.5));
 	m1.add(genSprite(resources.m1.texture, 'mouse', { x: .5, y: .4 }))
-	m1.add(genCloud(resources.cloud.texture, 'Вкуснятина!', styleCloud, { x: 1.8, y: .5 }, { x: -4.5, y: 4.5 }));
 	setButton(m1, () => {
-		animator.addNewAnimationAlpha(m1.getByName('cloud'), null, 1, .3);
+		animator.addNewAnimationAlpha(c1, null, 1, .3);
 		m1.interactive = false;
 	});
 
 	let m2 = new Element('m2');
-	m2.add(genSprite(resources.hole.texture, null, 0.5, 1.5));
 	m2.add(genSprite(resources.m2.texture, 'mouse', { x: .5, y: .4 }, { x: -1, y: 1 }))
-	m2.add(genCloud(resources.cloud.texture, 'А я бы поел ещё!', styleCloud, { x: -.7, y: .5 }, 5.7));
 	setButton(m2, () => {
-		animator.addNewAnimationAlpha(m2.getByName('cloud'), null, 1, .3);
+		animator.addNewAnimationAlpha(c2, null, 1, .3);
 		m2.interactive = false;
 	});
-
-
-	viewEnd.add(m1, .44, .65, .12, true);
-	viewEnd.add(m2, .56, .65, .12, true);
+	viewEnd.add(m1, .44, .65, .07);
+	viewEnd.add(m2, .56, .65, .07);
 	viewEnd.add(genSprite(resources.m3.texture, null, 0.5, 0.5), .2, .29, .07);
 	viewEnd.add(getDrawRect(400, 200, 50, 0x1e2949), .5, .3, .5);
 	viewEnd.add(ending, .5, .2, .05, true);
 	viewEnd.add(endingCount, .5, .4, .3);
 	viewEnd.add(againButton, .35, .86, .06, true);
 	viewEnd.add(endButton, .65, .86, .06, true);
+	viewEnd.add(c1, .49, .65, .07, true);
+	viewEnd.add(c2, .50, .65, .07, true);
 }
 
 function reinitEnd() {
-	viewEnd.getContainer().getChildByName('m1').getChildByName('cloud').alpha = 0;
-	viewEnd.getContainer().getChildByName('m2').getChildByName('cloud').alpha = 0;
+	viewEnd.getContainer().getChildByName('c1').alpha = 0;
+	viewEnd.getContainer().getChildByName('c2').alpha = 0;
 
 	if (eaten == 0) {
 		endingCount.text = `Мышки не поели!`;
@@ -230,9 +235,9 @@ function initViewGame(resources) {
 	mouseN.add(genSprite(resources.m2.texture, 'body', { x: .5, y: .4 }));
 	mouseM.add(genSprite(resources.m3.texture, 'body', { x: .5, y: .4 }));
 
-	cloudF.add(genCloud(resources.cloud.texture, 'Она моя!', styleCloud, { x: -1, y: .5 }));
-	cloudN.add(genCloud(resources.cloud.texture, 'Оно моё!', styleCloud, { x: -1, y: .5 }));
-	cloudM.add(genCloud(resources.cloud.texture, 'Он мой!', styleCloud, { x: -1.27, y: .5 }));
+	cloudF.add(genCloud(resources.cloud.texture, 'Она моя!', styleCloud, { x: -.9, y: 3.1 }, 1.2));
+	cloudN.add(genCloud(resources.cloud.texture, 'Оно моё!', styleCloud, { x: -.9, y: 3.1 }, 1.2));
+	cloudM.add(genCloud(resources.cloud.texture, 'Он мой!', styleCloud, { x: -1.1, y: 3.1 }, 1.2));
 
 	plate.add(genSprite(resources.plate.texture, 'cheese', .5))
 
@@ -457,11 +462,12 @@ function correct(mouse) {
 	let h = body.getBounds().height;
 
 	setTimeout(function () {
+		sound_yummy.play();
 		animator.addAnimationJump(body);
 	}, 200);
 }
 
 function incorrect(mouse) {
 	animator.addAnimationJump(mouse.getByName('body'));
-	// animator.addNewAnimationAlpha(mouse.getByName('body'), mouse.getByName('body').alpha, 0, .2);
+	if (!sound_no.isPlaying) sound_no.play();
 }
