@@ -35,7 +35,7 @@ const styleCheese = new PIXI.TextStyle({
 	fontSize: 80,
 	fill: '#ffffff',
 	wordWrap: false,
-	letterSpacing: -4
+	letterSpacing: 0
 });
 const text = new PIXI.Text('', styleCheese);
 const words = [];
