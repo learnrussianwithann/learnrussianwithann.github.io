@@ -96,7 +96,7 @@ var isMeow = false;
 var isNewWord = true;
 var isShowingCloud = false;
 var isReady = false;
-var eaten = -1;
+// var eaten = -1;
 var endingCount = new PIXI.Text(``, styleCheeseEnding);
 
 
@@ -144,7 +144,7 @@ function initViewStart(resources) {
 }
 
 function initViewEnd(resources) {
-	let ending = new PIXI.Text("Наступила полночь", styleMessage);
+	let ending = new PIXI.Text("Мышки наелись!", styleMessage);
 	ending.anchor.set(.5);
 
 	endingCount.anchor.set(.5);
@@ -158,9 +158,11 @@ function initViewEnd(resources) {
 
 	let c1 = genCloud(resources.cloud.texture, 'Вкуснятина!', styleCloud, { x: 1.75, y: 2.75 }, { x: -1.5, y: 1 });
 	let c2 = genCloud(resources.cloud.texture, 'А я бы поел ещё!', styleCloud, { x: -.7, y: 2.75 }, { x: 2, y: 1 });
+	let c3 = genCloud(resources.cloud.texture, 'Очень вкусно!!', styleCloud, { x: 1.65, y: 2.75 }, { x: -1.7, y: 1 });
 
 	c1.name = 'c1';
 	c2.name = 'c2';
+	c3.name = 'c3';
 
 	let m1 = new Element('m1');
 	m1.add(genSprite(resources.m1.texture, 'mouse', { x: .5, y: .4 }))
@@ -175,55 +177,67 @@ function initViewEnd(resources) {
 		animator.addNewAnimationAlpha(c2, null, 1, .3);
 		m2.interactive = false;
 	});
+
+	let m3 = new Element('m3');
+	m3.add(genSprite(resources.m3.texture, 'mouse', { x: .5, y: .4 }, { x: -1, y: 1 }))
+	setButton(m3, () => {
+		animator.addNewAnimationAlpha(c3, null, 1, .3);
+		m3.interactive = false;
+	});
 	viewEnd.add(m1, .44, .65, .07);
 	viewEnd.add(m2, .56, .65, .07);
-	viewEnd.add(genSprite(resources.m3.texture, null, 0.5, 0.5), .2, .29, .07);
+	viewEnd.add(m3, .22, .29, .07);
 	viewEnd.add(getDrawRect(400, 200, 50, 0x1e2949), .5, .3, .5);
-	viewEnd.add(ending, .5, .2, .05, true);
-	viewEnd.add(endingCount, .5, .4, .3);
+	viewEnd.add(ending, .5, .3, .05, true);
+	// viewEnd.add(endingCount, .5, .4, .3);
 	viewEnd.add(againButton, .35, .86, .06, true);
 	viewEnd.add(endButton, .65, .86, .06, true);
 	viewEnd.add(c1, .49, .65, .07, true);
 	viewEnd.add(c2, .50, .65, .07, true);
+	viewEnd.add(c3, .27, .29, .07, true);
 }
 
 function reinitEnd() {
 	viewEnd.getContainer().getChildByName('c1').alpha = 0;
 	viewEnd.getContainer().getChildByName('c2').alpha = 0;
+	viewEnd.getContainer().getChildByName('c3').alpha = 0;
+	viewEnd.getContainer().getChildByName('m1').interactive = true;
+	viewEnd.getContainer().getChildByName('m2').interactive = true;
+	viewEnd.getContainer().getChildByName('m3').interactive = true;
 
-	if (eaten == 0) {
-		endingCount.text = `Мышки не поели!`;
-		viewEnd.getContainer().getChildByName('m1').interactive = false;
-		viewEnd.getContainer().getChildByName('m2').interactive = false;
-	} else {
-		viewEnd.getContainer().getChildByName('m1').interactive = true;
-		viewEnd.getContainer().getChildByName('m2').interactive = true;
-		let wcheese, wword;
-		let ten = eaten % 10;
-		let hundred = eaten % 100;
+	// if (eaten == 0) {
+	// 	endingCount.text = `Мышки не поели!`;
+	// 	viewEnd.getContainer().getChildByName('m1').interactive = false;
+	// 	viewEnd.getContainer().getChildByName('m2').interactive = false;
+	// } else {
+	// 	viewEnd.getContainer().getChildByName('m1').interactive = true;
+	// 	viewEnd.getContainer().getChildByName('m2').interactive = true;
+	// 	let wcheese, wword;
+	// 	let ten = eaten % 10;
+	// 	let hundred = eaten % 100;
 
-		if (ten == 1 && eaten != 11) {
-			wcheese = 'сырное';
-			wword = 'слово';
-		} else {
-			wcheese = 'сырных';
-			if (hundred >= 11 && hundred <= 19) {
-				wword = 'слов';
-			} else {
-				switch (ten) {
-					case (1): wword = 'слово'; break;
-					case (2):
-					case (3):
-					case (4): wword = 'слова'; break;
-					default: wword = 'слов';
-				}
-			}
-		}
-		endingCount.text = `Мышки съели\n${eaten} ${wcheese} ${wword}!`;
-	}
+	// 	if (ten == 1 && eaten != 11) {
+	// 		wcheese = 'сырное';
+	// 		wword = 'слово';
+	// 	} else {
+	// 		wcheese = 'сырных';
+	// 		if (hundred >= 11 && hundred <= 19) {
+	// 			wword = 'слов';
+	// 		} else {
+	// 			switch (ten) {
+	// 				case (1): wword = 'слово'; break;
+	// 				case (2):
+	// 				case (3):
+	// 				case (4): wword = 'слова'; break;
+	// 				default: wword = 'слов';
+	// 			}
+	// 		}
+	// 	}
+	// 	endingCount.text = `Мышки съели\n${eaten} ${wcheese} ${wword}!`;
+	// }
 
 
-	viewEnd.resizeElement(endingCount);
+	// viewEnd.resizeElement(endingCount);
 }
 
 function initViewGame(resources) {
@@ -244,7 +258,8 @@ function initViewGame(resources) {
 	cat.add(genSprite(new PIXI.Texture(resources.cat.texture.baseTexture, new PIXI.Rectangle(686, 1076, 750, 167)), 'leg', { x: .9, y: -.8 }));
 	cat.add(genSprite(new PIXI.Texture(resources.cat.texture.baseTexture, new PIXI.Rectangle(0, 0, 1436, 1021)), 'body', .5));
 	cat.add(genSprite(new PIXI.Texture(resources.cat.texture.baseTexture, new PIXI.Rectangle(186, 1021, 445, 133)), 'eyes_close', { x: 1.35, y: 1.3 }));
-	cat.add(genSprite(new PIXI.Texture(resources.cat.texture.baseTexture, new PIXI.Rectangle(192, 1154, 439, 194)), 'eyes_open', { x: 1.36, y: 1.1 }));
+	cat.add(genSprite(new PIXI.Texture(resources.cat.texture.baseTexture, new PIXI.Rectangle(192, 1154, 439, 194)), 'eyes_open', .5, 1, { x: -380, y: -120 }));
+	// cat.add(genSprite(new PIXI.Texture(resources.cat.texture.baseTexture, new PIXI.Rectangle(192, 1154, 439, 194)), 'eyes_open', { x: 1.36, y: 1.1 }));
 
 	cat.hide('eyes_open');
 
@@ -304,7 +319,7 @@ function initViewGame(resources) {
 }
 
 function initGame() {
-	eaten = 0;
+	// eaten = 0;
 	showMouses();
 
 	let twords = genWords();
@@ -362,14 +377,20 @@ function catMeow() {
 		help();
 		isMeow = true;
 		cat.show('eyes_open');
+		cat.hide('eyes_close');
 		sound_meow.play();
 		let leg = cat.getByName('leg');
 		let w = leg.width;
+		let eyes = cat.getByName('eyes_open');
+		animator.addNewAnimationScale(eyes, { x: 1, y: 0.1 }, { x: 1, y: 1 }, null, 0.1);
 		animator.addNewAnimationMove(leg, null, new Point(-.1 * w, 0), .2, function () {
-			animator.addNewAnimationMove(leg, null, new Point(), 2.8, function () {
-				cat.hide('eyes_open');
-				isMeow = false;
-				updater();
+			animator.addNewAnimationMove(leg, null, new Point(), 2.6, function () {
+				animator.addNewAnimationScale(eyes, { x: 1, y: 1 }, { x: 1, y: 0.1 }, null, .1, () => {
+					cat.show('eyes_close');
+					cat.hide('eyes_open');
+					isMeow = false;
+					updater();
+				})
 			});
 		});
 		updater();
@@ -444,7 +465,7 @@ function checkMouse() {
 }
 
 function correct(mouse) {
-	eaten++;
+	// eaten++;
 	isReady = false;
 	animator.addNewAnimationMove(words[curWordIndex], null, mouse.position, .3);
 	let baseScale = words[curWordIndex].scale.clone();

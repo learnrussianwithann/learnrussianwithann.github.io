@@ -234,13 +234,18 @@ class Animator {
 		if (startScale == null) startScale = elem.scale;
 		else {
 			if (!startScale.hasOwnProperty('x')) startScale = { x: startScale, y: startScale };
-			startScale.x *= baseScale.x;
-			startScale.y *= baseScale.y;
+			if (baseScale != null) {
+				startScale.x *= baseScale.x;
+				startScale.y *= baseScale.y;
+			}
+			elem.scale.set(startScale.x, startScale.y);
 		}
 		if (!endScale.hasOwnProperty('x')) endScale = { x: endScale, y: endScale };
 
-		endScale.x *= baseScale.x;
-		endScale.y *= baseScale.y;
+		if (baseScale != null) {
+			endScale.x *= baseScale.x;
+			endScale.y *= baseScale.y;
+		}
 
 		let steps = Math.ceil(time * this.fps);
 		let step = Point.subtractPoint(endScale, startScale).multiple(1 / steps);
@@ -290,7 +295,7 @@ class Animator {
 			setTimeout(function () {
 				fMove(elem, null, { x: 0, y: -.05 * h }, tup, () => {
 					fMove(elem, null, { x: 0, y: .01 * h }, tdown + tprep, () => {
-						fMove(elem, null, { x: 0, y: 0 }, ttonormal, () => {jumping.splice(jumping.indexOf(elem), 1);});
+						fMove(elem, null, { x: 0, y: 0 }, ttonormal, () => { jumping.splice(jumping.indexOf(elem), 1); });
 					});
 				});
 			}, tprep * 1000);
