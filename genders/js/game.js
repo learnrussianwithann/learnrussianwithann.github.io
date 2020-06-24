@@ -144,7 +144,7 @@ function initViewStart(resources) {
 }
 
 function initViewEnd(resources) {
-	let ending = new PIXI.Text("Мышки наелись!", styleMessage);
+	let ending = new PIXI.Text("Мышки съели\n12 сырных слов!", styleCheeseEnding);
 	ending.anchor.set(.5);
 
 	endingCount.anchor.set(.5);
@@ -188,7 +188,7 @@ function initViewEnd(resources) {
 	viewEnd.add(m2, .56, .65, .07);
 	viewEnd.add(m3, .22, .29, .07);
 	viewEnd.add(getDrawRect(400, 200, 50, 0x1e2949), .5, .3, .5);
-	viewEnd.add(ending, .5, .3, .05, true);
+	viewEnd.add(ending, .5, .3, .1, true);
 	// viewEnd.add(endingCount, .5, .4, .3);
 	viewEnd.add(againButton, .35, .86, .06, true);
 	viewEnd.add(endButton, .65, .86, .06, true);
