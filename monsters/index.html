@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="css/styles.css">
+	<link rel="shortcut icon" href="img/m0.png" type="image/png">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Слоги</title>
+</head>
+<body>
+	<div class="wrapper" id="wrapper" onselectstart="return false" onmousedown="return false">
+		<div id="gamefield"></div>
+		<div id="greeting">
+			<div class="message" id="greetingbox">
+				<div class="messagetext">Монстрики потерялись.<br><span id="emptyline"><br></span>Поможешь найти их дом?</div>
+				<button class="buttonStart" id="startButton">Помогу!</button>
+			</div>
+			<img src="img/m0.png" id="m0greeting">
+		</div>
+		<div class="message" id="ending" style="display: none;">
+			<div class="messagetext">Все монстрики дома!</div>
+			<button class="buttonAgain" id="againButton">Поискать еще!</button>
+			<button class="buttonEnd" id="endButton">Закончить игру</button>
+		</div>
+	</div>
+	<script src="js/game.js"></script>
+</body>
+</html>
