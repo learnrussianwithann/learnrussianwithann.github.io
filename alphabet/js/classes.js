@@ -1,144 +1,36 @@
-class Point {
-	constructor(x, y) {
-		if (x == undefined) {
-			this.x = 0;
-			this.y = 0;
-		} else {
-			this.x = x;
-			if (y == undefined) {
-				this.y = x;
-			} else {
-				this.y = y;
-			}
-		}
-	}
-
-	set(x, y) {
-		if (x == undefined) {
-			this.x = 0;
-			this.y = 0;
-		} else {
-			this.x = x;
-			if (y == undefined) {
-				this.y = x;
-			} else {
-				this.y = y;
-			}
-		}
-	}
-
-	multiple(d) {
-		this.x *= d;
-		this.y *= d;
-		return this;
-	}
-
-	static subtractPoint(a, b) {
-		return new Point(a.x - b.x, a.y - b.y);
-	}
-
-	sumPoint(d) {
-		this.x += d.x;
-		this.y += d.y;
-		return this;
-	}
-
-	dist(x, y) {
-		return Math.sqrt((x - this.x) * (x - this.x) + (y - this.y) * (y - this.y));
-	}
-
-	distToPoint(point) {
-		return this.dist(point.x, point.y);
-	}
-
-	static getVector(a, b) {
-		return new Point(b.x - a.x, b.y - a.y);
-	}
-
-	static getPoint(elem) {
-		return new Point(elem.x, elem.y);
-	}
-
-	toString() {
-		return 'x: ' + this.x + ' y: ' + this.y;
-	}
-}
-
-class Element extends PIXI.Container {
-	constructor(name) {
-		super();
-		this.interactiveChildren = false;
-		this.ratio = 1;
-		if (name) this.name = name;
-	}
-
-	add(elem) {
-		this.addChild(elem);
-		this.updateHitArea();
-	}
-
-	updateHitArea() {
-		this.calculateBounds();
-		this.hitArea = this.getLocalBounds();
-	}
-
-	getByName(name) {
-		return this.getChildByName(name);
-	}
-
-	hide(name) {
-		this.getByName(name).visible = false;
-	}
-
-	show(name) {
-		this.getByName(name).visible = true;
-	}
-}
-
-class MaskText extends Element {
-	constructor(name, texture, textStyle) {
-		super(name);
-		this.add(texture);
-		this.text = new PIXI.Text('', textStyle);
-		this.text.anchor.set(.5);
-		this.add(this.text);
-		this.mask = this.text;
-		this.gender = '';
-	}
-
-	setText(word) {
-		this.text.text = word.word;
-		this.gender = word.gender;
-	}
-}
-
 class Viewport {
 	constructor(application, ratio) { //ratio width/height
 		this.app = application;
+		this.animations = new Set();
 		this.container = new PIXI.Container();
+		this.active = false;
 		this.w = 100;
 		this.h = 100;
-		this.c = {x:0, y:0};
+		this.c = { x: 0, y: 0 };
 		if (ratio) this.ratio = ratio;
 		else this.ratio = 16 / 9;
 		this.app.stage.addChild(this.container);
 	}
 
-	add(elem, x, y, w, byHeight) {
-		elem.info = { x: x, y: y, size: w, byHeight: byHeight };
-		this.container.addChild(elem);
-	}
+	createElement(prop) {
+		let e;
 
-	removeAll() {
-		this.container.removeChildren(0, this.container.children.lenght);
-	}
-
-	remove(elem) {
-		this.container.removeChild(elem);
-	}
-
-	getContainer() {
-		return this.container;
+		switch (prop.type) {
+			case "round_rect":
+				e = getRect(prop);
+				break;
+			case "sprite":
+				e = getSprite(prop);
+				break;
+			case "text":
+				e = getText(prop);
+				break;
+			case "button":
+				e = getButton(prop);
+				break;
+		}
+		this.container.addChild(e);
+		return e;
 	}
 
 	resizeElement(e) {
@@ -169,193 +61,93 @@ class Viewport {
 		}
 		this.c.x -= this.w / 2;
 		this.c.y -= this.h / 2;
-		this.container.children.forEach(element => {
-			this.resizeElement(element);
+		this.container.children.forEach(e => {
+			this.resizeElement(e);
 		});
 	}
 
+	createAnimation(animprop) {
+		let a = new ViewportAnimation(animprop);
+		this.animations.add(a);
+		return a;
+	}
+
+	startAnimation() {
+		this.active = true;
+	}
+
+	stopAnimation() {
+		this.active = false;
+	}
+
+	pauseAnimation() {
+		this.active = false;
+	}
+
 	show() {
-		this.container.visible = true;
+		this.startAnimation();
 	}
 
 	hide() {
-		this.container.visible = false;
-	}
-}
-
-class Animator {
-	constructor(application, fps) {
-		this.application = application;
-		window.animator = this;
-		this.animations = { next: null };
-		this.isRun = false;
-		if (fps == null) this.fps = 60;
-		else this.fps = fps;
-		this.endFunc = null;
-		this.jumping = [];
+		this.stopAnimation();
 	}
 
-	fmove(element, arg, steps) {
-		element.x += arg.x * steps;
-		element.y += arg.y * steps;
-	}
-
-	falpha(element, arg, steps) {
-		element.alpha += arg * steps;
-	}
-
-	fscale(element, arg, steps) {
-		element.scale.x += arg.x * steps;
-		element.scale.y += arg.y * steps;
-	}
-
-	frotate(element, arg, steps) {
-		element.rotation += arg * steps;
-	}
-
-	addNewAnimationMove(elem, start, end, time, endFunc) {
-		if (start == null) start = new Point(elem.x, elem.y);
-		let steps = Math.ceil(time * this.fps);
-		let step = Point.subtractPoint(end, start).multiple(1 / steps);
-		elem.position.set(start.x, start.y);
-		new EAnimation(this.animations, elem, this.fmove, steps, step, endFunc);
-		this.start();
-	}
-
-	addNewAnimationAlpha(elem, start, end, time, endFunc) {
-		let steps = Math.ceil(time * this.fps);
-		let disp = (end - start) / steps;
-		elem.alpha = start;
-		new EAnimation(this.animations, elem, this.falpha, steps, disp, endFunc);
-		this.start();
-	}
-
-	addNewAnimationScale(elem, startScale, endScale, baseScale, time, endFunc) {
-		if (startScale == null) startScale = elem.scale;
-		else {
-			if (!startScale.hasOwnProperty('x')) startScale = { x: startScale, y: startScale };
-			if (baseScale != null) {
-				startScale.x *= baseScale.x;
-				startScale.y *= baseScale.y;
-			}
-			elem.scale.set(startScale.x, startScale.y);
-		}
-		if (!endScale.hasOwnProperty('x')) endScale = { x: endScale, y: endScale };
-
-		if (baseScale != null) {
-			endScale.x *= baseScale.x;
-			endScale.y *= baseScale.y;
-		}
-
-		let steps = Math.ceil(time * this.fps);
-		let step = Point.subtractPoint(endScale, startScale).multiple(1 / steps);
-		new EAnimation(this.animations, elem, this.fscale, steps, step, endFunc);
-		this.start();
-	}
-
-	addNewAnimationRotation(elem, startAngle, endAngle, time, endFunc) {
-		if (startAngle == null) startAngle = elem.rotation;
-		let steps = Math.ceil(time * this.fps);
-		let step = (endAngle - startAngle) / steps;
-		if (elem.rotation != startAngle) elem.rotation == startAngle;
-		new EAnimation(this.animations, elem, this.frotate, steps, step, endFunc);
-		this.start();
-	}
-
-	tick() {
-		if (this.animations.next == null) this.stop();
-		else this.animations.next.do();
-		this.application.render();
-	}
-
-	start() {
-		if (!this.isRun) {
-			this.isRun = true;
-			this.timerId = setInterval(function () { window.animator.tick() }, 1000 / this.fps);
-		}
-	}
-
-	stop() {
-		this.isRun = false;
-		clearInterval(this.timerId);
-		if (this.endFunc != null) this.endFunc();
-		this.endFunc = null;
-	}
-
-	addAnimationJump(elem) {
-		if (!this.jumping.includes(elem)) {
-			let jumping = this.jumping;
-			jumping.push(elem);
-			let tprep = 0.1;
-			let tup = .1;
-			let tdown = .1;
-			let ttonormal = .1;
-			let h = elem.getLocalBounds().height;
-			let fMove = this.addNewAnimationMove.bind(this);
-			setTimeout(function () {
-				fMove(elem, null, { x: 0, y: -.05 * h }, tup, () => {
-					fMove(elem, null, { x: 0, y: .01 * h }, tdown + tprep, () => {
-						fMove(elem, null, { x: 0, y: 0 }, ttonormal, () => { jumping.splice(jumping.indexOf(elem), 1); });
-					});
-				});
-			}, tprep * 1000);
-
-			let fScale = this.addNewAnimationScale.bind(this);
-			let baseScale = elem.scale.clone();
-			fScale(elem, null, { x: 1.05, y: .95 }, baseScale, tprep, () => {
-				fScale(elem, null, { x: .95, y: 1.05 }, baseScale, tup, () => {
-					fScale(elem, null, 1, baseScale, tdown);
-				})
+	loop() {
+		if (this.active) {
+			let flag = true;console.log()
+			this.animation.forEach(a => {
+				if (a.isActive) {
+					a.tick();
+				}
+				if (a.isDone) this.animation.delete(a);
 			})
 		}
 	}
-
-	doAll() {
-		while (this.animations.next != null) {
-			this.animations.next.doAll();
-		}
-	}
 }
 
-
-
-class EAnimation {
-	constructor(prev, element, func, steps, arg, endFunc) {
-		this.prev = prev;
-		if (prev.next) {
-			prev.next.prev = this;
-			this.next = prev.next;
+class ViewportAnimation {
+	constructor(prop) {
+		this.type = prop.type;
+		this.element = prop.element;
+		switch(prop.type) {
+			case "move":
+				ViewportAnimation.getMoveAnimation(this, prop);
+				break;
+			case "rotate":
+				ViewportAnimation.getRotateAnimation(this, prop);
+				break;
+			case "scale":
+				ViewportAnimation.getScaleAnimation(this, prop);
+				break;
+			case "alpha":
+				ViewportAnimation.getAlphaAnimation(this, prop);
+				break;
 		}
-		prev.next = this;
-		this.count = steps;
-		this.element = element;
-		this.func = func;
-		this.arg = arg
-		this.endFunc = endFunc;
+		if (prop.hasOwnProperty('next')) {
+			this.next = prop.next;
+		}
+
+		this.isActive = false;
+		this.isDone = false;
 	}
 
-	do() {
-		if (this.count > 0) {
-			this.func(this.element, this.arg, 1);
-			this.count--;
-		} else {
-			this.end();
+	static getMoveAnimation(animation, prop) {
+		animation.tick = function() {
+			if (prop.hasOwnProperty('start')) {
+				
+			}
 		}
-		if (this.next != null) this.next.do();
 	}
 
-	doAll() {
-		this.func(this.element, this.arg, this.count);
-		this.count = -1;
-		this.end();
-		if (this.next != null) this.next.doAll();
+	static getRotateAnimation(animation, prop) {
+
 	}
 
-	end() {
-		if (this.next) this.next.prev = this.prev;
-		this.prev.next = this.next;
-		if (this.endFunc != null) {
-			this.endFunc();
-		}
+	static getScaleAnimation(animation, prop) {
+
+	}
+
+	static getAlphaAnimation(animation, prop) {
+
 	}
 }
