@@ -1,3 +1,36 @@
+const SPRITE = 'sprite';
+const SPRITE_WITH_TEXT = 'sprite_text';
+const TEXT = 'text';
+const TEXT_TEXTURED = 'text_textured';
+const ROUND_RECT = 'round_rect';
+const BUTTON = 'button';
+
+
+
+class Info {
+	constructor(width, height, byHeight, x, y) {
+		this.width = width;
+		this.height = height;
+		this.ratio = width / height;
+		this.byHeight = byHeight;
+		this.scale = 1;
+		this.x = x;
+		this.y = y;
+	}
+
+	getSize(screenSize) {
+		let out = { w: 0, h: 0 };
+		if (this.byHeight) {
+			out.h = this.height * screenSize * this.scale;
+			out.w = out.h * this.ratio;
+		} else {
+			out.w = this.width * screenSize * this.scale;
+			out.h = out.w / this.ratio;
+		}
+		return out;
+	}
+}
+
 class Viewport {
 	constructor(application, ratio) { //ratio width/height
 		this.app = application;
@@ -10,60 +43,65 @@ class Viewport {
 		if (ratio) this.ratio = ratio;
 		else this.ratio = 16 / 9;
 		this.app.stage.addChild(this.container);
+		window.addEventListener('resize', () => { this.resize(); });
+		this.hide();
 	}
 
 	createElement(prop) {
+		this.calcScreenSize();
 		let e;
-
 		switch (prop.type) {
-			case "round_rect":
+			case ROUND_RECT:
 				e = getRect(prop);
 				break;
-			case "sprite":
+			case SPRITE:
 				e = getSprite(prop);
 				break;
-			case "text":
+			case TEXT:
 				e = getText(prop);
 				break;
-			case "button":
+			case BUTTON:
 				e = getButton(prop);
 				break;
 		}
+		if (prop.hasOwnProperty('width')) e.info = new Info(prop.width, prop.height, prop.byHeight, prop.x, prop.y);
+		else e.info = new Info(e.width / this.w, e.height / this.w, prop.byHeight, prop.x, prop.y);
+		
 		this.container.addChild(e);
+		this.resizeElement(e);
 		return e;
 	}
 
 	resizeElement(e) {
-		e.calculateBounds();
-		e.scale.set(1);
-		e.ratio = e.width / e.height;
-		if (e.info.byHeight) {
-			e.height = this.w * e.info.size;
-			e.width = e.height * e.ratio;
-			e.x = this.w * e.info.x + this.c.x;
-			e.y = this.h * e.info.y + this.c.y;
-		} else {
-			e.width = this.w * e.info.size;
-			e.height = e.width / e.ratio;
-			e.x = this.w * e.info.x + this.c.x;
-			e.y = this.h * e.info.y + this.c.y;
-		}
+		let size = e.info.getSize(this.w);
+		e.height = size.h;
+		e.width = size.w;
+		e.x = this.w * e.info.x + this.k_w;
+		e.y = this.h * e.info.y + this.k_h;
 	}
 
 	resize() {
+		if (this.container.visible) {
+			this.calcScreenSize();
+			this.container.children.forEach(e => {
+				this.resizeElement(e);
+			});
+		}
+
+	}
+
+	calcScreenSize() {
 		this.w = this.app.screen.width;
 		this.h = this.app.screen.height;
-		this.c.set(this.w / 2, this.h / 2);
+		this.k_w = this.app.screen.width / 2;
+		this.k_h = this.app.screen.height / 2;
 		if (this.w / this.ratio < this.h) {
 			this.h = this.w / this.ratio;
 		} else {
 			this.w = this.h * this.ratio;
 		}
-		this.c.x -= this.w / 2;
-		this.c.y -= this.h / 2;
-		this.container.children.forEach(e => {
-			this.resizeElement(e);
-		});
+		this.k_w -= this.w / 2;
+		this.k_h -= this.h / 2;
 	}
 
 	createAnimation(animprop) {
@@ -86,15 +124,17 @@ class Viewport {
 
 	show() {
 		this.startAnimation();
+		this.container.visible = true;
 	}
 
 	hide() {
 		this.stopAnimation();
+		this.container.visible = false;
 	}
 
 	loop() {
 		if (this.active) {
-			let flag = true;console.log()
+			let flag = true; console.log()
 			this.animation.forEach(a => {
 				if (a.isActive) {
 					a.tick();
@@ -109,7 +149,7 @@ class ViewportAnimation {
 	constructor(prop) {
 		this.type = prop.type;
 		this.element = prop.element;
-		switch(prop.type) {
+		switch (prop.type) {
 			case "move":
 				ViewportAnimation.getMoveAnimation(this, prop);
 				break;
@@ -132,9 +172,9 @@ class ViewportAnimation {
 	}
 
 	static getMoveAnimation(animation, prop) {
-		animation.tick = function() {
+		animation.tick = function () {
 			if (prop.hasOwnProperty('start')) {
-				
+
 			}
 		}
 	}

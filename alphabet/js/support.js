@@ -1,5 +1,11 @@
 
 ////////////////////////////////////////////////
+//			Constans
+////////////////////////////////////////////////
+const DEFAULT_WIDTH = 1000;
+
+
+////////////////////////////////////////////////
 //			Distance
 ////////////////////////////////////////////////
 
@@ -23,46 +29,59 @@ function distToMouse(word, mouse) {
 ////////////////////////////////////////////////
 
 function getRect(prop) {
-	if (!checkProperty(prop, 'width', 'height', 'raduis', 'color')) return null;
+	// if (!checkProperty(prop, 'width', 'height', 'raduis', 'color')) return null;
 
 	let out = new PIXI.Graphics();
+	let w = prop.width * DEFAULT_WIDTH;
+	let h = prop.height * DEFAULT_WIDTH;
 	out.beginFill(prop.color);
-	out.drawRoundedRect(-prop.width / 2, -prop.height / 2, prop.width, prop.height, prop.radius);
+	out.drawRoundedRect(-w / 2, -h / 2, w, h, prop.radius * DEFAULT_WIDTH);
 	out.endFill();
 	return out;
 }
 
-function getSprite(prop) {
-	if (!checkProperty(prop, 'texture', 'name', 'scale', 'position')) return null;
+function getRectInPixel(prop) {
+	// if (!checkProperty(prop, 'width', 'height', 'raduis', 'color')) return null;
+
+	let out = new PIXI.Graphics();
+	let w = prop.width;
+	let h = prop.height;
+	out.beginFill(prop.color);
+	out.drawRoundedRect(-w / 2, -h / 2, w, h, prop.radius);
+	out.endFill();
+	return out;
+}
+
+function getSprite(prop, size) {
+	// if (!checkProperty(prop, 'texture', 'name', 'scale', 'position')) return null;
 
 	let out = new PIXI.Sprite(prop.texture)
-	out.name = prop.name;
+	if (prop.hasOwnProperty('name')) out.name = prop.name;
 	if (prop.hasOwnProperty('anchor')) {
 		if (prop.anchor.hasOwnProperty('x')) {
 			out.anchor.x = prop.anchor.x;
 			out.anchor.y = prop.anchor.y;
 		} else out.anchor.set(prop.anchor)
 	}
-	if (prop.hasOwnProperty('x')) {
-		out.scale.x = scale.x;
-		out.scale.y = scale.y;
-	} else out.scale.set(scale)
-
-	out.x = prop.position.x;
-	out.y = prop.position.y;
 
 	return out;
 }
 
+function getText(prop) {
+	let t = new PIXI.Text(prop.text, prop.style);
+	t.anchor.set(0.5);
+	return t;
+}
+
 function getButton(prop) {
-	if (!checkProperty(prop, 'text', 'style', 'bcolor', 'k_w', 'k_h')) return null;
+	// if (!checkProperty(prop, 'text', 'style', 'bcolor', 'k_w', 'k_h')) return null;
 
 	let out = new PIXI.Container();
 	let t = new PIXI.Text(prop.text, prop.style);
 	t.anchor.set(0.5);
 
-	out.add(getRect({ width: prop.k_w * t.width, height: prop.k_h * t.height, radius: prop.k_h * t.height, color: prop.bcolor }));
-	out.add(t);
+	out.addChild(getRectInPixel({ width: prop.k_w * t.width, height: prop.k_h * t.height, radius: prop.k_h * t.height, color: prop.bcolor }));
+	out.addChild(t);
 	return out;
 }
 
