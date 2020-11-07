@@ -27,7 +27,12 @@ const text_style = new PIXI.TextStyle({
 
 const loader = PIXI.Loader.shared;
 loader.add('rocks', 'img/rocks.png')
+	.add('flies', 'img/flies.png')
 	.load(init);
+
+
+
+var isActive = true;
 
 // for (let i = 0; i < LETTERS.length; i++) {
 // 	let l = LETTERS[i];
@@ -36,16 +41,27 @@ loader.add('rocks', 'img/rocks.png')
 // 	ELetters.push(e);
 // }
 
+function loop() {
+	updater();
+	if (isActive)
+		window.requestAnimationFrame(loop);
+}
 
+function updater() {
+	app.render();
+}
 
 function init(loader, resources) {
 	gamefield.appendChild(app.view);
+	app.stop();
+	window.addEventListener('resize', updater);
 
 	initStart();
 	initGame(resources);
 	initEnd();
 
 	viewStart.show();
+	window.requestAnimationFrame(loop);
 }
 
 function initStart() {
@@ -102,6 +118,24 @@ function initGame(res) {
 			x: x,
 			y: y
 		})
+	}
+
+	let spritesFlies = new Array(5);
+	for (let i = 0; i < spritesFlies.length; i++) {
+		spritesFlies[i] = new PIXI.Texture(res.flies.texture.baseTexture, new PIXI.Rectangle(350 * i, 0, 350, 350));
+	}
+
+	for (let i = 0; i < VOWELS.length; i++) {
+		let f = viewGame.createElement({
+			type: SPRITE,
+			texture: spritesFlies[i % spritesFlies.length],
+			anchor: .5,
+			height: .08,
+			width: .08,
+			x: i < 5 ? .1 : .9,
+			y: .1 + (i % 5) * .2
+		});
+		setMoveable(f, onDragStart, onDragMove, onDragEnd, updater);
 	}
 }
 
