@@ -105,18 +105,6 @@ function onDragEnd() {
 	// set the interaction data to null
 	this.data = null;
 	let max_dist = 0.1 * viewGame.h;
-	if (distToMouse(this, window.mouseF)) {
-		if (curWordGender == 'f') correct(window.mouseF);
-		else incorrect(window.mouseF);
-	} else if (distToMouse(this, window.mouseN)) {
-		if (curWordGender == 'n') correct(window.mouseN);
-		else incorrect(window.mouseN);
-	} else if (distToMouse(this, window.mouseM)) {
-		if (curWordGender == 'm') correct(window.mouseM);
-		else incorrect(window.mouseM);
-	} else if (distToMouse(this, window.cat)) {
-		window.catMeow();
-	}
 }
 
 function onDragMove() {
@@ -133,9 +121,6 @@ function onDragMove() {
 
 function setMoveable(
 	element,
-	onDragStart,
-	onDragMove,
-	onDragEnd,
 	updateFunction,
 ) {
 	element

@@ -43,8 +43,8 @@ var isActive = true;
 
 function loop() {
 	updater();
-	if (isActive)
-		window.requestAnimationFrame(loop);
+	// if (isActive)
+	// 	window.requestAnimationFrame(loop);
 }
 
 function updater() {
@@ -53,7 +53,7 @@ function updater() {
 
 function init(loader, resources) {
 	gamefield.appendChild(app.view);
-	app.stop();
+	// app.stop();
 	window.addEventListener('resize', updater);
 
 	initStart();
@@ -61,7 +61,7 @@ function init(loader, resources) {
 	initEnd();
 
 	viewStart.show();
-	window.requestAnimationFrame(loop);
+	// window.requestAnimationFrame(loop);
 }
 
 function initStart() {
@@ -79,6 +79,8 @@ function initStart() {
 		type: TEXT,
 		text: 'start text\nsecond line',
 		style: text_style,
+		byHeight: true,
+		height:.1,
 		x: .5,
 		y: .4
 	});
@@ -135,7 +137,7 @@ function initGame(res) {
 			x: i < 5 ? .1 : .9,
 			y: .1 + (i % 5) * .2
 		});
-		setMoveable(f, onDragStart, onDragMove, onDragEnd, updater);
+		setMoveable(f, updater);
 	}
 }
 

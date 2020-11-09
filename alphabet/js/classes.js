@@ -64,9 +64,15 @@ class Viewport {
 				e = getButton(prop);
 				break;
 		}
-		if (prop.hasOwnProperty('width')) e.info = new Info(prop.width, prop.height, prop.byHeight, prop.x, prop.y);
+		if (prop.hasOwnProperty('byHeight')) {
+			if (prop.hasOwnProperty('height'))
+				e.info = new Info(prop.height * e.width / e.height, prop.height, prop.byHeight, prop.x, prop.y);
+		}
+		else if (prop.hasOwnProperty('width'))
+			if (prop.hasOwnProperty('height')) e.info = new Info(prop.width, prop.height, prop.byHeight, prop.x, prop.y);
+			else e.info = new Info(prop.width, prop.width * e.height / e.width, prop.byHeight, prop.x, prop.y);
 		else e.info = new Info(e.width / this.w, e.height / this.w, prop.byHeight, prop.x, prop.y);
-		
+
 		this.container.addChild(e);
 		this.resizeElement(e);
 		return e;
@@ -123,8 +129,9 @@ class Viewport {
 	}
 
 	show() {
-		this.startAnimation();
 		this.container.visible = true;
+		this.resize();
+		this.startAnimation();
 	}
 
 	hide() {
