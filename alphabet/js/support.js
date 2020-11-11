@@ -41,8 +41,6 @@ function getRect(prop) {
 }
 
 function getRectInPixel(prop) {
-	// if (!checkProperty(prop, 'width', 'height', 'raduis', 'color')) return null;
-
 	let out = new PIXI.Graphics();
 	let w = prop.width;
 	let h = prop.height;
@@ -52,10 +50,22 @@ function getRectInPixel(prop) {
 	return out;
 }
 
-function getSprite(prop, size) {
-	// if (!checkProperty(prop, 'texture', 'name', 'scale', 'position')) return null;
-
+function getSprite(prop) {
 	let out = new PIXI.Sprite(prop.texture)
+	if (prop.hasOwnProperty('name')) out.name = prop.name;
+	if (prop.hasOwnProperty('anchor')) {
+		if (prop.anchor.hasOwnProperty('x')) {
+			out.anchor.x = prop.anchor.x;
+			out.anchor.y = prop.anchor.y;
+		} else out.anchor.set(prop.anchor)
+	}
+
+	return out;
+}
+
+function getSpriteWithText(prop) {
+	let out = new PIXI.Container();
+	let s = new PIXI.Sprite(prop.texture);
 	if (prop.hasOwnProperty('name')) out.name = prop.name;
 	if (prop.hasOwnProperty('anchor')) {
 		if (prop.anchor.hasOwnProperty('x')) {

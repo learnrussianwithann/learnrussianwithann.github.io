@@ -16,20 +16,22 @@ const LETTERS = ['А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И', 'Й
 const VOWELS = ['А', 'Е', 'Ё', 'И', 'О', 'У', 'Ы', 'Э', 'Ю', 'Я'];
 const ELetters = [];
 
-const text_style = new PIXI.TextStyle({
-	fontFamily: 'RubikMonoOne',
-	fontSize: 30,
-	fill: '#ffffff',
-	wordWrap: false,
-	letterSpacing: 0,
-	align: 'center'
-});
+// const text_style = new PIXI.TextStyle({
+// 	fontFamily: 'RubikMonoOne',
+// 	fontSize: 30,
+// 	fill: '#ffffff',
+// 	wordWrap: false,
+// 	letterSpacing: 0,
+// 	align: 'center'
+// });
+
+const font = new FontFaceObserver('RubikMonoOne');
 
 const loader = PIXI.Loader.shared;
 loader.add('rocks', 'img/rocks.png')
-	.add('flies', 'img/flies.png')
-	.load(init);
+	.add('flies', 'img/flies.png');
 
+font.load().then(() => { loader.load(init); });
 
 
 var isActive = true;
@@ -78,9 +80,16 @@ function initStart() {
 	viewStart.createElement({
 		type: TEXT,
 		text: 'start text\nsecond line',
-		style: text_style,
+		style: {
+			fontFamily: 'RubikMonoOne',
+			fontSize: 30,
+			fill: '#ffffff',
+			wordWrap: false,
+			letterSpacing: 0,
+			align: 'center'
+		},
 		byHeight: true,
-		height:.1,
+		height: .1,
 		x: .5,
 		y: .4
 	});
@@ -88,7 +97,14 @@ function initStart() {
 	let bstart = viewStart.createElement({
 		type: BUTTON,
 		text: 'start',
-		style: text_style,
+		style: {
+			fontFamily: 'RubikMonoOne',
+			fontSize: 30,
+			fill: '#ffffff',
+			wordWrap: false,
+			letterSpacing: 0,
+			align: 'center'
+		},
 		bcolor: 0x197dff,
 		k_w: 2,
 		k_h: 1.8,
