@@ -102,7 +102,6 @@ function initStart() {
 			fontSize: 30,
 			fill: '#ffffff',
 			wordWrap: false,
-			letterSpacing: 0,
 			align: 'center'
 		},
 		bcolor: 0x197dff,
@@ -124,13 +123,19 @@ function initGame(res) {
 	}
 	let colums = 7;
 	for (let i = 0; i < LETTERS.length; i++) {
-		const element = LETTERS[i];
 		let x = i < 28 ? (i % colums) * .1 + .2 : (i % colums) * .1 + .3;
 		let y = Math.floor(i / colums) * .17 + .16;
 		viewGame.createElement({
-			type: SPRITE,
+			type: SPRITE_WITH_TEXT,
+			text: LETTERS[i],
+			style: {
+				fontFamily: 'RubikMonoOne',
+				fontSize: 90,
+				fill: '#ffffff',
+				wordWrap: false,
+				align: 'center'
+			},
 			texture: sprites[i % 9],
-			anchor: .5,
 			height: .08,
 			width: .1,
 			x: x,

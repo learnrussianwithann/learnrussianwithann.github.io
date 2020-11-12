@@ -51,7 +51,7 @@ function getRectInPixel(prop) {
 }
 
 function getSprite(prop) {
-	let out = new PIXI.Sprite(prop.texture)
+	let out = new PIXI.Sprite(prop.texture);
 	if (prop.hasOwnProperty('name')) out.name = prop.name;
 	if (prop.hasOwnProperty('anchor')) {
 		if (prop.anchor.hasOwnProperty('x')) {
@@ -66,14 +66,30 @@ function getSprite(prop) {
 function getSpriteWithText(prop) {
 	let out = new PIXI.Container();
 	let s = new PIXI.Sprite(prop.texture);
+	let t = new PIXI.Text(prop.text, prop.style);
 	if (prop.hasOwnProperty('name')) out.name = prop.name;
+	let ratio = t.width / t.height;
 	if (prop.hasOwnProperty('anchor')) {
 		if (prop.anchor.hasOwnProperty('x')) {
-			out.anchor.x = prop.anchor.x;
-			out.anchor.y = prop.anchor.y;
-		} else out.anchor.set(prop.anchor)
+			s.anchor.x = prop.anchor.x;
+			s.anchor.y = prop.anchor.y;
+		} else s.anchor.set(prop.anchor);
+	} else {
+		s.anchor.set(.5);
 	}
 
+	if (prop.hasOwnProperty('text_anchor')) {
+		if (prop.text_anchor.hasOwnProperty('x')) {
+			t.anchor.x = prop.anchor.x;
+			t.anchor.y = prop.anchor.y;
+		} else t.anchor.set(prop.anchor);
+	} else {
+		t.anchor.set(.5);
+	}
+
+	out.addChild(s);
+	out.addChild(t);
+	
 	return out;
 }
 

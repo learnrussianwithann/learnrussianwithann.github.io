@@ -63,6 +63,12 @@ class Viewport {
 			case BUTTON:
 				e = getButton(prop);
 				break;
+			case SPRITE_WITH_TEXT:
+				e = getSpriteWithText(prop);
+				break;
+			case TEXT_TEXTURED:
+				e = getText(prop);
+				break;
 		}
 		if (prop.hasOwnProperty('byHeight')) {
 			if (prop.hasOwnProperty('height'))
