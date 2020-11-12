@@ -145,10 +145,7 @@ function onDragMove() {
 	}
 }
 
-function setMoveable(
-	element,
-	updateFunction,
-) {
+function setMoveable(element, updateFunction, up_function) {
 	element
 		.on('pointerdown', onDragStart)
 		.on('pointerdown', updateFunction)
@@ -157,10 +154,18 @@ function setMoveable(
 		.on('pointerupoutside', onDragEnd)
 		.on('pointerupoutside', updateFunction)
 		.on('pointermove', onDragMove)
-		.on('pointermove', updateFunction)
+		.on('pointermove', updateFunction);
 
-	element.interactive = true
-	element.buttonMode = true
+	if (up_function != undefined) element.on('pointerup', up_function);
+
+	element.interactive = true;
+	element.buttonMode = true;
+}
+
+function setUnmoveable(element) {
+	element.removeAllListeners();
+	element.interactive = false;
+	element.buttonMode = false;
 }
 
 function setButton(element, event) {

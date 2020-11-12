@@ -35,6 +35,7 @@ font.load().then(() => { loader.load(init); });
 
 
 var isActive = true;
+var left = new Array(10);
 
 // for (let i = 0; i < LETTERS.length; i++) {
 // 	let l = LETTERS[i];
@@ -125,9 +126,10 @@ function initGame(res) {
 	for (let i = 0; i < LETTERS.length; i++) {
 		let x = i < 28 ? (i % colums) * .1 + .2 : (i % colums) * .1 + .3;
 		let y = Math.floor(i / colums) * .17 + .16;
-		viewGame.createElement({
+		let e = viewGame.createElement({
 			type: SPRITE_WITH_TEXT,
 			text: LETTERS[i],
+			name: LETTERS[i],
 			style: {
 				fontFamily: 'RubikMonoOne',
 				fontSize: 90,
@@ -140,7 +142,9 @@ function initGame(res) {
 			width: .1,
 			x: x,
 			y: y
-		})
+		});
+		let ind = VOWELS.indexOf(LETTERS[i]);
+		if (ind >= 0) left[ind] = e;
 	}
 
 	let spritesFlies = new Array(5);
@@ -158,7 +162,7 @@ function initGame(res) {
 			x: i < 5 ? .1 : .9,
 			y: .1 + (i % 5) * .2
 		});
-		setMoveable(f, updater);
+		setMoveable(f, updater, check);
 	}
 }
 
@@ -174,15 +178,18 @@ function initEnd() {
 	});
 
 	viewEnd.createElement({
-		type: 'text',
+		type: TEXT,
 		text: 'start text\nsecond line',
-		style: new PIXI.TextStyle({
+		style: {
 			fontFamily: 'RubikMonoOne',
-			fontSize: 40,
+			fontSize: 30,
 			fill: '#ffffff',
 			wordWrap: false,
-			letterSpacing: 0
-		}),
+			letterSpacing: 0,
+			align: 'center'
+		},
+		byHeight: true,
+		height: .1,
 		x: .5,
 		y: .4
 	});
@@ -213,4 +220,35 @@ function startGame() {
 	viewStart.hide();
 	viewEnd.hide();
 	viewGame.show();
+}
+
+function check() {
+	left.forEach(e => {
+		let d = distElement(this.position, e) / viewGame.w;
+		if (d < .05) {
+			this.info.x = e.info.x;
+			this.info.y = e.info.y;
+			viewGame.resizeElement(this);
+			left.splice();
+		}
+	});
+
+	for (let i = 0; i < left.length; i++) {
+		let e = left[i];
+		let d = distElement(this.position, e) / viewGame.w;
+		if (d < .05) {
+			this.info.x = e.info.x;
+			this.info.y = e.info.y;
+			viewGame.resizeElement(this);
+			left.splice(i, 1);
+			setUnmoveable(this);
+			break;
+		}
+	}
+	if (left.length == 0) endGame();
+}
+
+function endGame() {
+	viewEnd.show();
+	viewGame.hide();
 }
