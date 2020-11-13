@@ -29,6 +29,10 @@ class Info {
 		}
 		return out;
 	}
+
+	clone() {
+		return new Info(this.width, this.height, this.byHeight, this.x, this.y);
+	}
 }
 
 class Viewport {

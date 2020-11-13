@@ -80,9 +80,9 @@ function getSpriteWithText(prop) {
 
 	if (prop.hasOwnProperty('text_anchor')) {
 		if (prop.text_anchor.hasOwnProperty('x')) {
-			t.anchor.x = prop.anchor.x;
-			t.anchor.y = prop.anchor.y;
-		} else t.anchor.set(prop.anchor);
+			t.anchor.x = prop.text_anchor.x;
+			t.anchor.y = prop.text_anchor.y;
+		} else t.anchor.set(prop.text_anchor);
 	} else {
 		t.anchor.set(.5);
 	}

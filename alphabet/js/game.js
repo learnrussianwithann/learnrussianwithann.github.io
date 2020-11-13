@@ -35,7 +35,10 @@ font.load().then(() => { loader.load(init); });
 
 
 var isActive = true;
-var left = new Array(10);
+var left;
+var letters = new Array(VOWELS.length);
+var flies_info = new Array(VOWELS.length);
+var flies = new Array(VOWELS.length);
 
 // for (let i = 0; i < LETTERS.length; i++) {
 // 	let l = LETTERS[i];
@@ -132,11 +135,12 @@ function initGame(res) {
 			name: LETTERS[i],
 			style: {
 				fontFamily: 'RubikMonoOne',
-				fontSize: 90,
+				fontSize: 80,
 				fill: '#ffffff',
 				wordWrap: false,
 				align: 'center'
 			},
+			text_anchor: {x:.5, y:.25},
 			texture: sprites[i % 9],
 			height: .08,
 			width: .1,
@@ -144,7 +148,9 @@ function initGame(res) {
 			y: y
 		});
 		let ind = VOWELS.indexOf(LETTERS[i]);
-		if (ind >= 0) left[ind] = e;
+		if (ind >= 0) {
+			letters[ind] = e;
+		}
 	}
 
 	let spritesFlies = new Array(5);
@@ -153,16 +159,19 @@ function initGame(res) {
 	}
 
 	for (let i = 0; i < VOWELS.length; i++) {
-		let f = viewGame.createElement({
+		let x = i < 5 ? .1 : .9;
+		let y = .1 + (i % 5) * .2;
+		flies[i] = viewGame.createElement({
 			type: SPRITE,
 			texture: spritesFlies[i % spritesFlies.length],
 			anchor: .5,
 			height: .08,
 			width: .08,
-			x: i < 5 ? .1 : .9,
-			y: .1 + (i % 5) * .2
+			x: x,
+			y: y
 		});
-		setMoveable(f, updater, check);
+		setMoveable(flies[i], updater, check);
+		flies_info[i] = flies[i].info.clone();
 	}
 }
 
@@ -217,28 +226,26 @@ function initEnd() {
 }
 
 function startGame() {
+
+	left = [...letters];
+	for (let i = 0; i < flies.length; i++) {
+		flies[i].info = flies_info[i].clone();
+		setMoveable(flies[i], updater, check);
+	}
 	viewStart.hide();
 	viewEnd.hide();
 	viewGame.show();
 }
 
 function check() {
-	left.forEach(e => {
-		let d = distElement(this.position, e) / viewGame.w;
-		if (d < .05) {
-			this.info.x = e.info.x;
-			this.info.y = e.info.y;
-			viewGame.resizeElement(this);
-			left.splice();
-		}
-	});
 
 	for (let i = 0; i < left.length; i++) {
 		let e = left[i];
-		let d = distElement(this.position, e) / viewGame.w;
+		let d = distElement(this.position, e.position) / viewGame.w;
 		if (d < .05) {
 			this.info.x = e.info.x;
-			this.info.y = e.info.y;
+			this.info.y = e.info.y - .05;
+			this.info.scale = .7;
 			viewGame.resizeElement(this);
 			left.splice(i, 1);
 			setUnmoveable(this);
