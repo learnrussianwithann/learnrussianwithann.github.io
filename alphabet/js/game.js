@@ -39,13 +39,8 @@ var left;
 var letters = new Array(VOWELS.length);
 var flies_info = new Array(VOWELS.length);
 var flies = new Array(VOWELS.length);
-
-// for (let i = 0; i < LETTERS.length; i++) {
-// 	let l = LETTERS[i];
-// 	let e = new Element(l);
-// 	e.isVowel = VOWELS.includes(l);
-// 	ELetters.push(e);
-// }
+var all_letters = new Array(LETTERS.length);
+var all_positions = new Array(LETTERS.length);
 
 function loop() {
 	updater();
@@ -98,9 +93,9 @@ function initStart() {
 		y: .4
 	});
 
-	let bstart = viewStart.createElement({
+	let bstartStright = viewStart.createElement({
 		type: BUTTON,
-		text: 'start',
+		text: 'По алфавиту',
 		style: {
 			fontFamily: 'RubikMonoOne',
 			fontSize: 30,
@@ -112,12 +107,32 @@ function initStart() {
 		k_w: 2,
 		k_h: 1.8,
 		width: .3,
-		height: .08,
+		height: .06,
 		x: .5,
-		y: .7
+		y: .65
 	});
 
-	setButton(bstart, startGame);
+	let bstartRandom = viewStart.createElement({
+		type: BUTTON,
+		text: 'Случайно',
+		style: {
+			fontFamily: 'RubikMonoOne',
+			fontSize: 30,
+			fill: '#ffffff',
+			wordWrap: false,
+			align: 'center'
+		},
+		bcolor: 0x197dff,
+		k_w: 2,
+		k_h: 1.8,
+		width: .3,
+		height: .06,
+		x: .5,
+		y: .8
+	});
+
+	setButton(bstartStright, startStaright);
+	setButton(bstartRandom, startRandom);
 }
 
 function initGame(res) {
@@ -151,6 +166,8 @@ function initGame(res) {
 		if (ind >= 0) {
 			letters[ind] = e;
 		}
+		all_letters[i] = e;
+		all_positions[i] = {x:x, y:y};
 	}
 
 	let spritesFlies = new Array(5);
@@ -203,26 +220,68 @@ function initEnd() {
 		y: .4
 	});
 
-	let bstart = viewEnd.createElement({
-		type: 'button',
-		text: 'start',
-		style: new PIXI.TextStyle({
+	let bstartStright = viewEnd.createElement({
+		type: BUTTON,
+		text: 'По алфавиту',
+		style: {
 			fontFamily: 'RubikMonoOne',
-			fontSize: 50,
+			fontSize: 30,
 			fill: '#ffffff',
 			wordWrap: false,
-			letterSpacing: 0
-		}),
+			align: 'center'
+		},
 		bcolor: 0x197dff,
 		k_w: 2,
 		k_h: 1.8,
 		width: .3,
-		height: .08,
+		height: .06,
 		x: .5,
-		y: .7
+		y: .65
 	});
 
-	setButton(bstart, startGame);
+	let bstartRandom = viewEnd.createElement({
+		type: BUTTON,
+		text: 'Случайно',
+		style: {
+			fontFamily: 'RubikMonoOne',
+			fontSize: 30,
+			fill: '#ffffff',
+			wordWrap: false,
+			align: 'center'
+		},
+		bcolor: 0x197dff,
+		k_w: 2,
+		k_h: 1.8,
+		width: .3,
+		height: .06,
+		x: .5,
+		y: .8
+	});
+
+	setButton(bstartStright, startStaright);
+	setButton(bstartRandom, startRandom);
+}
+
+function startRandom() {
+	for (let i = 0; i < all_letters.length; i++) {
+		let a = all_letters[getRandomInt(all_letters.length)];
+		let b = all_letters[getRandomInt(all_letters.length)];
+		let c = { x:a.info.x, y:a.info.y};
+		a.info.x = b.info.x;
+		a.info.y = b.info.y;
+		b.info.x = c.x;
+		b.info.y = c.y;
+	}
+
+	startGame();
+}
+
+function startStaright(params) {
+	for (let i = 0; i < all_letters.length; i++) {
+		all_letters[i].info.x = all_positions[i].x;
+		all_letters[i].info.y = all_positions[i].y;
+	}
+	startGame();
 }
 
 function startGame() {
@@ -252,7 +311,7 @@ function check() {
 			break;
 		}
 	}
-	if (left.length == 0) endGame();
+	if (left.length == 0) setTimeout(endGame, 1000);
 }
 
 function endGame() {

@@ -28,6 +28,10 @@ function distToMouse(word, mouse) {
 //			Generators
 ////////////////////////////////////////////////
 
+function getRandomInt(max) {
+	return Math.floor(Math.random() * Math.floor(max));
+  }
+
 function getRect(prop) {
 	// if (!checkProperty(prop, 'width', 'height', 'raduis', 'color')) return null;
 
