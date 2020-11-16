@@ -26,12 +26,13 @@ const ELetters = [];
 // });
 
 const font = new FontFaceObserver('OpenSans');
+const font2 = new FontFaceObserver('RubikMonoOne');
 
 const loader = PIXI.Loader.shared;
 loader.add('rocks', 'img/rocks.png')
 	.add('flies', 'img/flies.png');
 
-font.load().then(() => { loader.load(init); });
+font.load().then(()=>{font2.load().then(() => { loader.load(init); })});
 
 
 var isActive = true;
@@ -142,8 +143,9 @@ function initGame(res) {
 	}
 	let colums = 7;
 	for (let i = 0; i < LETTERS.length; i++) {
-		let x = i < 28 ? (i % colums) * .1 + .2 : (i % colums) * .1 + .3;
+		let x = i < 28 ? (i % colums) * .1 + .3 : (i % colums) * .1 + .4;
 		let y = Math.floor(i / colums) * .17 + .16;
+		if ((i % colums == 0 && i != 28) || i % colums == colums - 1) y += .08
 		let e = viewGame.createElement({
 			type: SPRITE_WITH_TEXT,
 			text: LETTERS[i],
@@ -176,8 +178,8 @@ function initGame(res) {
 	}
 
 	for (let i = 0; i < VOWELS.length; i++) {
-		let x = i < 5 ? .1 : .9;
-		let y = .1 + (i % 5) * .2;
+		let x = i < 5 ? .1 : .2;
+		let y = .2 + (i % 5) * .15;
 		flies[i] = viewGame.createElement({
 			type: SPRITE,
 			texture: spritesFlies[i % spritesFlies.length],
