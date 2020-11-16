@@ -74,7 +74,7 @@ class Viewport {
 				e = getText(prop);
 				break;
 		}
-		if (prop.hasOwnProperty('byHeight')) {
+		if (prop.hasOwnProperty('byHeight') && prop.byHeight == true) {
 			if (prop.hasOwnProperty('height'))
 				e.info = new Info(prop.height * e.width / e.height, prop.height, prop.byHeight, prop.x, prop.y);
 		}

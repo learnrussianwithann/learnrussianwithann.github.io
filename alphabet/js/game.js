@@ -2,7 +2,7 @@
 const gamefield = document.getElementById('game');
 const app = new PIXI.Application({
 	resizeTo: gamefield,
-	backgroundColor: 0x99fc92,
+	backgroundColor: 0x61d3da,
 	resolution: window.devicePixelRatio,
 	autoDensity: true,
 	antialias: false
@@ -25,7 +25,7 @@ const ELetters = [];
 // 	align: 'center'
 // });
 
-const font = new FontFaceObserver('RubikMonoOne');
+const font = new FontFaceObserver('OpenSans');
 
 const loader = PIXI.Loader.shared;
 loader.add('rocks', 'img/rocks.png')
@@ -71,39 +71,39 @@ function initStart() {
 		width: .6,
 		height: .5,
 		radius: .1,
-		color: 0xf0ecad,
+		color: 0x5d70bc,
 		x: .5,
 		y: .5
 	});
 
 	viewStart.createElement({
 		type: TEXT,
-		text: 'start text\nsecond line',
+		text: 'Помоги жучкам \nнайти островки \nс гласными буквами',
 		style: {
-			fontFamily: 'RubikMonoOne',
-			fontSize: 30,
+			fontFamily: 'OpenSans',
+			fontSize: 60,
 			fill: '#ffffff',
 			wordWrap: false,
 			letterSpacing: 0,
 			align: 'center'
 		},
 		byHeight: true,
-		height: .1,
+		height: .15,
 		x: .5,
-		y: .4
+		y: .35
 	});
 
 	let bstartStright = viewStart.createElement({
 		type: BUTTON,
 		text: 'По алфавиту',
 		style: {
-			fontFamily: 'RubikMonoOne',
+			fontFamily: 'OpenSans',
 			fontSize: 30,
 			fill: '#ffffff',
 			wordWrap: false,
 			align: 'center'
 		},
-		bcolor: 0x197dff,
+		bcolor: 0xff6968,
 		k_w: 2,
 		k_h: 1.8,
 		width: .3,
@@ -116,13 +116,13 @@ function initStart() {
 		type: BUTTON,
 		text: 'Случайно',
 		style: {
-			fontFamily: 'RubikMonoOne',
+			fontFamily: 'OpenSans',
 			fontSize: 30,
 			fill: '#ffffff',
 			wordWrap: false,
 			align: 'center'
 		},
-		bcolor: 0x197dff,
+		bcolor: 0xff6968,
 		k_w: 2,
 		k_h: 1.8,
 		width: .3,
@@ -194,43 +194,43 @@ function initGame(res) {
 
 function initEnd() {
 	viewEnd.createElement({
-		type: 'round_rect',
-		width: .5,
+		type: ROUND_RECT,
+		width: .6,
 		height: .5,
 		radius: .1,
-		color: 0xf0ecad,
+		color: 0x5d70bc,
 		x: .5,
 		y: .5
 	});
 
 	viewEnd.createElement({
 		type: TEXT,
-		text: 'start text\nsecond line',
+		text: 'Все жучки нашли островки!',
 		style: {
-			fontFamily: 'RubikMonoOne',
-			fontSize: 30,
+			fontFamily: 'OpenSans',
+			fontSize: 60,
 			fill: '#ffffff',
 			wordWrap: false,
 			letterSpacing: 0,
 			align: 'center'
 		},
-		byHeight: true,
-		height: .1,
+		byHeight: false,
+		width: .5,
 		x: .5,
-		y: .4
+		y: .35
 	});
 
 	let bstartStright = viewEnd.createElement({
 		type: BUTTON,
 		text: 'По алфавиту',
 		style: {
-			fontFamily: 'RubikMonoOne',
+			fontFamily: 'OpenSans',
 			fontSize: 30,
 			fill: '#ffffff',
 			wordWrap: false,
 			align: 'center'
 		},
-		bcolor: 0x197dff,
+		bcolor: 0xff6968,
 		k_w: 2,
 		k_h: 1.8,
 		width: .3,
@@ -243,13 +243,13 @@ function initEnd() {
 		type: BUTTON,
 		text: 'Случайно',
 		style: {
-			fontFamily: 'RubikMonoOne',
+			fontFamily: 'OpenSans',
 			fontSize: 30,
 			fill: '#ffffff',
 			wordWrap: false,
 			align: 'center'
 		},
-		bcolor: 0x197dff,
+		bcolor: 0xff6968,
 		k_w: 2,
 		k_h: 1.8,
 		width: .3,

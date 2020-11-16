@@ -18,3 +18,10 @@ body, html
 	url('../font/RubikMonoOne-Regular.ttf') format('truetype');
 	
 }
+
+@font-face {
+	font-family: 'OpenSans';
+	src: url('../font/OpenSans-Regular.woff') format('woff'),
+	url('../font/OpenSans-Regular.ttf') format('truetype');
+	
+}

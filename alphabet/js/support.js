@@ -110,7 +110,7 @@ function getButton(prop) {
 	let t = new PIXI.Text(prop.text, prop.style);
 	t.anchor.set(0.5);
 
-	out.addChild(getRectInPixel({ width: prop.k_w * t.width, height: prop.k_h * t.height, radius: prop.k_h * t.height, color: prop.bcolor }));
+	out.addChild(getRectInPixel({ width: prop.width * DEFAULT_WIDTH, height: prop.height * DEFAULT_WIDTH, radius: prop.height * DEFAULT_WIDTH, color: prop.bcolor }));
 	out.addChild(t);
 	return out;
 }
