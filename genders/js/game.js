@@ -5,7 +5,8 @@ const app = new PIXI.Application({
 	backgroundColor: 0x1e99bb,
 	resolution: window.devicePixelRatio,
 	autoDensity: true,
-	antialias: false
+	antialias: false,
+	forceCanvas: true
 });
 
 const viewStart = new Viewport(app, 16 / 9);
