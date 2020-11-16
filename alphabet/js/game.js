@@ -5,7 +5,8 @@ const app = new PIXI.Application({
 	backgroundColor: 0x61d3da,
 	resolution: window.devicePixelRatio,
 	autoDensity: true,
-	antialias: false
+	antialias: false,
+	forceCanvas: true
 });
 
 const viewStart = new Viewport(app, 16 / 9);
@@ -43,20 +44,11 @@ var flies = new Array(VOWELS.length);
 var all_letters = new Array(LETTERS.length);
 var all_positions = new Array(LETTERS.length);
 
-function loop() {
-	updater();
-	// if (isActive)
-	// 	window.requestAnimationFrame(loop);
-}
 
-function updater() {
-	app.render();
-}
 
 function init(loader, resources) {
 	gamefield.appendChild(app.view);
 	// app.stop();
-	window.addEventListener('resize', updater);
 
 	initStart();
 	initGame(resources);
@@ -145,7 +137,7 @@ function initGame(res) {
 	for (let i = 0; i < LETTERS.length; i++) {
 		let x = i < 28 ? (i % colums) * .1 + .3 : (i % colums) * .1 + .4;
 		let y = Math.floor(i / colums) * .17 + .16;
-		if ((i % colums == 0 && i != 28) || i % colums == colums - 1) y += .08
+		// if ((i % colums == 0 && i != 28) || i % colums == colums - 1) y += .08
 		let e = viewGame.createElement({
 			type: SPRITE_WITH_TEXT,
 			text: LETTERS[i],
@@ -189,7 +181,7 @@ function initGame(res) {
 			x: x,
 			y: y
 		});
-		setMoveable(flies[i], updater, check);
+		setMoveable(flies[i], check);
 		flies_info[i] = flies[i].info.clone();
 	}
 }
@@ -288,10 +280,12 @@ function startStaright(params) {
 
 function startGame() {
 
+	letters.forEach(e => {e.children[1].style.fill = '#ffffff';})
+
 	left = [...letters];
 	for (let i = 0; i < flies.length; i++) {
 		flies[i].info = flies_info[i].clone();
-		setMoveable(flies[i], updater, check);
+		setMoveable(flies[i], check);
 	}
 	viewStart.hide();
 	viewEnd.hide();
@@ -310,6 +304,7 @@ function check() {
 			viewGame.resizeElement(this);
 			left.splice(i, 1);
 			setUnmoveable(this);
+			e.children[1].style.fill = '#ff0000';
 			break;
 		}
 	}

@@ -116,7 +116,7 @@ function init(loader, resources) {
 	app.stage.sortChildren();
 	window.addEventListener('resize', resize);
 
-	app.stop();
+	// app.stop();
 
 	viewStart.show();
 	viewEnd.hide();
@@ -334,7 +334,7 @@ function initGame() {
 }
 
 function updater() {
-	app.render();
+	// app.render();
 }
 
 function showCloud(cloud) {

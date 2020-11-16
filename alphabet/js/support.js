@@ -149,16 +149,12 @@ function onDragMove() {
 	}
 }
 
-function setMoveable(element, updateFunction, up_function) {
+function setMoveable(element, up_function) {
 	element
 		.on('pointerdown', onDragStart)
-		.on('pointerdown', updateFunction)
 		.on('pointerup', onDragEnd)
-		.on('pointerup', updateFunction)
 		.on('pointerupoutside', onDragEnd)
-		.on('pointerupoutside', updateFunction)
 		.on('pointermove', onDragMove)
-		.on('pointermove', updateFunction);
 
 	if (up_function != undefined) element.on('pointerup', up_function);
 
