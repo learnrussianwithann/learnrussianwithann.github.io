@@ -214,9 +214,9 @@ function initEnd() {
 		y: .35
 	});
 
-	let bstartStright = viewEnd.createElement({
+	let bagain = viewEnd.createElement({
 		type: BUTTON,
-		text: 'По алфавиту',
+		text: 'Сыграть еще раз',
 		style: {
 			fontFamily: 'OpenSans',
 			fontSize: 30,
@@ -233,27 +233,7 @@ function initEnd() {
 		y: .65
 	});
 
-	let bstartRandom = viewEnd.createElement({
-		type: BUTTON,
-		text: 'Случайно',
-		style: {
-			fontFamily: 'OpenSans',
-			fontSize: 30,
-			fill: '#ffffff',
-			wordWrap: false,
-			align: 'center'
-		},
-		bcolor: 0xff6968,
-		k_w: 2,
-		k_h: 1.8,
-		width: .3,
-		height: .06,
-		x: .5,
-		y: .8
-	});
-
-	setButton(bstartStright, startStaright);
-	setButton(bstartRandom, startRandom);
+	setButton(bagain, showStart);
 }
 
 function startRandom() {
@@ -313,5 +293,11 @@ function check() {
 
 function endGame() {
 	viewEnd.show();
+	viewGame.hide();
+}
+
+function showStart() {
+	viewStart.show();
+	viewEnd.hide();
 	viewGame.hide();
 }
