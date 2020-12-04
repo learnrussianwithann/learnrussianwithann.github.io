@@ -164,9 +164,9 @@ function initGame(res) {
 		all_positions[i] = {x:x, y:y};
 	}
 
-	let spritesFlies = new Array(5);
+	let spritesFlies = new Array(10);
 	for (let i = 0; i < spritesFlies.length; i++) {
-		spritesFlies[i] = new PIXI.Texture(res.flies.texture.baseTexture, new PIXI.Rectangle(350 * i, 0, 350, 350));
+		spritesFlies[i] = new PIXI.Texture(res.flies.texture.baseTexture, new PIXI.Rectangle(200 * i, 0, 200, 200));
 	}
 
 	for (let i = 0; i < VOWELS.length; i++) {
