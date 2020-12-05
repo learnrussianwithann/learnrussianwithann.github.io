@@ -106,6 +106,10 @@ class Viewport {
 
 	}
 
+	sort() {
+		this.container.sortChildren();
+	}
+
 	calcScreenSize() {
 		this.w = this.app.screen.width;
 		this.h = this.app.screen.height;

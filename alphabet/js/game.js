@@ -26,6 +26,8 @@ const sound_YA = PIXI.sound.Sound.from('sound/YA.mp3');
 const sound_YI = PIXI.sound.Sound.from('sound/YI.mp3');
 const sound_YO = PIXI.sound.Sound.from('sound/YO.mp3');
 const sound_YU = PIXI.sound.Sound.from('sound/YU.mp3');
+const sound_fly = PIXI.sound.Sound.from('sound/fly.mp3');
+sound_fly.loop = true;
 
 // const text_style = new PIXI.TextStyle({
 // 	fontFamily: 'RubikMonoOne',
@@ -191,7 +193,6 @@ function initGame(res) {
 			x: x,
 			y: y
 		});
-		setMoveable(flies[i], check);
 		flies_info[i] = flies[i].info.clone();
 	}
 }
@@ -270,7 +271,7 @@ function startStaright(params) {
 
 function startGame() {
 
-	letters.forEach(e => { 
+	letters.forEach(e => {
 		e.children[1].style.fill = '#ffffff';
 		setInactive(e);
 	})
@@ -278,15 +279,17 @@ function startGame() {
 	left = [...letters];
 	for (let i = 0; i < flies.length; i++) {
 		flies[i].info = flies_info[i].clone();
-		setMoveable(flies[i], check);
+		setMoveable(flies[i], up, down);
 	}
 	viewStart.hide();
 	viewEnd.hide();
 	viewGame.show();
 }
 
-function check() {
-
+function up() {
+	this.zIndex = 0;
+	sound_fly.stop();
+	this.info.scale = 1;
 	for (let i = 0; i < left.length; i++) {
 		let e = left[i];
 		let d = distElement(this.position, e.position) / viewGame.w;
@@ -294,7 +297,7 @@ function check() {
 			this.info.x = e.info.x;
 			this.info.y = e.info.y - .05;
 			this.info.scale = .7;
-			viewGame.resizeElement(this);
+			// viewGame.resizeElement(this);
 			left.splice(i, 1);
 			setInactive(this);
 			e.children[1].style.fill = '#ff0000';
@@ -303,14 +306,25 @@ function check() {
 			break;
 		}
 	}
+	viewGame.resizeElement(this);
 	if (left.length == 0) setTimeout(endGame, 1000);
 }
+
+function down() {
+	this.zIndex = 1;
+	this.info.scale = 1.3;
+	viewGame.sort();
+	viewGame.resizeElement(this);
+
+	if (!sound_fly.isPlaying) sound_fly.play();
+}
+
 
 function play() {
 
 	if (this.hasOwnProperty('name')) {
 		play_sound(this.name)
-		
+
 	}
 }
 

@@ -149,7 +149,7 @@ function onDragMove() {
 	}
 }
 
-function setMoveable(element, up_function) {
+function setMoveable(element, up_function, down_function) {
 	element
 		.on('pointerdown', onDragStart)
 		.on('pointerup', onDragEnd)
@@ -157,6 +157,7 @@ function setMoveable(element, up_function) {
 		.on('pointermove', onDragMove)
 
 	if (up_function != undefined) element.on('pointerup', up_function);
+	if (down_function != undefined) element.on('pointerdown', down_function);
 
 	element.interactive = true;
 	element.buttonMode = true;
