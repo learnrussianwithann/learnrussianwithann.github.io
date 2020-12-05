@@ -331,35 +331,47 @@ function play() {
 function play_sound(name) {
 	switch (name) {
 		case 'А':
-			if (!sound_A.isPlaying) sound_A.play();
+			if (!isPlaying()) sound_A.play();
 			break;
 		case 'Е':
-			if (!sound_E.isPlaying) sound_E.play();
+			if (!isPlaying()) sound_E.play();
 			break;
 		case 'Ё':
-			if (!sound_YO.isPlaying) sound_YO.play();
+			if (!isPlaying()) sound_YO.play();
 			break;
 		case 'И':
-			if (!sound_I.isPlaying) sound_I.play();
+			if (!isPlaying()) sound_I.play();
 			break;
 		case 'О':
-			if (!sound_O.isPlaying) sound_O.play();
+			if (!isPlaying()) sound_O.play();
 			break;
 		case 'У':
-			if (!sound_U.isPlaying) sound_U.play();
+			if (!isPlaying()) sound_U.play();
 			break;
 		case 'Ы':
-			if (!sound_YI.isPlaying) sound_YI.play();
+			if (!isPlaying()) sound_YI.play();
 			break;
 		case 'Э':
 			break;
 		case 'Ю':
-			if (!sound_YU.isPlaying) sound_YU.play();
+			if (!isPlaying()) sound_YU.play();
 			break;
 		case 'Я':
-			if (!sound_YA.isPlaying) sound_YA.play();
+			if (!isPlaying()) sound_YA.play();
 			break;
 	}
+}
+
+function isPlaying() {
+	return sound_A.isPlaying ||
+	sound_E.isPlaying ||
+	sound_YO.isPlaying ||
+	sound_I.isPlaying ||
+	sound_O.isPlaying ||
+	sound_U.isPlaying ||
+	sound_YI.isPlaying || 
+	sound_YU.isPlaying ||
+	sound_YA.isPlaying;
 }
 
 function endGame() {
