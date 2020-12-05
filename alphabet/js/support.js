@@ -162,7 +162,7 @@ function setMoveable(element, up_function) {
 	element.buttonMode = true;
 }
 
-function setUnmoveable(element) {
+function setInactive(element) {
 	element.removeAllListeners();
 	element.interactive = false;
 	element.buttonMode = false;

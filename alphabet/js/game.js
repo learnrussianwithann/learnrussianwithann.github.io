@@ -17,6 +17,16 @@ const LETTERS = ['А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И', 'Й
 const VOWELS = ['А', 'Е', 'Ё', 'И', 'О', 'У', 'Ы', 'Э', 'Ю', 'Я'];
 const ELetters = [];
 
+const sound_A = PIXI.sound.Sound.from('sound/A.mp3');
+const sound_E = PIXI.sound.Sound.from('sound/E.mp3');
+const sound_I = PIXI.sound.Sound.from('sound/I.mp3');
+const sound_O = PIXI.sound.Sound.from('sound/O.mp3');
+const sound_U = PIXI.sound.Sound.from('sound/U.mp3');
+const sound_YA = PIXI.sound.Sound.from('sound/YA.mp3');
+const sound_YI = PIXI.sound.Sound.from('sound/YI.mp3');
+const sound_YO = PIXI.sound.Sound.from('sound/YO.mp3');
+const sound_YU = PIXI.sound.Sound.from('sound/YU.mp3');
+
 // const text_style = new PIXI.TextStyle({
 // 	fontFamily: 'RubikMonoOne',
 // 	fontSize: 30,
@@ -33,7 +43,7 @@ const loader = PIXI.Loader.shared;
 loader.add('rocks', 'img/rocks.png')
 	.add('flies', 'img/flies.png');
 
-font.load().then(()=>{font2.load().then(() => { loader.load(init); })});
+font.load().then(() => { font2.load().then(() => { loader.load(init); }) });
 
 
 var isActive = true;
@@ -149,7 +159,7 @@ function initGame(res) {
 				wordWrap: false,
 				align: 'center'
 			},
-			text_anchor: {x:.5, y:.25},
+			text_anchor: { x: .5, y: .25 },
 			texture: sprites[i % 9],
 			height: .08,
 			width: .1,
@@ -161,7 +171,7 @@ function initGame(res) {
 			letters[ind] = e;
 		}
 		all_letters[i] = e;
-		all_positions[i] = {x:x, y:y};
+		all_positions[i] = { x: x, y: y };
 	}
 
 	let spritesFlies = new Array(10);
@@ -240,7 +250,7 @@ function startRandom() {
 	for (let i = 0; i < all_letters.length; i++) {
 		let a = all_letters[getRandomInt(all_letters.length)];
 		let b = all_letters[getRandomInt(all_letters.length)];
-		let c = { x:a.info.x, y:a.info.y};
+		let c = { x: a.info.x, y: a.info.y };
 		a.info.x = b.info.x;
 		a.info.y = b.info.y;
 		b.info.x = c.x;
@@ -260,7 +270,10 @@ function startStaright(params) {
 
 function startGame() {
 
-	letters.forEach(e => {e.children[1].style.fill = '#ffffff';})
+	letters.forEach(e => { 
+		e.children[1].style.fill = '#ffffff';
+		setInactive(e);
+	})
 
 	left = [...letters];
 	for (let i = 0; i < flies.length; i++) {
@@ -283,12 +296,56 @@ function check() {
 			this.info.scale = .7;
 			viewGame.resizeElement(this);
 			left.splice(i, 1);
-			setUnmoveable(this);
+			setInactive(this);
 			e.children[1].style.fill = '#ff0000';
+			setButton(e, play);
+			play_sound(e.name);
 			break;
 		}
 	}
 	if (left.length == 0) setTimeout(endGame, 1000);
+}
+
+function play() {
+
+	if (this.hasOwnProperty('name')) {
+		play_sound(this.name)
+		
+	}
+}
+
+function play_sound(name) {
+	switch (name) {
+		case 'А':
+			if (!sound_A.isPlaying) sound_A.play();
+			break;
+		case 'Е':
+			if (!sound_E.isPlaying) sound_E.play();
+			break;
+		case 'Ё':
+			if (!sound_YO.isPlaying) sound_YO.play();
+			break;
+		case 'И':
+			if (!sound_I.isPlaying) sound_I.play();
+			break;
+		case 'О':
+			if (!sound_O.isPlaying) sound_O.play();
+			break;
+		case 'У':
+			if (!sound_U.isPlaying) sound_U.play();
+			break;
+		case 'Ы':
+			if (!sound_YI.isPlaying) sound_YI.play();
+			break;
+		case 'Э':
+			break;
+		case 'Ю':
+			if (!sound_YU.isPlaying) sound_YU.play();
+			break;
+		case 'Я':
+			if (!sound_YA.isPlaying) sound_YA.play();
+			break;
+	}
 }
 
 function endGame() {
