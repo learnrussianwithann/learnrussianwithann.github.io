@@ -26,6 +26,7 @@ const sound_YA = PIXI.sound.Sound.from('sound/YA.mp3');
 const sound_YI = PIXI.sound.Sound.from('sound/YI.mp3');
 const sound_YO = PIXI.sound.Sound.from('sound/YO.mp3');
 const sound_YU = PIXI.sound.Sound.from('sound/YU.mp3');
+const sound_AE = PIXI.sound.Sound.from('sound/AE.mp3');
 const sound_fly = PIXI.sound.Sound.from('sound/fly.mp3');
 sound_fly.loop = true;
 
@@ -352,6 +353,7 @@ function play_sound(name) {
 			if (!sound_YI.isPlaying) sound_YI.play();
 			break;
 		case 'Э':
+			if (!sound_AE.isPlaying) sound_AE.play();
 			break;
 		case 'Ю':
 			if (!sound_YU.isPlaying) sound_YU.play();
