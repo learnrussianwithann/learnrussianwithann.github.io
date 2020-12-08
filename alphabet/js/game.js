@@ -302,12 +302,12 @@ function up() {
 			this.info.y = coord.y;
 
 			viewGame.createAnimation({
-				element:this,
+				element: this,
 				type: 'scale',
-				start: this.info.scale,
-				end: {x:.7, y:.7},
-				duration:500,
-				isActive:true
+				start: { x: this.info.scale.x, y: this.info.scale.y },
+				end: { x: .7, y: .7 },
+				duration: 500,
+				isActive: true
 			});
 
 			viewGame.createAnimation({
@@ -336,12 +336,12 @@ function up() {
 	if (!found) {
 		// this.info.scale = 1;
 		viewGame.createAnimation({
-			element:this,
+			element: this,
 			type: 'scale',
-			start: this.info.scale,
-			end: {x:1, y:1},
-			duration:1000,
-			isActive:true
+			start: { x: this.info.scale.x, y: this.info.scale.y },
+			end: { x: 1, y: 1 },
+			duration: 600,
+			isActive: true
 		});
 
 		viewGame.createAnimation({
@@ -349,9 +349,9 @@ function up() {
 			type: 'move',
 			start: coord,
 			end: { x: this.info.x, y: this.info.y },
-			duration: 1000,
+			duration: 600,
 			isActive: true,
-			end_action: () => {sound_fly.stop();}
+			end_action: () => { sound_fly.stop(); }
 		});
 		this.info.x = coord.x;
 		this.info.y = coord.y;

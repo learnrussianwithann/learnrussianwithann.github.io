@@ -45,7 +45,6 @@ class Info {
 class Viewport {
 	constructor(application, ratio) { //ratio width/height
 		this.app = application;
-		this.animations = new Set();
 		this.container = new PIXI.Container();
 		this.active = false;
 		this.w = 100;
@@ -140,7 +139,6 @@ class Viewport {
 
 	createAnimation(animprop) {
 		let a = new ViewportAnimation(animprop, this);
-		this.animations.add(a);
 		return a;
 	}
 
@@ -188,110 +186,105 @@ class ViewportAnimation {
 		this.isDone = false;
 		switch (prop.type) {
 			case "move":
+				if (prop.element.hasOwnProperty('move_animation') && prop.element.move_animation != null) return;
 				ViewportAnimation.getMoveAnimation(this, prop, viewport);
 				break;
 			case "rotate":
+				if (prop.element.hasOwnProperty('rotate_animation') && prop.element.rotate_animation != null) return;
 				ViewportAnimation.getRotateAnimation(this, prop, viewport);
 				break;
 			case "scale":
+				if (prop.element.hasOwnProperty('scale_animation') && prop.element.scale_animation != null) return;
 				ViewportAnimation.getScaleAnimation(this, prop, viewport);
 				break;
 			case "alpha":
+				if (prop.element.hasOwnProperty('alpha_animation') && prop.element.alpha_animation != null) return;
 				ViewportAnimation.getAlphaAnimation(this, prop, viewport);
 				break;
 		}
 	}
 
+	start() {
+		window.requestAnimationFrame(this.tick);
+	}
+
 	static getMoveAnimation(animation, prop, viewport) {
+		prop.element.move_animation = animation;
 		let displacement =
 		{
 			x: prop.end.x - prop.start.x,
 			y: prop.end.y - prop.start.y
 		}
-		let disp_per_ms =
-		{
-			x: displacement.x / prop.duration,
-			y: displacement.y / prop.duration
-		};
-		let last_time = performance.now();
+		let start_time = performance.now();
 		animation.isActive = prop.isActive;
 		animation.tick = function (time) {
-			let time_pass = time - last_time;
-			let dispX = time_pass * disp_per_ms.x;
-			let dispY = time_pass * disp_per_ms.y;
+			let progress = (time - start_time) / prop.duration;
+			if (progress > 1) progress = 1;
 
-			last_time = performance.now();
+			animation.element.info.x = displacement.x * progress + prop.start.x;
+			animation.element.info.y = displacement.y * progress + prop.start.y;
 
-			if (Math.abs(displacement.x) > Math.abs(dispX)) {
-				displacement.x -= dispX;
-				displacement.y -= dispY;
-				animation.element.info.x += dispX;
-				animation.element.info.y += dispY;
-			} else {
-				animation.element.info.x += displacement.x;
-				animation.element.info.y += displacement.y;
+			if (progress >= 1) {
 				animation.isActive = false;
 				animation.isDone = true;
 			}
 
 			viewport.resizeElement(animation.element);
 
-			if (animation.isDone && prop.hasOwnProperty('end_action')) prop.end_action();
+			if (animation.isDone) {
+				prop.element.move_animation = null;
+				if (prop.hasOwnProperty('end_action')) prop.end_action();
+			}
 
 			if (animation.isActive) window.requestAnimationFrame(animation.tick);
 
 		}
-		if (animation.isActive) window.requestAnimationFrame(animation.tick);
+		if (animation.isActive) animation.start();
 	}
 
 	static getRotateAnimation(animation, prop, viewport) {
+		prop.element.rotate_animation = animation;
 
+		if (animation.isActive) animation.start();
 	}
 
 	static getScaleAnimation(animation, prop, viewport) {
+		prop.element.scale_animation = animation;
 		let displacement =
 		{
 			x: prop.end.x - prop.start.x,
 			y: prop.end.y - prop.start.y
 		}
-		let disp_per_ms =
-		{
-			x: displacement.x / prop.duration,
-			y: displacement.y / prop.duration
-		};
-		let last_time = performance.now();
+		let start_time = performance.now();
 		animation.isActive = prop.isActive;
 		animation.tick = function (time) {
-			let time_pass = time - last_time;
-			let dispX = time_pass * disp_per_ms.x;
-			let dispY = time_pass * disp_per_ms.y;
+			let progress = (time - start_time) / prop.duration;
+			if (progress > 1) progress = 1;
+			animation.element.info.scale.x = displacement.x * progress + prop.start.x;
+			animation.element.info.scale.y = displacement.y * progress + prop.start.y;
 
-			last_time = performance.now();
-
-			if (Math.abs(displacement.x) > Math.abs(dispX)) {
-				displacement.x -= dispX;
-				displacement.y -= dispY;
-				animation.element.info.scale.x += dispX;
-				animation.element.info.scale.y += dispY;
-			} else {
-				animation.element.info.scale.x += displacement.x;
-				animation.element.info.scale.y += displacement.y;
+			if (progress >= 1) {
 				animation.isActive = false;
 				animation.isDone = true;
 			}
 
 			viewport.resizeElement(animation.element);
 
-			if (animation.isDone && prop.hasOwnProperty('end_action')) prop.end_action();
+			if (animation.isDone) {
+				prop.element.scale_animation = null;
+				if (prop.hasOwnProperty('end_action')) prop.end_action();
+			}
 
 			if (animation.isActive) window.requestAnimationFrame(animation.tick);
 
 		}
-		if (animation.isActive) window.requestAnimationFrame(animation.tick);
+		if (animation.isActive) animation.start();
 	}
 
 	static getAlphaAnimation(animation, prop, viewport) {
+		prop.element.alpha_animation = animation;
 
+		if (animation.isActive) animation.start();
 	}
 }
 
