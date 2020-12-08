@@ -27,8 +27,9 @@ const sound_YI = PIXI.sound.Sound.from('sound/YI.mp3');
 const sound_YO = PIXI.sound.Sound.from('sound/YO.mp3');
 const sound_YU = PIXI.sound.Sound.from('sound/YU.mp3');
 const sound_AE = PIXI.sound.Sound.from('sound/AE.mp3');
-const sound_fly = PIXI.sound.Sound.from('sound/fly.mp3');
-sound_fly.loop = true;
+const sound_fly = new SoundBuffer('sound/fly.mp3', 3, true);
+
+
 
 // const text_style = new PIXI.TextStyle({
 // 	fontFamily: 'RubikMonoOne',
@@ -288,27 +289,56 @@ function startGame() {
 }
 
 function up() {
+	let coord = viewGame.getRelativeCoordinates(this);
+	let found = false;
 	this.zIndex = 0;
-	sound_fly.stop();
 	this.info.scale = 1;
 	for (let i = 0; i < left.length; i++) {
 		let e = left[i];
 		let d = distElement(this.position, e.position) / viewGame.w;
 		if (d < .05) {
-			this.info.x = e.info.x;
-			this.info.y = e.info.y - .05;
+			found = true;
 			this.info.scale = .7;
+			this.info.x = coord.x;
+			this.info.y = coord.y;
+			viewGame.createAnimation({
+				element: this,
+				type: 'move',
+				start: coord,
+				end: { x: e.info.x, y: e.info.y - .05 },
+				duration: 500,
+				isActive: true,
+				end_action: function () {
+					e.children[1].style.fill = '#ff0000';
+					setButton(e, play);
+					play_sound(e.name);
+					sound_fly.stop();
+				}
+			});
 			// viewGame.resizeElement(this);
 			left.splice(i, 1);
 			setInactive(this);
-			e.children[1].style.fill = '#ff0000';
-			setButton(e, play);
-			play_sound(e.name);
+			// e.children[1].style.fill = '#ff0000';
+			// setButton(e, play);
+			// play_sound(e.name);
 			break;
 		}
 	}
-	viewGame.resizeElement(this);
-	if (left.length == 0) setTimeout(endGame, 1000);
+	if (!found) {
+		this.info.scale = 1;
+		viewGame.createAnimation({
+			element: this,
+			type: 'move',
+			start: coord,
+			end: { x: this.info.x, y: this.info.y },
+			duration: 1000,
+			isActive: true,
+			end_action: () => {sound_fly.stop();}
+		});
+		this.info.x = coord.x;
+		this.info.y = coord.y;
+	}
+	if (left.length == 0) setTimeout(endGame, 1500);
 }
 
 function down() {
@@ -317,7 +347,7 @@ function down() {
 	viewGame.sort();
 	viewGame.resizeElement(this);
 
-	if (!sound_fly.isPlaying) sound_fly.play();
+	sound_fly.play();
 }
 
 

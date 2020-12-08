@@ -124,8 +124,15 @@ class Viewport {
 		this.k_h -= this.h / 2;
 	}
 
+	getRelativeCoordinates(element) {
+		return {
+			x: (element.position.x - this.k_w) / this.w,
+			y: (element.position.y - this.k_h) / this.h
+		};
+	}
+
 	createAnimation(animprop) {
-		let a = new ViewportAnimation(animprop);
+		let a = new ViewportAnimation(animprop, this);
 		this.animations.add(a);
 		return a;
 	}
@@ -167,48 +174,109 @@ class Viewport {
 }
 
 class ViewportAnimation {
-	constructor(prop) {
+	constructor(prop, viewport) {
 		this.type = prop.type;
 		this.element = prop.element;
-		switch (prop.type) {
-			case "move":
-				ViewportAnimation.getMoveAnimation(this, prop);
-				break;
-			case "rotate":
-				ViewportAnimation.getRotateAnimation(this, prop);
-				break;
-			case "scale":
-				ViewportAnimation.getScaleAnimation(this, prop);
-				break;
-			case "alpha":
-				ViewportAnimation.getAlphaAnimation(this, prop);
-				break;
-		}
-		if (prop.hasOwnProperty('next')) {
-			this.next = prop.next;
-		}
-
 		this.isActive = false;
 		this.isDone = false;
-	}
-
-	static getMoveAnimation(animation, prop) {
-		animation.tick = function () {
-			if (prop.hasOwnProperty('start')) {
-
-			}
+		switch (prop.type) {
+			case "move":
+				ViewportAnimation.getMoveAnimation(this, prop, viewport);
+				break;
+			case "rotate":
+				ViewportAnimation.getRotateAnimation(this, prop, viewport);
+				break;
+			case "scale":
+				ViewportAnimation.getScaleAnimation(this, prop, viewport);
+				break;
+			case "alpha":
+				ViewportAnimation.getAlphaAnimation(this, prop, viewport);
+				break;
 		}
 	}
 
-	static getRotateAnimation(animation, prop) {
+	static getMoveAnimation(animation, prop, viewport) {
+		let displacement =
+		{
+			x: prop.end.x - prop.start.x,
+			y: prop.end.y - prop.start.y
+		}
+		let disp_per_ms =
+		{
+			x: displacement.x / prop.duration,
+			y: displacement.y / prop.duration
+		};
+		let last_time = performance.now();
+		animation.isActive = prop.isActive;
+		animation.tick = function (time) {
+			let time_pass = time - last_time;
+			let dispX = time_pass * disp_per_ms.x;
+			let dispY = time_pass * disp_per_ms.y;
+
+			last_time = performance.now();
+
+			if (Math.abs(displacement.x) > Math.abs(dispX)) {
+				displacement.x -= dispX;
+				displacement.y -= dispY;
+				animation.element.info.x += dispX;
+				animation.element.info.y += dispY;
+			} else {
+				animation.element.info.x += displacement.x;
+				animation.element.info.y += displacement.y;
+				animation.isActive = false;
+				animation.isDone = true;
+			}
+
+			viewport.resizeElement(animation.element);
+
+			if (animation.isDone && prop.hasOwnProperty('end_action')) prop.end_action();
+
+			if (animation.isActive) window.requestAnimationFrame(animation.tick);
+
+		}
+		if (animation.isActive) window.requestAnimationFrame(animation.tick);
+	}
+
+	static getRotateAnimation(animation, prop, viewport) {
 
 	}
 
-	static getScaleAnimation(animation, prop) {
+	static getScaleAnimation(animation, prop, viewport) {
 
 	}
 
-	static getAlphaAnimation(animation, prop) {
+	static getAlphaAnimation(animation, prop, viewport) {
+
+	}
+}
+
+class SoundBuffer {
+	constructor(path, size, loop) {
+		this.buffer = new Array(size);
+		for (let i = 0; i < this.buffer.length; i++) {
+			this.buffer[i] = PIXI.sound.Sound.from(path);
+			this.buffer[i].loop = loop ? true : false;
+		}
+	}
+
+	play() {
+		let count = this.buffer.length;
+		this.buffer.forEach(e => {
+			if (!e.isPlaying) count--;
+		});
+		if (count < this.buffer.length) {
+			this.buffer[count].play();
+		}
+	}
+
+	stop() {
+		for (let i = 0; i < this.buffer.length; i++) {
+			if (this.buffer[i].isPlaying) {
+				this.buffer[i].stop();
+				break;
+			}
+		}
+
 
 	}
 }
