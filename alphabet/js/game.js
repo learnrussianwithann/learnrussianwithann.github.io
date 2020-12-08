@@ -292,15 +292,24 @@ function up() {
 	let coord = viewGame.getRelativeCoordinates(this);
 	let found = false;
 	this.zIndex = 0;
-	this.info.scale = 1;
 	for (let i = 0; i < left.length; i++) {
 		let e = left[i];
 		let d = distElement(this.position, e.position) / viewGame.w;
 		if (d < .05) {
 			found = true;
-			this.info.scale = .7;
+			// this.info.scale = .7;
 			this.info.x = coord.x;
 			this.info.y = coord.y;
+
+			viewGame.createAnimation({
+				element:this,
+				type: 'scale',
+				start: this.info.scale,
+				end: {x:.7, y:.7},
+				duration:500,
+				isActive:true
+			});
+
 			viewGame.createAnimation({
 				element: this,
 				type: 'move',
@@ -325,7 +334,16 @@ function up() {
 		}
 	}
 	if (!found) {
-		this.info.scale = 1;
+		// this.info.scale = 1;
+		viewGame.createAnimation({
+			element:this,
+			type: 'scale',
+			start: this.info.scale,
+			end: {x:1, y:1},
+			duration:1000,
+			isActive:true
+		});
+
 		viewGame.createAnimation({
 			element: this,
 			type: 'move',
@@ -343,7 +361,7 @@ function up() {
 
 function down() {
 	this.zIndex = 1;
-	this.info.scale = 1.3;
+	this.info.setScale(1.3);
 	viewGame.sort();
 	viewGame.resizeElement(this);
 

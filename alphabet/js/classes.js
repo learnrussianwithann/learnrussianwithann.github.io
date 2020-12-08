@@ -13,19 +13,26 @@ class Info {
 		this.height = height;
 		this.ratio = width / height;
 		this.byHeight = byHeight;
-		this.scale = 1;
+		this.scale = { x: 1, y: 1 };
 		this.x = x;
 		this.y = y;
+	}
+
+	setScale(scale) {
+		if (scale.hasOwnProperty('x')) this.scale = scale;
+		else this.scale = { x: scale, y: scale };
 	}
 
 	getSize(screenSize) {
 		let out = { w: 0, h: 0 };
 		if (this.byHeight) {
-			out.h = this.height * screenSize * this.scale;
-			out.w = out.h * this.ratio;
+			out.h = this.height * screenSize;
+			out.w = out.h * this.ratio * this.scale.x;
+			out.h *= this.scale.y;
 		} else {
-			out.w = this.width * screenSize * this.scale;
-			out.h = out.w / this.ratio;
+			out.w = this.width * screenSize;
+			out.h = (out.w / this.ratio) * this.scale.y;
+			out.w *= this.scale.x;
 		}
 		return out;
 	}
@@ -242,7 +249,45 @@ class ViewportAnimation {
 	}
 
 	static getScaleAnimation(animation, prop, viewport) {
+		let displacement =
+		{
+			x: prop.end.x - prop.start.x,
+			y: prop.end.y - prop.start.y
+		}
+		let disp_per_ms =
+		{
+			x: displacement.x / prop.duration,
+			y: displacement.y / prop.duration
+		};
+		let last_time = performance.now();
+		animation.isActive = prop.isActive;
+		animation.tick = function (time) {
+			let time_pass = time - last_time;
+			let dispX = time_pass * disp_per_ms.x;
+			let dispY = time_pass * disp_per_ms.y;
 
+			last_time = performance.now();
+
+			if (Math.abs(displacement.x) > Math.abs(dispX)) {
+				displacement.x -= dispX;
+				displacement.y -= dispY;
+				animation.element.info.scale.x += dispX;
+				animation.element.info.scale.y += dispY;
+			} else {
+				animation.element.info.scale.x += displacement.x;
+				animation.element.info.scale.y += displacement.y;
+				animation.isActive = false;
+				animation.isDone = true;
+			}
+
+			viewport.resizeElement(animation.element);
+
+			if (animation.isDone && prop.hasOwnProperty('end_action')) prop.end_action();
+
+			if (animation.isActive) window.requestAnimationFrame(animation.tick);
+
+		}
+		if (animation.isActive) window.requestAnimationFrame(animation.tick);
 	}
 
 	static getAlphaAnimation(animation, prop, viewport) {
