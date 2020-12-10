@@ -26,12 +26,12 @@ function toggleFullscreen() {
 
 const img_fullscreen = new Image(100, 100);
 img_fullscreen.src = '../img/fullscreen.png';
-img_fullscreen.style = 'position: absolute; right: 3vmax; bottom: 3vmax; opacity: .5; width: 5vmax; height: 5vmax; display: block;';
+img_fullscreen.style = 'z-index: 1000; position: absolute; right: 3vmax; bottom: 3vmax; opacity: .5; width: 5vmax; height: 5vmax; display: block; user-select: none; -webkit-touch-callout: none; -webkit-user-select: none;';
 img_fullscreen.onclick = toggleFullscreen;
 
 const img_exit_fullscreen = new Image(100, 100);
 img_exit_fullscreen.src = '../img/exit_fullscreen.png';
-img_exit_fullscreen.style = 'position: absolute; right: 3vmax; bottom: 3vmax; opacity: .5; width: 5vmax; height: 5vmax; display: none;';
+img_exit_fullscreen.style = 'z-index: 1000; position: absolute; right: 3vmax; bottom: 3vmax; opacity: .5; width: 5vmax; height: 5vmax; display: none; user-select: none; -webkit-touch-callout: none; -webkit-user-select: none;';
 img_exit_fullscreen.onclick = toggleFullscreen;
 
 document.body.append(img_fullscreen);
