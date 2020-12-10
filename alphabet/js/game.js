@@ -289,6 +289,7 @@ function startGame() {
 }
 
 function up() {
+	let fly = this;
 	let coord = viewGame.getRelativeCoordinates(this);
 	let found = false;
 	this.zIndex = 0;
@@ -322,19 +323,17 @@ function up() {
 					setButton(e, play);
 					play_sound(e.name);
 					sound_fly.stop();
+					if (fly.hasOwnProperty('anchor_loop_animation') && fly.anchor_loop_animation != null) {
+						fly.anchor_loop_animation.isDone = true;
+					}
 				}
 			});
-			// viewGame.resizeElement(this);
 			left.splice(i, 1);
 			setInactive(this);
-			// e.children[1].style.fill = '#ff0000';
-			// setButton(e, play);
-			// play_sound(e.name);
 			break;
 		}
 	}
 	if (!found) {
-		// this.info.scale = 1;
 		viewGame.createAnimation({
 			element: this,
 			type: 'scale',
@@ -351,7 +350,12 @@ function up() {
 			end: { x: this.info.x, y: this.info.y },
 			duration: 600,
 			isActive: true,
-			end_action: () => { sound_fly.stop(); }
+			end_action: () => {
+				sound_fly.stop();
+				if (fly.hasOwnProperty('anchor_loop_animation') && fly.anchor_loop_animation != null) {
+					fly.anchor_loop_animation.isDone = true;
+				}
+			}
 		});
 		this.info.x = coord.x;
 		this.info.y = coord.y;
@@ -366,6 +370,22 @@ function down() {
 	viewGame.resizeElement(this);
 
 	sound_fly.play();
+
+	let e = this;
+
+	viewGame.createAnimation({
+		element: e,
+		type: 'anchor loop',
+		function: (progress) => {
+			return {
+				x: (Math.sin(progress * 2 * Math.PI) / 6) + .5,
+				y: (Math.cos(progress * 2 * Math.PI) / 6) + .5
+			}
+		},
+		duration: 600,
+		isActive: true,
+		end_action: () => { e.anchor.set(.5); }
+	});
 }
 
 

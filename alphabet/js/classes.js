@@ -18,9 +18,9 @@ class Info {
 		this.y = y;
 	}
 
-	setScale(scale) {
-		if (scale.hasOwnProperty('x')) this.scale = scale;
-		else this.scale = { x: scale, y: scale };
+	setScale(x = 0, y = x) {
+		this.scale.x = x;
+		this.scale.y = y;
 	}
 
 	getSize(screenSize) {
@@ -139,7 +139,8 @@ class Viewport {
 
 	createAnimation(animprop) {
 		let a = new ViewportAnimation(animprop, this);
-		return a;
+		if (a.hasOwnProperty('tick')) return a;
+		else return null;
 	}
 
 	startAnimation() {
@@ -201,11 +202,16 @@ class ViewportAnimation {
 				if (prop.element.hasOwnProperty('alpha_animation') && prop.element.alpha_animation != null) return;
 				ViewportAnimation.getAlphaAnimation(this, prop, viewport);
 				break;
+			case "anchor loop":
+				if (prop.element.hasOwnProperty('anchor_loop_animation') && prop.element.anchor_loop_animation != null) return;
+				ViewportAnimation.getAnchorLoopAnimation(this, prop, viewport);
+				break;
 		}
 	}
 
 	start() {
 		window.requestAnimationFrame(this.tick);
+		this.start_time = performance.now();
 	}
 
 	static getMoveAnimation(animation, prop, viewport) {
@@ -215,10 +221,9 @@ class ViewportAnimation {
 			x: prop.end.x - prop.start.x,
 			y: prop.end.y - prop.start.y
 		}
-		let start_time = performance.now();
 		animation.isActive = prop.isActive;
 		animation.tick = function (time) {
-			let progress = (time - start_time) / prop.duration;
+			let progress = (time - animation.start_time) / prop.duration;
 			if (progress > 1) progress = 1;
 
 			animation.element.info.x = displacement.x * progress + prop.start.x;
@@ -245,6 +250,32 @@ class ViewportAnimation {
 	static getRotateAnimation(animation, prop, viewport) {
 		prop.element.rotate_animation = animation;
 
+		let displacement = prop.end - prop.start;
+
+		animation.isActive = prop.isActive;
+
+		animation.tick = function (time) {
+			let progress = (time - animation.start_time) / prop.duration;
+			if (progress > 1) progress = 1;
+
+			animation.element.rotation = displacement * progress + prop.start;
+
+			if (progress >= 1) {
+				animation.isActive = false;
+				animation.isDone = true;
+			}
+
+			viewport.resizeElement(animation.element);
+
+			if (animation.isDone) {
+				prop.element.rotate_animation = null;
+				if (prop.hasOwnProperty('end_action')) prop.end_action();
+			}
+
+			if (animation.isActive) window.requestAnimationFrame(animation.tick);
+
+		}
+
 		if (animation.isActive) animation.start();
 	}
 
@@ -255,10 +286,9 @@ class ViewportAnimation {
 			x: prop.end.x - prop.start.x,
 			y: prop.end.y - prop.start.y
 		}
-		let start_time = performance.now();
 		animation.isActive = prop.isActive;
 		animation.tick = function (time) {
-			let progress = (time - start_time) / prop.duration;
+			let progress = (time - animation.start_time) / prop.duration;
 			if (progress > 1) progress = 1;
 			animation.element.info.scale.x = displacement.x * progress + prop.start.x;
 			animation.element.info.scale.y = displacement.y * progress + prop.start.y;
@@ -283,6 +313,61 @@ class ViewportAnimation {
 
 	static getAlphaAnimation(animation, prop, viewport) {
 		prop.element.alpha_animation = animation;
+
+		let displacement = prop.end - prop.start;
+
+		animation.isActive = prop.isActive;
+
+		animation.tick = function (time) {
+			let progress = (time - animation.start_time) / prop.duration;
+			if (progress > 1) progress = 1;
+
+			animation.element.alpha = displacement * progress + prop.start;
+
+			if (progress >= 1) {
+				animation.isActive = false;
+				animation.isDone = true;
+			}
+
+			viewport.resizeElement(animation.element);
+
+			if (animation.isDone) {
+				prop.element.scale_animation = null;
+				if (prop.hasOwnProperty('end_action')) prop.end_action();
+			}
+
+			if (animation.isActive) window.requestAnimationFrame(animation.tick);
+
+		}
+
+		if (animation.isActive) animation.start();
+	}
+
+	static getAnchorLoopAnimation(animation, prop, viewport) {
+		prop.element.anchor_loop_animation = animation;
+
+		animation.isActive = prop.isActive;
+
+		animation.tick = function (time) {
+			let progress = (time - animation.start_time) / prop.duration;
+			if (progress > 1) {
+				progress = 1;
+				animation.start_time = performance.now();
+			}
+
+			let a = prop.function(progress);
+			animation.element.anchor.set(a.x, a.y);
+			// viewport.resizeElement(animation.element);
+
+			if (animation.isDone) {
+				animation.isActive = false;
+				prop.element.anchor_loop_animation = null;
+				if (prop.hasOwnProperty('end_action')) prop.end_action();
+			}
+
+			if (animation.isActive) window.requestAnimationFrame(animation.tick);
+
+		}
 
 		if (animation.isActive) animation.start();
 	}
