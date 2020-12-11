@@ -142,9 +142,11 @@ function onDragMove() {
 		const newPosition = this.data.getLocalPosition(this.parent);
 		let x = newPosition.x + this.offset.x;
 		let y = newPosition.y + this.offset.y;
-		if (x > 50 && y > 10 && x < app.screen.width - 50 && y < app.screen.height - 10) {
+		if (x > 10 && y > 10 && x < app.screen.width - 10 && y < app.screen.height - 10) {
 			this.x = newPosition.x + this.offset.x;
 			this.y = newPosition.y + this.offset.y;
+		} else {
+			this.emit('pointerup');
 		}
 	}
 }
