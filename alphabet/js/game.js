@@ -352,9 +352,9 @@ function up() {
 			isActive: true,
 			end_action: () => {
 				sound_fly.stop();
-				if (fly.hasOwnProperty('anchor_loop_animation') && fly.anchor_loop_animation != null) {
-					fly.anchor_loop_animation.isDone = true;
-				}
+				// if (fly.hasOwnProperty('anchor_loop_animation') && fly.anchor_loop_animation != null) {
+				// 	fly.anchor_loop_animation.isDone = true;
+				// }
 			}
 		});
 		this.info.x = coord.x;
@@ -373,19 +373,19 @@ function down() {
 
 	let e = this;
 
-	viewGame.createAnimation({
-		element: e,
-		type: 'anchor loop',
-		function: (progress) => {
-			return {
-				x: (Math.sin(progress * 2 * Math.PI) / 6) + .5,
-				y: (Math.cos(progress * 2 * Math.PI) / 6) + .5
-			}
-		},
-		duration: 600,
-		isActive: true,
-		end_action: () => { e.anchor.set(.5); }
-	});
+	// viewGame.createAnimation({
+	// 	element: e,
+	// 	type: 'anchor loop',
+	// 	function: (progress) => {
+	// 		return {
+	// 			x: (Math.sin(progress * 2 * Math.PI) / 6) + .5,
+	// 			y: (Math.cos(progress * 2 * Math.PI) / 6) + .5
+	// 		}
+	// 	},
+	// 	duration: 600,
+	// 	isActive: true,
+	// 	end_action: () => { e.anchor.set(.5); }
+	// });
 }
 
 
