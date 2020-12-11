@@ -371,7 +371,7 @@ function down() {
 
 	sound_fly.play();
 
-	let e = this;
+	// let e = this;
 
 	// viewGame.createAnimation({
 	// 	element: e,
@@ -387,7 +387,6 @@ function down() {
 	// 	end_action: () => { e.anchor.set(.5); }
 	// });
 }
-
 
 function play() {
 
