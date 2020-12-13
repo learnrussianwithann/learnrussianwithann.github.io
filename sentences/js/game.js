@@ -23,16 +23,9 @@ loader.add('rocks', 'img/rocks.png')
 
 font.load().then(() => { font2.load().then(() => { loader.load(init); }) });
 
-
-var isActive = true;
-var left;
-var letters = new Array(VOWELS.length);
-var flies_info = new Array(VOWELS.length);
-var flies = new Array(VOWELS.length);
-var all_letters = new Array(LETTERS.length);
-var all_positions = new Array(LETTERS.length);
-
-
+const MAX_WORDS = 5;
+const positions = new Array(MAX_WORDS);
+const words = new Array(MAX_WORDS);
 
 function init(loader, resources) {
 	gamefield.appendChild(app.view);
