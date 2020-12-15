@@ -1,4 +1,7 @@
 'use strict';
+
+const SENTENCES = ["-Мама =мыла раму", "-Книга =лежала на столе"];
+
 const gamefield = document.getElementById('game');
 const app = new PIXI.Application({
 	resizeTo: gamefield,
@@ -9,17 +12,17 @@ const app = new PIXI.Application({
 	forceCanvas: true
 });
 
-const viewStart = new Viewport(app, 16 / 9);
-const viewEnd = new Viewport(app, 16 / 9);
-const viewGame = new Viewport(app, 16 / 9);
+const viewStartView = new Viewport(app, 16 / 9);
+const viewEndView = new Viewport(app, 16 / 9);
+const viewGameView = new Viewport(app, 16 / 9);
 
 
 const font = new FontFaceObserver('OpenSans');
 const font2 = new FontFaceObserver('RubikMonoOne');
 
 const loader = PIXI.Loader.shared;
-loader.add('rocks', 'img/rocks.png')
-	.add('flies', 'img/flies.png');
+// loader.add('rocks', 'img/rocks.png')
+// 	.add('flies', 'img/flies.png');
 
 font.load().then(() => { font2.load().then(() => { loader.load(init); }) });
 
@@ -30,15 +33,15 @@ const words = new Array(MAX_WORDS);
 function init(loader, resources) {
 	gamefield.appendChild(app.view);
 
-	initStart();
-	initGame(resources);
-	initEnd();
+	initStartView();
+	initGameView(resources);
+	initEndView();
 
-	viewStart.show();
+	showStart();
 }
 
-function initStart() {
-	viewStart.createElement({
+function initStartView() {
+	viewStartView.createElement({
 		type: ROUND_RECT,
 		width: .6,
 		height: .5,
@@ -48,7 +51,7 @@ function initStart() {
 		y: .5
 	});
 
-	viewStart.createElement({
+	viewStartView.createElement({
 		type: TEXT,
 		text: 'Составь предложения из слов',
 		style: {
@@ -65,7 +68,7 @@ function initStart() {
 		y: .35
 	});
 
-	let bstart = viewStart.createElement({
+	let bstart = viewStartView.createElement({
 		type: BUTTON,
 		text: 'Поехали',
 		style: {
@@ -87,12 +90,12 @@ function initStart() {
 	setButton(bstart, startGame);
 }
 
-function initGame(res) {
+function initGameView(res) {
 
 }
 
-function initEnd() {
-	viewEnd.createElement({
+function initEndView() {
+	viewEndView.createElement({
 		type: ROUND_RECT,
 		width: .6,
 		height: .5,
@@ -102,7 +105,7 @@ function initEnd() {
 		y: .5
 	});
 
-	viewEnd.createElement({
+	viewEndView.createElement({
 		type: TEXT,
 		text: 'Все готово!',
 		style: {
@@ -119,7 +122,7 @@ function initEnd() {
 		y: .35
 	});
 
-	let bagain = viewEnd.createElement({
+	let bagain = viewEndView.createElement({
 		type: BUTTON,
 		text: 'Сыграть еще раз',
 		style: {
@@ -143,19 +146,35 @@ function initEnd() {
 
 function startGame() {
 
-	viewStart.hide();
-	viewEnd.hide();
-	viewGame.show();
+	console.log(getWords());
+	showGame();
 }
 
 
 function endGame() {
-	viewEnd.show();
-	viewGame.hide();
+	viewEndView.show();
+	viewGameView.hide();
 }
 
 function showStart() {
-	viewStart.show();
-	viewEnd.hide();
-	viewGame.hide();
+	viewStartView.show();
+	viewGameView.hide();
+	viewEndView.hide();
+}
+
+function showGame() {
+	viewStartView.hide();
+	viewGameView.show();
+	viewEndView.hide();
+}
+
+function showEnd() {
+	viewStartView.hide();
+	viewGameView.hide();
+	viewEndView.show();
+}
+
+function getWords() {
+	let words = SENTENCES[Math.floor(Math.random() * SENTENCES.length)].split(' ');
+	return words;
 }
