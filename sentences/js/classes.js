@@ -61,22 +61,22 @@ class Viewport {
 		this.calcScreenSize();
 		let e;
 		switch (prop.type) {
-			case ROUND_RECT:
+			case ROUND_RECT:			// prop(type, width*, height*, byHeight*, radius, color, x, y) *not necessary
 				e = getRect(prop);
 				break;
-			case SPRITE:
+			case SPRITE:				// prop(type, name*, texture, anchor*, width*, height*, byHeight*, x, y) *not necessary
 				e = getSprite(prop);
 				break;
-			case TEXT:
+			case TEXT:				// prop(type, text, style, width*, height*, byHeight*, x, y) *not necessary
 				e = getText(prop);
 				break;
-			case BUTTON:
+			case BUTTON:				// prop(type, text, style, bcolor, width*, height*, byHeight*, x, y) *not necessary
 				e = getButton(prop);
 				break;
-			case SPRITE_WITH_TEXT:
+			case SPRITE_WITH_TEXT:				// prop(type, texture, text, style, name*, anchor*, text_anchor*, width*, height*, byHeight*, x, y) *not necessary
 				e = getSpriteWithText(prop);
 				break;
-			case TEXT_TEXTURED:
+			case TEXT_TEXTURED:				// prop(type, text, style, texture, width*, height*, byHeight*, x, y) *not necessary
 				e = getText(prop);
 				break;
 		}

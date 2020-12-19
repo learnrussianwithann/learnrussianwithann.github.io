@@ -30,11 +30,9 @@ function distToMouse(word, mouse) {
 
 function getRandomInt(max) {
 	return Math.floor(Math.random() * Math.floor(max));
-  }
+}
 
 function getRect(prop) {
-	// if (!checkProperty(prop, 'width', 'height', 'raduis', 'color')) return null;
-
 	let out = new PIXI.Graphics();
 	let w = prop.width * DEFAULT_WIDTH;
 	let h = prop.height * DEFAULT_WIDTH;
@@ -71,6 +69,7 @@ function getSpriteWithText(prop) {
 	let out = new PIXI.Container();
 	let s = new PIXI.Sprite(prop.texture);
 	let t = new PIXI.Text(prop.text, prop.style);
+	t.name = 'text';
 	if (prop.hasOwnProperty('name')) out.name = prop.name;
 	let ratio = t.width / t.height;
 	if (prop.hasOwnProperty('anchor')) {
@@ -93,7 +92,7 @@ function getSpriteWithText(prop) {
 
 	out.addChild(s);
 	out.addChild(t);
-	
+
 	return out;
 }
 
@@ -175,6 +174,11 @@ function setButton(element, event) {
 	element.on('pointerdown', event)
 	element.interactive = true
 	element.buttonMode = true
+}
+
+function changeText(element, text) {
+	let t = element.getChildByName('text');
+	if (t != null) t.text = text;
 }
 
 /////////////////////////////////////////

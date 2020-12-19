@@ -12,23 +12,26 @@ const app = new PIXI.Application({
 	forceCanvas: true
 });
 
-const viewStartView = new Viewport(app, 16 / 9);
-const viewEndView = new Viewport(app, 16 / 9);
-const viewGameView = new Viewport(app, 16 / 9);
+const viewStart = new Viewport(app, 16 / 9);
+const viewGame = new Viewport(app, 16 / 9);
+const viewEnd = new Viewport(app, 16 / 9);
 
 
 const font = new FontFaceObserver('OpenSans');
 const font2 = new FontFaceObserver('RubikMonoOne');
 
 const loader = PIXI.Loader.shared;
-// loader.add('rocks', 'img/rocks.png')
+loader.add('brige', 'img/brige.png');
 // 	.add('flies', 'img/flies.png');
 
 font.load().then(() => { font2.load().then(() => { loader.load(init); }) });
 
 const MAX_WORDS = 5;
-const positions = new Array(MAX_WORDS);
-const words = new Array(MAX_WORDS);
+const BUFFER_POS = new Array(MAX_WORDS);
+const BUFFER_WORDS = new Array(MAX_WORDS);
+
+var words;
+var positions;
 
 function init(loader, resources) {
 	gamefield.appendChild(app.view);
@@ -41,7 +44,7 @@ function init(loader, resources) {
 }
 
 function initStartView() {
-	viewStartView.createElement({
+	viewStart.createElement({
 		type: ROUND_RECT,
 		width: .6,
 		height: .5,
@@ -51,7 +54,7 @@ function initStartView() {
 		y: .5
 	});
 
-	viewStartView.createElement({
+	viewStart.createElement({
 		type: TEXT,
 		text: 'Составь предложения из слов',
 		style: {
@@ -68,7 +71,7 @@ function initStartView() {
 		y: .35
 	});
 
-	let bstart = viewStartView.createElement({
+	let bstart = viewStart.createElement({
 		type: BUTTON,
 		text: 'Поехали',
 		style: {
@@ -92,10 +95,46 @@ function initStartView() {
 
 function initGameView(res) {
 
+	for (let i = 0; i < MAX_WORDS; i++) {
+		BUFFER_POS[i] = viewGame.createElement({
+			type: ROUND_RECT,
+			width: .15,
+			height: .1,
+			radius: .05,
+			color: 0x7777ff,
+			x: .5,
+			y: .5
+		});
+		BUFFER_POS[i].zIndex = 0;
+		BUFFER_POS[i].visible = false;
+
+		BUFFER_WORDS[i] = viewGame.createElement({
+			type: SPRITE_WITH_TEXT,
+			text: 'test',
+			style: {
+				fontFamily: 'RubikMonoOne',
+				fontSize: 30,
+				fill: '#ffffff',
+				wordWrap: false,
+				align: 'center'
+			},
+			text_anchor: { x: .5, y: .75 },
+			texture: res.brige.texture,
+			width: .15,
+			height: .1,
+			x: .5,
+			y: .5
+		});
+		BUFFER_WORDS[i].zIndex = 1;
+		BUFFER_WORDS[i].visible = false;
+		setMoveable(BUFFER_WORDS[i], up, down);
+
+		viewGame.sort();
+	}
 }
 
 function initEndView() {
-	viewEndView.createElement({
+	viewEnd.createElement({
 		type: ROUND_RECT,
 		width: .6,
 		height: .5,
@@ -105,7 +144,7 @@ function initEndView() {
 		y: .5
 	});
 
-	viewEndView.createElement({
+	viewEnd.createElement({
 		type: TEXT,
 		text: 'Все готово!',
 		style: {
@@ -122,7 +161,7 @@ function initEndView() {
 		y: .35
 	});
 
-	let bagain = viewEndView.createElement({
+	let bagain = viewEnd.createElement({
 		type: BUTTON,
 		text: 'Сыграть еще раз',
 		style: {
@@ -145,36 +184,64 @@ function initEndView() {
 }
 
 function startGame() {
+	let twords = SENTENCES[Math.floor(Math.random() * SENTENCES.length)].split(' ');
+	let l = twords.length;
 
-	console.log(getWords());
+	words = new Array(l);
+	positions = new Array(l);
+
+	for (let i = 0; i < MAX_WORDS; i++) {
+		if (i < l) {
+			words[i] = BUFFER_WORDS[i];
+			words[i].info.x = .2 + i * .5 / (l-1);
+			words[i].info.y = .6;
+			words[i].visible = true;
+			changeText(words[i], twords[i]);
+
+			positions[i] = BUFFER_POS[i];
+			positions[i].info.x = .2 + i * .5 / (l-1);
+			positions[i].info.y = .4;
+			positions[i].visible = true;
+		} else {
+			BUFFER_WORDS[i].visible = false;
+			BUFFER_POS[i].visible = false;
+		}
+	}
+
+
 	showGame();
 }
 
 
 function endGame() {
-	viewEndView.show();
-	viewGameView.hide();
+	viewEnd.show();
+	viewGame.hide();
 }
 
 function showStart() {
-	viewStartView.show();
-	viewGameView.hide();
-	viewEndView.hide();
+	viewStart.show();
+	viewGame.hide();
+	viewEnd.hide();
 }
 
 function showGame() {
-	viewStartView.hide();
-	viewGameView.show();
-	viewEndView.hide();
+	viewStart.hide();
+	viewGame.show();
+	viewEnd.hide();
 }
 
 function showEnd() {
-	viewStartView.hide();
-	viewGameView.hide();
-	viewEndView.show();
+	viewStart.hide();
+	viewGame.hide();
+	viewEnd.show();
 }
 
-function getWords() {
-	let words = SENTENCES[Math.floor(Math.random() * SENTENCES.length)].split(' ');
-	return words;
+function down() {
+	this.zIndex = 2;
+	viewGame.sort();
+}
+
+function up() {
+	this.zIndex = 1;
+	viewGame.sort();
 }
