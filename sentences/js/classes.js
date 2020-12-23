@@ -23,6 +23,16 @@ class Info {
 		this.scale.y = y;
 	}
 
+	setPosition(x = 0, y = x) {
+		this.x = x;
+		this.y = y;
+	}
+
+	copyPosition(element) {
+		this.x = element.info.x;
+		this.y = element.info.y;
+	}
+
 	getSize(screenSize) {
 		let out = { w: 0, h: 0 };
 		if (this.byHeight) {

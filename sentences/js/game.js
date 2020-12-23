@@ -193,15 +193,19 @@ function startGame() {
 	for (let i = 0; i < MAX_WORDS; i++) {
 		if (i < l) {
 			words[i] = BUFFER_WORDS[i];
-			words[i].info.x = .2 + i * .5 / (l-1);
-			words[i].info.y = .6;
+			words[i].info.x = .2 + i * .6 / (l - 1);
+			words[i].info.y = .7;
+			words[i].info.width = .599 / (l - 1);
+			words[i].startPosition = { x: words[i].info.x, y: words[i].info.y };
 			words[i].visible = true;
 			changeText(words[i], twords[i]);
 
 			positions[i] = BUFFER_POS[i];
-			positions[i].info.x = .2 + i * .5 / (l-1);
-			positions[i].info.y = .4;
+			positions[i].info.x = .2 + i * .6 / (l - 1);
+			positions[i].info.y = .3;
+			positions[i].info.width = .599 / (l - 1);
 			positions[i].visible = true;
+			positions[i].isEmpty = true;
 		} else {
 			BUFFER_WORDS[i].visible = false;
 			BUFFER_POS[i].visible = false;
@@ -242,6 +246,37 @@ function down() {
 }
 
 function up() {
+	checkPosition(this);
 	this.zIndex = 1;
 	viewGame.sort();
+	viewGame.resize();
+}
+
+function checkPosition(word) {
+	let t_i = -1, min = word.info.width * 1.1;
+	for (let i = 0; i < positions.length; i++) {
+		const e = positions[i];
+		let r = distElement(e.info, viewGame.getRelativeCoordinates(word))
+		if (r < min) {
+			min = r;
+			t_i = i;
+		}
+	}
+	if (t_i >= 0 && positions[t_i].word == null) {
+		release(word);
+		word.pos = positions[t_i];
+		positions[t_i].word = word;
+		word.info.copyPosition(positions[t_i]);
+	} else if (t_i < 0 || positions[t_i].word != word) {
+		word.info.setPosition(word.startPosition.x, word.startPosition.y);
+		release(word);
+	}
+
+}
+
+
+
+function release(word) {
+	if (word.pos != null) word.pos.word = null;
+	word.pos = null;
 }
