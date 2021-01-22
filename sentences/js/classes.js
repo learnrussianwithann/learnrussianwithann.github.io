@@ -74,7 +74,7 @@ class Viewport {
 			case ROUND_RECT:			// prop(type, width*, height*, byHeight*, radius, color, x, y) *not necessary
 				e = getRect(prop);
 				break;
-			case SPRITE:				// prop(type, name*, texture, anchor*, width*, height*, byHeight*, x, y) *not necessary
+			case SPRITE:				// prop(type, texture, x, y, name*, anchor*, width*, height*, byHeight*) *not necessary
 				e = getSprite(prop);
 				break;
 			case TEXT:				// prop(type, text, style, width*, height*, byHeight*, x, y) *not necessary

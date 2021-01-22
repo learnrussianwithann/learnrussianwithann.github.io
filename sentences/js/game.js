@@ -21,7 +21,9 @@ const font = new FontFaceObserver('OpenSans');
 const font2 = new FontFaceObserver('RubikMonoOne');
 
 const loader = PIXI.Loader.shared;
-loader.add('brige', 'img/brige.png');
+loader.add('brige', 'img/brige.png')
+	.add('subject', 'img/subject.png')
+	.add('predicate', 'img/predicate.png');
 // 	.add('flies', 'img/flies.png');
 
 font.load().then(() => { font2.load().then(() => { loader.load(init); }) });
@@ -30,6 +32,8 @@ const MAX_WORDS = 5;
 const BUFFER_POS = new Array(MAX_WORDS);
 const BUFFER_WORDS = new Array(MAX_WORDS);
 
+var subject;
+var predicate;
 var words;
 var positions;
 
@@ -94,6 +98,30 @@ function initStartView() {
 }
 
 function initGameView(res) {
+
+	subject = viewGame.createElement({
+		type: SPRITE,
+		texture: res.subject.texture,
+		width: .15,
+		height: .04,
+		x: .25,
+		y: .6,
+		anchor: .5
+	});
+	subject.zIndex = 10;
+	setMoveable(subject);
+
+	predicate = viewGame.createElement({
+		type: SPRITE,
+		texture: res.predicate.texture,
+		width: .15,
+		height: .04,
+		x: .75,
+		y: .6,
+		anchor: .5
+	});
+	predicate.zIndex = 10;
+	setMoveable(predicate);
 
 	for (let i = 0; i < MAX_WORDS; i++) {
 		BUFFER_POS[i] = viewGame.createElement({
@@ -198,6 +226,17 @@ function startGame() {
 			words[i].info.width = .599 / (l - 1);
 			words[i].startPosition = { x: words[i].info.x, y: words[i].info.y };
 			words[i].visible = true;
+
+			if (twords[i][0] == '-') {
+				words[i].type = '-';
+				twords[i] = twords[i].substring(1);
+			} else if (twords[i][0] == '=') {
+				words[i].type = '=';
+				twords[i] = twords[i].substring(1);
+			} else {
+				words[i].type = '0';
+			}
+
 			changeText(words[i], twords[i]);
 
 			positions[i] = BUFFER_POS[i];
@@ -212,6 +251,8 @@ function startGame() {
 		}
 	}
 
+	subject.info.width = words[0].info.width;
+	predicate.info.width = words[0].info.width;
 
 	showGame();
 }
@@ -279,4 +320,21 @@ function checkPosition(word) {
 function release(word) {
 	if (word.pos != null) word.pos.word = null;
 	word.pos = null;
+}
+
+
+class Word {
+	constructor(text) {
+		if (text[0] == '-') {
+			this.word = text.substring(1);
+		} else if (text[0] = '=') {
+			this.word = text.substring(1);
+		} else {
+			this.word = text;
+		}
+	}
+
+	getConteiner() {
+		return this.word;
+	}
 }
