@@ -109,7 +109,8 @@ function initGameView(res) {
 		anchor: .5
 	});
 	subject.zIndex = 10;
-	setMoveable(subject);
+	subject.pos = null;
+	setMoveable(subject, upStrip, downStrip);
 
 	predicate = viewGame.createElement({
 		type: SPRITE,
@@ -121,7 +122,8 @@ function initGameView(res) {
 		anchor: .5
 	});
 	predicate.zIndex = 10;
-	setMoveable(predicate);
+	predicate.pos = null;
+	setMoveable(predicate, upStrip, downStrip);
 
 	for (let i = 0; i < MAX_WORDS; i++) {
 		BUFFER_POS[i] = viewGame.createElement({
@@ -155,7 +157,7 @@ function initGameView(res) {
 		});
 		BUFFER_WORDS[i].zIndex = 1;
 		BUFFER_WORDS[i].visible = false;
-		setMoveable(BUFFER_WORDS[i], up, down);
+		
 
 		viewGame.sort();
 	}
@@ -228,6 +230,7 @@ function startGame() {
 			words[i].info.width = .599 / (l - 1);
 			words[i].startPosition = { x: words[i].info.x, y: words[i].info.y };
 			words[i].visible = true;
+			setMoveable(words[i], upWord, downWord);
 
 			if (twords[i][0] == '-') {
 				words[i].type = '-';
@@ -295,16 +298,24 @@ function showEnd() {
 	viewEnd.show();
 }
 
-function down() {
+function downWord() {
 	this.zIndex = 2;
 	viewGame.sort();
 }
 
-function up() {
+function upWord() {
 	checkPosition(this);
 	this.zIndex = 1;
 	viewGame.sort();
 	viewGame.resize();
+}
+
+function downStrip() {
+	
+}
+
+function upStrip() {
+	
 }
 
 function checkPosition(word) {
