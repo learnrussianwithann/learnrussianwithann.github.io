@@ -218,10 +218,12 @@ function startGame() {
 	words = new Array(l);
 	positions = new Array(l);
 
-	for (let i = 0; i < MAX_WORDS; i++) {
+	for (let i = 0, k = getRandomInt(l); i < MAX_WORDS; i++, k++) {
 		if (i < l) {
+			k %= l;
+			
 			words[i] = BUFFER_WORDS[i];
-			words[i].info.x = .2 + i * .6 / (l - 1);
+			words[i].info.x = .2 + k * .6 / (l - 1);
 			words[i].info.y = .7;
 			words[i].info.width = .599 / (l - 1);
 			words[i].startPosition = { x: words[i].info.x, y: words[i].info.y };
@@ -254,9 +256,21 @@ function startGame() {
 	subject.info.width = words[0].info.width;
 	predicate.info.width = words[0].info.width;
 
+	subject.visible = false;
+	predicate.visible = false;
+
+
 	showGame();
 }
 
+function startSecondStage() {
+	subject.visible = true;
+	predicate.visible = true;
+
+	words.forEach(e => {
+		setInactive(e);
+	});
+}
 
 function endGame() {
 	viewEnd.show();
@@ -309,32 +323,41 @@ function checkPosition(word) {
 		positions[t_i].word = word;
 		word.info.copyPosition(positions[t_i]);
 	} else if (t_i < 0 || positions[t_i].word != word) {
-		word.info.setPosition(word.startPosition.x, word.startPosition.y);
-		release(word);
+		moveWordToStart(word);
 	}
 
+	let flag = true;
+
+	words.forEach(w => {
+		if (w.pos == null) flag = false;
+	});
+
+	if (flag)checkOrder();
 }
 
+function checkOrder() {
+	for (let i = 0, x = 0; i < words.length; i++) {
+		if (words[i].pos != positions[i]) {
+			moveAllWordsToStart();
+			return;
+		}
+	}
+	startSecondStage();
+}
 
+function moveAllWordsToStart() {
+	words.forEach(w => {
+		moveWordToStart(w);
+	});
+}
+
+function moveWordToStart(word) {
+	word.info.setPosition(word.startPosition.x, word.startPosition.y);
+	release(word);
+}
 
 function release(word) {
 	if (word.pos != null) word.pos.word = null;
 	word.pos = null;
 }
 
-
-class Word {
-	constructor(text) {
-		if (text[0] == '-') {
-			this.word = text.substring(1);
-		} else if (text[0] = '=') {
-			this.word = text.substring(1);
-		} else {
-			this.word = text;
-		}
-	}
-
-	getConteiner() {
-		return this.word;
-	}
-}
