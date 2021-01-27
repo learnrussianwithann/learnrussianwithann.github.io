@@ -110,6 +110,7 @@ function initGameView(res) {
 	});
 	subject.zIndex = 10;
 	subject.pos = null;
+	subject.startPosition = { x: subject.info.x, y: subject.info.y };
 	setMoveable(subject, upStrip, downStrip);
 
 	predicate = viewGame.createElement({
@@ -123,6 +124,7 @@ function initGameView(res) {
 	});
 	predicate.zIndex = 10;
 	predicate.pos = null;
+	predicate.startPosition = { x: predicate.info.x, y: predicate.info.y };
 	setMoveable(predicate, upStrip, downStrip);
 
 	for (let i = 0; i < MAX_WORDS; i++) {
@@ -157,7 +159,7 @@ function initGameView(res) {
 		});
 		BUFFER_WORDS[i].zIndex = 1;
 		BUFFER_WORDS[i].visible = false;
-		
+
 
 		viewGame.sort();
 	}
@@ -217,13 +219,14 @@ function startGame() {
 	let twords = SENTENCES[Math.floor(Math.random() * SENTENCES.length)].split(' ');
 	let l = twords.length;
 
+	
 	words = new Array(l);
 	positions = new Array(l);
 
 	for (let i = 0, k = getRandomInt(l); i < MAX_WORDS; i++, k++) {
 		if (i < l) {
 			k %= l;
-			
+
 			words[i] = BUFFER_WORDS[i];
 			words[i].info.x = .2 + k * .6 / (l - 1);
 			words[i].info.y = .7;
@@ -231,6 +234,7 @@ function startGame() {
 			words[i].startPosition = { x: words[i].info.x, y: words[i].info.y };
 			words[i].visible = true;
 			setMoveable(words[i], upWord, downWord);
+			release(words[i]);
 
 			if (twords[i][0] == '-') {
 				words[i].type = '-';
@@ -261,7 +265,9 @@ function startGame() {
 
 	subject.visible = false;
 	predicate.visible = false;
-
+	
+	moveElementToStart(subject);
+	moveElementToStart(predicate);
 
 	showGame();
 }
@@ -304,21 +310,74 @@ function downWord() {
 }
 
 function upWord() {
-	checkPosition(this);
+	checkPositionWord(this);
 	this.zIndex = 1;
 	viewGame.sort();
 	viewGame.resize();
 }
 
 function downStrip() {
-	
+
 }
 
 function upStrip() {
-	
+	checkPositionStrip(this);
+	viewGame.resizeElement(this);
 }
 
-function checkPosition(word) {
+function checkPositionStrip(strip) {
+	let t_i = -1, min = strip.info.width * 1.1;
+	for (let i = 0; i < positions.length; i++) {
+		const e = positions[i];
+		let r = distElement(e.info, viewGame.getRelativeCoordinates(strip))
+		if (r < min) {
+			min = r;
+			t_i = i;
+		}
+	}
+
+
+	if (t_i >= 0) {
+		switch (strip) {
+			case subject:
+				if (positions[t_i] == predicate.pos) {
+					if (subject.pos == null) {
+						moveElementToStart(subject);
+					} else {
+						moveElementToPosition(subject);
+					}
+					return;
+				}
+				break;
+			case predicate:
+				if (positions[t_i] == subject.pos) {
+					if (predicate.pos == null) {
+						moveElementToStart(predicate);
+					} else {
+						moveElementToPosition(predicate);
+					}
+					return;
+				}
+				break;
+		}
+
+		if (strip.pos == null) {
+			strip.anchor.set(.5, 0);
+		}
+
+		strip.pos = positions[t_i];
+		strip.info.copyPosition(positions[t_i]);
+
+		if (subject.pos != null && predicate.pos != null &&
+			subject.pos.word.type == '-' && predicate.pos.word.type == '=') {
+			endGame();
+		}
+	} else if (t_i < 0) {
+		moveElementToStart(strip);
+	}
+}
+
+function checkPositionWord(word) {
 	let t_i = -1, min = word.info.width * 1.1;
 	for (let i = 0; i < positions.length; i++) {
 		const e = positions[i];
@@ -334,7 +393,7 @@ function checkPosition(word) {
 		positions[t_i].word = word;
 		word.info.copyPosition(positions[t_i]);
 	} else if (t_i < 0 || positions[t_i].word != word) {
-		moveWordToStart(word);
+		moveElementToStart(word);
 	}
 
 	let flag = true;
@@ -343,7 +402,7 @@ function checkPosition(word) {
 		if (w.pos == null) flag = false;
 	});
 
-	if (flag)checkOrder();
+	if (flag) checkOrder();
 }
 
 function checkOrder() {
@@ -358,17 +417,27 @@ function checkOrder() {
 
 function moveAllWordsToStart() {
 	words.forEach(w => {
-		moveWordToStart(w);
+		moveElementToStart(w);
 	});
 }
 
-function moveWordToStart(word) {
-	word.info.setPosition(word.startPosition.x, word.startPosition.y);
-	release(word);
+function moveElementToStart(elem) {
+	elem.info.setPosition(elem.startPosition.x, elem.startPosition.y);
+	if (elem != subject || elem != predicate) {
+		release(elem);
+	} else {
+		elem.pos = null;
+		elem.anchor.set(.5);
+	}
+
 }
 
-function release(word) {
-	if (word.pos != null) word.pos.word = null;
-	word.pos = null;
+function moveElementToPosition(elem) {
+	elem.info.copyPosition(elem.pos);
+}
+
+function release(elem) {
+	if (elem.pos != null) elem.pos.word = null;
+	elem.pos = null;
 }
 
