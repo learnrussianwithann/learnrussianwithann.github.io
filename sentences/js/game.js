@@ -172,12 +172,13 @@ function initGameView(res) {
 		});
 		BUFFER_POS[i].zIndex = 0;
 		BUFFER_POS[i].visible = false;
+		BUFFER_POS[i].order = i;
 
 		BUFFER_WORDS[i] = viewGame.createElement({
 			type: SPRITE_WITH_TEXT,
 			text: 'test',
 			style: {
-				fontFamily: 'RubikMonoOne',
+				fontFamily: 'OpenSans',
 				fontSize: 30,
 				fill: '#ffffff',
 				wordWrap: false,
@@ -253,6 +254,8 @@ function startGame() {
 	let twords = SENTENCES[Math.floor(Math.random() * SENTENCES.length)].split('/');
 	let l = twords.length;
 	let xGap = .3;
+	let maxWidth = 0;
+	let maxWidthIndex = 0;
 	
 	words = new Array(l);
 	positions = new Array(l);
@@ -281,9 +284,14 @@ function startGame() {
 			}
 
 			changeText(words[i], twords[i]);
+			let width = words[i].getChildByName('text').width;
+			if (width > maxWidth) {
+				maxWidth = width;
+				maxWidthIndex = i;
+			}
 
 			positions[i] = BUFFER_POS[i];
-			positions[i].info.x = xGap + k * (1 - 2 * xGap) / (l - 1);
+			positions[i].info.x = xGap + i * (1 - 2 * xGap) / (l - 1);
 			positions[i].info.y = .4;
 			positions[i].info.width = (1 - 2 * xGap) / (l - 1);
 			positions[i].visible = true;
@@ -292,6 +300,12 @@ function startGame() {
 			BUFFER_WORDS[i].visible = false;
 			BUFFER_POS[i].visible = false;
 		}
+	}
+	
+	
+
+	for (let i = 0; i < words.length; i++) {
+		words[i].getChildByName('sprite').width = 1.2 * maxWidth;
 	}
 
 	subject.info.width = words[0].info.width;
@@ -441,7 +455,7 @@ function checkPositionWord(word) {
 
 function checkOrder() {
 	for (let i = 0, x = 0; i < words.length; i++) {
-		if (words[i].pos != positions[i]) {
+		if (words[i].pos.order != i) {
 			moveAllWordsToStart();
 			return;
 		}
@@ -457,11 +471,11 @@ function moveAllWordsToStart() {
 
 function moveElementToStart(elem) {
 	elem.info.setPosition(elem.startPosition.x, elem.startPosition.y);
-	if (elem != subject || elem != predicate) {
-		release(elem);
-	} else {
+	if (elem == subject || elem == predicate) {
 		elem.pos = null;
 		elem.anchor.set(.5);
+	} else {
+		release(elem);
 	}
 
 }

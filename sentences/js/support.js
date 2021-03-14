@@ -70,6 +70,7 @@ function getSpriteWithText(prop) {
 	let s = new PIXI.Sprite(prop.texture);
 	let t = new PIXI.Text(prop.text, prop.style);
 	t.name = 'text';
+	s.name = 'sprite';
 	if (prop.hasOwnProperty('name')) out.name = prop.name;
 	let ratio = t.width / t.height;
 	if (prop.hasOwnProperty('anchor')) {
