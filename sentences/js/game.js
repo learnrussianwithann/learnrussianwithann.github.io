@@ -23,6 +23,7 @@ const font2 = new FontFaceObserver('RubikMonoOne');
 const loader = PIXI.Loader.shared;
 loader.add('brige', 'img/brige.png')
 	.add('subject', 'img/subject.png')
+	.add('mouse', 'img/m1.png')
 	.add('predicate', 'img/predicate.png');
 // 	.add('flies', 'img/flies.png');
 
@@ -36,6 +37,7 @@ var subject;
 var predicate;
 var words;
 var positions;
+var mouse;
 
 function init(loader, resources) {
 	gamefield.appendChild(app.view);
@@ -98,6 +100,16 @@ function initStartView() {
 }
 
 function initGameView(res) {
+
+	mouse = viewGame.createElement({
+		type: SPRITE,
+		texture: res.mouse.texture,
+		width: .12,
+		anchor: .5,
+		x: .1,
+		y: .2
+	})
+	mouse.zIndex = 11;
 
 	subject = viewGame.createElement({
 		type: SPRITE,
@@ -163,6 +175,7 @@ function initGameView(res) {
 
 		viewGame.sort();
 	}
+	
 }
 
 function initEndView() {
@@ -218,7 +231,7 @@ function initEndView() {
 function startGame() {
 	let twords = SENTENCES[Math.floor(Math.random() * SENTENCES.length)].split(' ');
 	let l = twords.length;
-
+	let xGap = .3;
 	
 	words = new Array(l);
 	positions = new Array(l);
@@ -228,9 +241,9 @@ function startGame() {
 			k %= l;
 
 			words[i] = BUFFER_WORDS[i];
-			words[i].info.x = .2 + k * .6 / (l - 1);
+			words[i].info.x = xGap + k * (1 - 2 * xGap) / (l - 1);
 			words[i].info.y = .7;
-			words[i].info.width = .599 / (l - 1);
+			words[i].info.width = (1 - 2 * xGap) / (l - 1);
 			words[i].startPosition = { x: words[i].info.x, y: words[i].info.y };
 			words[i].visible = true;
 			setMoveable(words[i], upWord, downWord);
@@ -249,9 +262,9 @@ function startGame() {
 			changeText(words[i], twords[i]);
 
 			positions[i] = BUFFER_POS[i];
-			positions[i].info.x = .2 + i * .6 / (l - 1);
-			positions[i].info.y = .3;
-			positions[i].info.width = .599 / (l - 1);
+			positions[i].info.x = xGap + k * (1 - 2 * xGap) / (l - 1);
+			positions[i].info.y = .4;
+			positions[i].info.width = (1 - 2 * xGap) / (l - 1);
 			positions[i].visible = true;
 			positions[i].isEmpty = true;
 		} else {
