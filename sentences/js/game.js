@@ -187,7 +187,7 @@ function initGameView(res) {
 			text_anchor: { x: .5, y: .75 },
 			texture: res.brige.texture,
 			width: .15,
-			height: .1,
+			height: .05,
 			x: .5,
 			y: .5
 		});
