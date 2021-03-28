@@ -44,7 +44,7 @@ const font2 = new FontFaceObserver('RubikMonoOne');
 const loader = PIXI.Loader.shared;
 loader.add('brige', 'img/brige.png')
 	.add('subject', 'img/subject.png')
-	.add('mouse', 'img/m1.png')
+	.add('mouse', 'img/mouse.png')
 	.add('predicate', 'img/predicate.png');
 // 	.add('flies', 'img/flies.png');
 
@@ -58,7 +58,7 @@ var subject;
 var predicate;
 var words;
 var positions;
-var mouse;
+var mouse = Object.create(null);
 
 function init(loader, resources) {
 	gamefield.appendChild(app.view);
@@ -122,15 +122,41 @@ function initStartView() {
 
 function initGameView(res) {
 
-	mouse = viewGame.createElement({
+	mouse.x = .1;
+	mouse.y = .2;
+	mouse.scale = .2;
+
+	mouse.body = viewGame.createElement({
 		type: SPRITE,
-		texture: res.mouse.texture,
-		width: .12,
+		texture: new PIXI.Texture(res.mouse.texture.baseTexture, new PIXI.Rectangle(0, 0, 750, 900)),
+		width: mouse.scale,
 		anchor: .5,
-		x: .1,
-		y: .2
-	})
-	mouse.zIndex = 11;
+		x: mouse.x,
+		y: mouse.y
+	});
+	mouse.arm_left = viewGame.createElement({
+		type: SPRITE,
+		texture: new PIXI.Texture(res.mouse.texture.baseTexture, new PIXI.Rectangle(0, 900, 200, 70)),
+		width: mouse.scale * .3,
+		anchor: {x: .1, y: .5},
+		x: mouse.x - .04,
+		y: mouse.y + .07
+	});
+	mouse.arm_left.rotation = .6;
+
+	mouse.arm_right = viewGame.createElement({
+		type: SPRITE,
+		texture: new PIXI.Texture(res.mouse.texture.baseTexture, new PIXI.Rectangle(0, 900, 200, 70)),
+		width: mouse.scale * .3,
+		anchor: {x: .1, y: .5},
+		x: mouse.x + .01,
+		y: mouse.y + .07
+	});
+	mouse.arm_right.rotation = -.3;
+
+	mouse.arm_left.zIndex = 12;
+	mouse.body.zIndex = 11;
+	mouse.arm_right.zIndex = 10;
 
 	subject = viewGame.createElement({
 		type: SPRITE,
