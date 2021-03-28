@@ -45,6 +45,7 @@ const loader = PIXI.Loader.shared;
 loader.add('brige', 'img/brige.png')
 	.add('subject', 'img/subject.png')
 	.add('mouse', 'img/mouse.png')
+	.add('paper', 'img/paper.jpg')
 	.add('predicate', 'img/predicate.png');
 // 	.add('flies', 'img/flies.png');
 
@@ -59,6 +60,7 @@ var predicate;
 var words;
 var positions;
 var mouse = Object.create(null);
+var paper;
 
 function init(loader, resources) {
 	gamefield.appendChild(app.view);
@@ -122,8 +124,8 @@ function initStartView() {
 
 function initGameView(res) {
 
-	mouse.x = .1;
-	mouse.y = .2;
+	mouse.x = .2;
+	mouse.y = .6;
 	mouse.scale = .2;
 
 	mouse.body = viewGame.createElement({
@@ -157,6 +159,17 @@ function initGameView(res) {
 	mouse.arm_left.zIndex = 12;
 	mouse.body.zIndex = 11;
 	mouse.arm_right.zIndex = 10;
+
+	paper = viewGame.createElement({
+		type: SPRITE,
+		texture: res.paper.texture,
+		width: .5,
+		height: .3,
+		x: .6,
+		y: .3,
+		anchor: .5
+	});
+	paper.zIndex = 0;
 
 	subject = viewGame.createElement({
 		type: SPRITE,
