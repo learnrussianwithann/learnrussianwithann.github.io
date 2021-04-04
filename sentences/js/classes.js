@@ -5,6 +5,12 @@ const TEXT_TEXTURED = 'text_textured';
 const ROUND_RECT = 'round_rect';
 const BUTTON = 'button';
 
+const ANIM_MOVE = 'move';
+const ANIM_ROTATE = 'rot';
+const ANIM_SCALE = 'scale';
+const ANIM_ALPHA = 'alpha';
+const ANIM_ANCHOR_LOOP = 'anloop';
+
 
 
 class Info {
@@ -147,7 +153,15 @@ class Viewport {
 		};
 	}
 
-	createAnimation(animprop) {
+// animation types:
+// move: element, type, start(x,y), end(x,y), isActive, end_action()
+// rotate: element, type, start, end, duration, isActive, end_action()
+// scale: element, type, start(x,y), end(x,y), isActive, end_action()
+// alpha: element, type, start, end, duration, isActive, end_action()
+// anchor loop: element, type, duration, function(progress) returns a(x,y) new element anchor
+
+
+	createAnimation(animprop) { 
 		let a = new ViewportAnimation(animprop, this);
 		if (a.hasOwnProperty('tick')) return a;
 		else return null;
@@ -196,23 +210,23 @@ class ViewportAnimation {
 		this.isActive = false;
 		this.isDone = false;
 		switch (prop.type) {
-			case "move":
+			case ANIM_MOVE:
 				if (prop.element.hasOwnProperty('move_animation') && prop.element.move_animation != null) return;
 				ViewportAnimation.getMoveAnimation(this, prop, viewport);
 				break;
-			case "rotate":
+			case ANIM_ROTATE:
 				if (prop.element.hasOwnProperty('rotate_animation') && prop.element.rotate_animation != null) return;
 				ViewportAnimation.getRotateAnimation(this, prop, viewport);
 				break;
-			case "scale":
+			case ANIM_SCALE:
 				if (prop.element.hasOwnProperty('scale_animation') && prop.element.scale_animation != null) return;
 				ViewportAnimation.getScaleAnimation(this, prop, viewport);
 				break;
-			case "alpha":
+			case ANIM_ALPHA:
 				if (prop.element.hasOwnProperty('alpha_animation') && prop.element.alpha_animation != null) return;
 				ViewportAnimation.getAlphaAnimation(this, prop, viewport);
 				break;
-			case "anchor loop":
+			case ANIM_ANCHOR_LOOP:
 				if (prop.element.hasOwnProperty('anchor_loop_animation') && prop.element.anchor_loop_animation != null) return;
 				ViewportAnimation.getAnchorLoopAnimation(this, prop, viewport);
 				break;

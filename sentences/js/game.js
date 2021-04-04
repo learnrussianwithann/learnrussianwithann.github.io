@@ -1,27 +1,27 @@
 'use strict';
 
-const SENTENCES = 
-["В Австралии/=живут/-кенгуру.",
-"Сегодня/=идёт/-дождь.",
-"-Я/рано/=проснулся.",
-"На дереве/=мяукает/-кошка.",
-"-Гусеница/=превратилась/в бабочку.",
-"-Я/=плыву/на  катере.",
-"Скоро/=начнётся/-гроза.",
-"-Велосипедист/=пронёсся/мимо.",
-"Дует/=тёплый/-ветер.",
-"-Сова/=вылетела/на охоту.",
-"-Пираты/=нашли/золото.",
-"=Начинается/интересная/-сказка.",
-"-Крокодил/=чистит/зубы.",
-"-Мама/=зовёт/обедать.",
-"-Дверь/страшно/=скрипит.",
-"-Маг/=показывает/фокус.",
-"-Кролик/=икает/от страха.",
-"-Муравей/=ползёт/по ноге.",
-"-Ураган/=ломает/деревья.",
-"-Волшебник/=взмахнул/палочкой.",
-"-Я/высоко/=подпрыгнул."];
+const SENTENCES =
+	["В Австралии/=живут/-кенгуру.",
+		"Сегодня/=идёт/-дождь.",
+		"-Я/рано/=проснулся.",
+		"На дереве/=мяукает/-кошка.",
+		"-Гусеница/=превратилась/в бабочку.",
+		"-Я/=плыву/на  катере.",
+		"Скоро/=начнётся/-гроза.",
+		"-Велосипедист/=пронёсся/мимо.",
+		"Дует/=тёплый/-ветер.",
+		"-Сова/=вылетела/на охоту.",
+		"-Пираты/=нашли/золото.",
+		"=Начинается/интересная/-сказка.",
+		"-Крокодил/=чистит/зубы.",
+		"-Мама/=зовёт/обедать.",
+		"-Дверь/страшно/=скрипит.",
+		"-Маг/=показывает/фокус.",
+		"-Кролик/=икает/от страха.",
+		"-Муравей/=ползёт/по ноге.",
+		"-Ураган/=ломает/деревья.",
+		"-Волшебник/=взмахнул/палочкой.",
+		"-Я/высоко/=подпрыгнул."];
 
 const gamefield = document.getElementById('game');
 const app = new PIXI.Application({
@@ -127,6 +127,7 @@ function initGameView(res) {
 	mouse.x = .2;
 	mouse.y = .6;
 	mouse.scale = .2;
+	mouse.isRotate = false;
 
 	mouse.body = viewGame.createElement({
 		type: SPRITE,
@@ -140,7 +141,7 @@ function initGameView(res) {
 		type: SPRITE,
 		texture: new PIXI.Texture(res.mouse.texture.baseTexture, new PIXI.Rectangle(0, 900, 200, 70)),
 		width: mouse.scale * .3,
-		anchor: {x: .1, y: .5},
+		anchor: { x: .1, y: .5 },
 		x: mouse.x - .04,
 		y: mouse.y + .07
 	});
@@ -150,7 +151,7 @@ function initGameView(res) {
 		type: SPRITE,
 		texture: new PIXI.Texture(res.mouse.texture.baseTexture, new PIXI.Rectangle(0, 900, 200, 70)),
 		width: mouse.scale * .3,
-		anchor: {x: .1, y: .5},
+		anchor: { x: .1, y: .5 },
 		x: mouse.x + .01,
 		y: mouse.y + .07
 	});
@@ -236,7 +237,9 @@ function initGameView(res) {
 
 		viewGame.sort();
 	}
-	
+
+	setButton(mouse.body, animationHands);
+
 }
 
 function initEndView() {
@@ -295,7 +298,7 @@ function startGame() {
 	let xGap = .3;
 	let maxWidth = 0;
 	let maxWidthIndex = 0;
-	
+
 	words = new Array(l);
 	positions = new Array(l);
 
@@ -340,8 +343,8 @@ function startGame() {
 			BUFFER_POS[i].visible = false;
 		}
 	}
-	
-	
+
+
 
 	for (let i = 0; i < words.length; i++) {
 		words[i].getChildByName('sprite').width = 1.2 * maxWidth;
@@ -352,7 +355,7 @@ function startGame() {
 
 	subject.visible = false;
 	predicate.visible = false;
-	
+
 	moveElementToStart(subject);
 	moveElementToStart(predicate);
 
@@ -528,3 +531,39 @@ function release(elem) {
 	elem.pos = null;
 }
 
+function animationHands() {
+	let duration = 400;
+	if (mouse.isRotate == false) {
+		mouse.isRotate = true;
+		rotate_anim(mouse.arm_left, .3, duration);
+		rotate_anim(mouse.arm_right, -.3, duration);
+		setTimeout(() => {
+			mouse.isRotate = false;
+		}, duration);
+	}
+}
+
+function rotate_anim(elem, angle, duration) {
+	viewGame.createAnimation({
+		type: ANIM_ROTATE,
+		element: elem,
+		start: elem.rotation,
+		end: elem.rotation + angle,
+		duration: duration / 2,
+		isActive: true,
+		end_action: function () {
+			rotate_anim_reverse(elem, angle, duration)
+		}
+	});
+}
+
+function rotate_anim_reverse(elem, angle, duration) {
+	viewGame.createAnimation({
+		type: ANIM_ROTATE,
+		element: elem,
+		start: elem.rotation,
+		end: elem.rotation - angle,
+		duration: duration / 2,
+		isActive: true
+	});
+}
