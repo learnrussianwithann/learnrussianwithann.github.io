@@ -93,8 +93,8 @@ class Viewport {
 			case SPRITE_WITH_TEXT:				// prop(type, texture, text, style, name*, anchor*, text_anchor*, width*, height*, byHeight*, x, y) *not necessary
 				e = getSpriteWithText(prop);
 				break;
-			case TEXT_TEXTURED:				// prop(type, text, style, texture, width*, height*, byHeight*, x, y) *not necessary
-				e = getText(prop);
+			case TEXT_TEXTURED:				// prop(type, text, style, texture, textureSize{x,y}, width*, height*, byHeight*, x, y) *not necessary
+				e = getTexturedText(prop);
 				break;
 			case SHAPE:				// prop(type, text, style, texture, width*, height*, byHeight*, x, y) *not necessary
 				e = getShape(prop.polygons);

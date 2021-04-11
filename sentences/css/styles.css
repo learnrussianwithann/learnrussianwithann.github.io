@@ -44,3 +44,9 @@ body, html
 	url('../font/OpenSans-Regular.ttf') format('truetype');
 	
 }
+
+@font-face {
+	font-family: 'Nunito';
+	src: url('../font/Nunito-ExtraBoldItalic.woff') format('woff'),
+	url('../font/Nunito-ExtraBoldItalic.ttf') format('truetype');
+}

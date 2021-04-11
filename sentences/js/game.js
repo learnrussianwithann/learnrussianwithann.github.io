@@ -39,13 +39,13 @@ const viewEnd = new Viewport(app, 16 / 9);
 
 
 const font = new FontFaceObserver('OpenSans');
-const font2 = new FontFaceObserver('RubikMonoOne');
+const font2 = new FontFaceObserver('Nunito');
 
 const loader = PIXI.Loader.shared;
-loader.add('brige', 'img/brige.png')
+loader.add('pattern', 'img/pattern.png')
 	.add('subject', 'img/subject.png')
 	.add('mouse', 'img/mouse.png')
-	.add('paper', 'img/paper.jpg')
+	.add('paper', 'img/paper.png')
 	.add('predicate', 'img/predicate.png');
 // 	.add('flies', 'img/flies.png');
 
@@ -167,10 +167,10 @@ function initGameView(res) {
 	paper = viewGame.createElement({
 		type: SPRITE,
 		texture: res.paper.texture,
-		width: .5,
+		width: .65,
 		height: .3,
 		x: .6,
-		y: .3,
+		y: .33,
 		anchor: .5
 	});
 	paper.zIndex = 0;
@@ -283,17 +283,18 @@ function initGameView(res) {
 		BUFFER_POS[i].order = i;
 
 		BUFFER_WORDS[i] = viewGame.createElement({
-			type: SPRITE_WITH_TEXT,
+			type: TEXT_TEXTURED,
 			text: 'test',
 			style: {
-				fontFamily: 'OpenSans',
-				fontSize: 30,
+				fontFamily: 'Nunito',
+				fontSize: 50,
 				fill: '#ffffff',
 				wordWrap: false,
 				align: 'center'
 			},
 			text_anchor: { x: .5, y: .75 },
-			texture: res.brige.texture,
+			texture: res.pattern.texture,
+			textureSize: {x: 100, y: 100},
 			width: .15,
 			height: .05,
 			x: .5,
@@ -394,6 +395,7 @@ function startGame() {
 			}
 
 			changeText(words[i], twords[i]);
+			// words[i].text = twords[i];
 			let width = words[i].getChildByName('text').width;
 			if (width > maxWidth) {
 				maxWidth = width;
@@ -475,7 +477,6 @@ function upWord() {
 }
 
 function downStrip() {
-
 }
 
 function upStrip() {
@@ -520,7 +521,7 @@ function checkPositionStrip(strip) {
 		}
 
 		if (strip.pos == null) {
-			strip.anchor.set(.5, 0);
+			strip.anchor.set(.5);
 		}
 
 		strip.pos = positions[t_i];

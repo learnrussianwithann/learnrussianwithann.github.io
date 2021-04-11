@@ -100,7 +100,22 @@ function getSpriteWithText(prop) {
 function getText(prop) {
 	let t = new PIXI.Text(prop.text, prop.style);
 	t.anchor.set(0.5);
+	t.name = 'text';
 	return t;
+}
+
+function getTexturedText(prop) {
+	let out = new PIXI.Container();
+	let ctex = new PIXI.TilingSprite(prop.texture, prop.textureSize.x, prop.textureSize.y);
+	ctex.anchor.set(.5);
+	ctex.name = 'sprite';
+	let t = getText(prop);
+	t.anchor.set(.5);
+	t.name = 'text';
+	out.addChild(ctex);
+	out.addChild(t);
+	out.mask = t;
+	return out;
 }
 
 function getButton(prop) {
