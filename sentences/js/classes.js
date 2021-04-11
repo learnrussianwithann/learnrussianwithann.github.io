@@ -4,6 +4,7 @@ const TEXT = 'text';
 const TEXT_TEXTURED = 'text_textured';
 const ROUND_RECT = 'round_rect';
 const BUTTON = 'button';
+const SHAPE = 'shape';
 
 const ANIM_MOVE = 'move';
 const ANIM_ROTATE = 'rot';
@@ -95,6 +96,9 @@ class Viewport {
 			case TEXT_TEXTURED:				// prop(type, text, style, texture, width*, height*, byHeight*, x, y) *not necessary
 				e = getText(prop);
 				break;
+			case SHAPE:				// prop(type, text, style, texture, width*, height*, byHeight*, x, y) *not necessary
+				e = getShape(prop.polygons);
+				break;
 		}
 		if (prop.hasOwnProperty('byHeight') && prop.byHeight == true) {
 			if (prop.hasOwnProperty('height'))
@@ -153,15 +157,15 @@ class Viewport {
 		};
 	}
 
-// animation types:
-// move: element, type, start(x,y), end(x,y), isActive, end_action()
-// rotate: element, type, start, end, duration, isActive, end_action()
-// scale: element, type, start(x,y), end(x,y), isActive, end_action()
-// alpha: element, type, start, end, duration, isActive, end_action()
-// anchor loop: element, type, duration, function(progress) returns a(x,y) new element anchor
+	// animation types:
+	// move: element, type, start(x,y), end(x,y), isActive, end_action()
+	// rotate: element, type, start, end, duration, isActive, end_action()
+	// scale: element, type, start(x,y), end(x,y), isActive, end_action()
+	// alpha: element, type, start, end, duration, isActive, end_action()
+	// anchor loop: element, type, duration, function(progress) returns a(x,y) new element anchor
 
 
-	createAnimation(animprop) { 
+	createAnimation(animprop) {
 		let a = new ViewportAnimation(animprop, this);
 		if (a.hasOwnProperty('tick')) return a;
 		else return null;

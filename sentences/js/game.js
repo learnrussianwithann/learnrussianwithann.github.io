@@ -54,6 +54,7 @@ font.load().then(() => { font2.load().then(() => { loader.load(init); }) });
 const MAX_WORDS = 5;
 const BUFFER_POS = new Array(MAX_WORDS);
 const BUFFER_WORDS = new Array(MAX_WORDS);
+const BOARD_POSITION = { X: 0.6, Y: 0.3 };
 
 var subject;
 var predicate;
@@ -82,6 +83,8 @@ function initStartView() {
 		x: .5,
 		y: .5
 	});
+
+
 
 	viewStart.createElement({
 		type: TEXT,
@@ -172,25 +175,89 @@ function initGameView(res) {
 	});
 	paper.zIndex = 0;
 
+	// subject = viewGame.createElement({
+	// 	type: SPRITE,
+	// 	texture: res.subject.texture,
+	// 	width: .15,
+	// 	height: .04,
+	// 	x: .25,
+	// 	y: .6,
+	// 	anchor: .5
+	// });
+
 	subject = viewGame.createElement({
-		type: SPRITE,
-		texture: res.subject.texture,
-		width: .15,
-		height: .04,
-		x: .25,
-		y: .6,
+		type: SHAPE,
+		polygons: [{
+			color: 0x8888ff, path:
+				[new PIXI.Point(100, 100),
+				new PIXI.Point(-100, 100),
+				new PIXI.Point(-100, -100),
+				new PIXI.Point(100, -100),
+				new PIXI.Point(140, 0)]
+		},
+		{
+			color: 0xfff48f, path:
+				[new PIXI.Point(100, 100),
+				new PIXI.Point(100, -100),
+				new PIXI.Point(125, -40),
+				new PIXI.Point(125, 40)]
+		}],
+		width: .3,
+		height: .025,
+		x: .5,
+		y: .65,
 		anchor: .5
 	});
+
 	subject.zIndex = 10;
 	subject.pos = null;
 	subject.startPosition = { x: subject.info.x, y: subject.info.y };
 	setMoveable(subject, upStrip, downStrip);
 
+	// predicate = viewGame.createElement({
+	// 	type: SPRITE,
+	// 	texture: res.predicate.texture,
+	// 	width: .15,
+	// 	height: .04,
+	// 	x: .75,
+	// 	y: .6,
+	// 	anchor: .5
+	// });
+
 	predicate = viewGame.createElement({
-		type: SPRITE,
-		texture: res.predicate.texture,
+		type: SHAPE,
+		polygons: [{
+			color: 0xff3700, path:
+				[new PIXI.Point(100, -50),
+				new PIXI.Point(-100, -50),
+				new PIXI.Point(-100, -250),
+				new PIXI.Point(100, -250),
+				new PIXI.Point(140, -150)]
+		},
+		{
+			color: 0xfff48f, path:
+				[new PIXI.Point(100, -50),
+				new PIXI.Point(100, -250),
+				new PIXI.Point(125, -190),
+				new PIXI.Point(125, -110)]
+		},
+		{
+			color: 0xff3700, path:
+				[new PIXI.Point(100, 250),
+				new PIXI.Point(-100, 250),
+				new PIXI.Point(-100, 50),
+				new PIXI.Point(100, 50),
+				new PIXI.Point(140, 150)]
+		},
+		{
+			color: 0xfff48f, path:
+				[new PIXI.Point(100, 250),
+				new PIXI.Point(100, 50),
+				new PIXI.Point(125, 110),
+				new PIXI.Point(125, 190)]
+		}],
 		width: .15,
-		height: .04,
+		height: .03,
 		x: .75,
 		y: .6,
 		anchor: .5
@@ -204,12 +271,13 @@ function initGameView(res) {
 		BUFFER_POS[i] = viewGame.createElement({
 			type: ROUND_RECT,
 			width: .15,
-			height: .1,
+			height: .05,
 			radius: .05,
-			color: 0x7777ff,
+			color: 0x777777,
 			x: .5,
 			y: .5
 		});
+		BUFFER_POS[i].alpha = .4
 		BUFFER_POS[i].zIndex = 0;
 		BUFFER_POS[i].visible = false;
 		BUFFER_POS[i].order = i;
@@ -307,8 +375,8 @@ function startGame() {
 			k %= l;
 
 			words[i] = BUFFER_WORDS[i];
-			words[i].info.x = xGap + k * (1 - 2 * xGap) / (l - 1);
-			words[i].info.y = .7;
+			words[i].info.x = BOARD_POSITION.X - .5 + xGap + k * (1 - 2 * xGap) / (l - 1);
+			words[i].info.y = BOARD_POSITION.Y - .5 + .7;
 			words[i].info.width = (1 - 2 * xGap) / (l - 1);
 			words[i].startPosition = { x: words[i].info.x, y: words[i].info.y };
 			words[i].visible = true;
@@ -333,8 +401,8 @@ function startGame() {
 			}
 
 			positions[i] = BUFFER_POS[i];
-			positions[i].info.x = xGap + i * (1 - 2 * xGap) / (l - 1);
-			positions[i].info.y = .4;
+			positions[i].info.x = BOARD_POSITION.X - .5 + xGap + i * (1 - 2 * xGap) / (l - 1);
+			positions[i].info.y = BOARD_POSITION.Y - .5 + .4;
 			positions[i].info.width = (1 - 2 * xGap) / (l - 1);
 			positions[i].visible = true;
 			positions[i].isEmpty = true;

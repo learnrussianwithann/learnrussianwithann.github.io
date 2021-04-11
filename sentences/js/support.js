@@ -115,6 +115,22 @@ function getButton(prop) {
 	return out;
 }
 
+function getShape(polygons) {
+	let g = new PIXI.Graphics();
+	polygons.forEach(p => {
+		drawPoly(g, p.color, p.path);
+	});
+	let out = new PIXI.Sprite(app.renderer.generateTexture(g));
+	out.anchor.set(.5);
+	return out;
+}
+
+function drawPoly(graphics, color, path) {
+	graphics.beginFill(color);
+	graphics.drawPolygon(path);
+	graphics.endFill();
+}
+
 ///////////////////////////////////////////////////
 //		Modifiers
 ///////////////////////////////////////////////////
