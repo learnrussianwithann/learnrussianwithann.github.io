@@ -205,7 +205,7 @@ function initGameView(res) {
 		width: .3,
 		height: .025,
 		x: .5,
-		y: .65,
+		y: .55,
 		anchor: .5
 	});
 
@@ -259,8 +259,8 @@ function initGameView(res) {
 		width: .15,
 		height: .03,
 		x: .75,
-		y: .6,
-		anchor: .5
+		y: .55,
+		anchor: { x: .5, y: -.1 }
 	});
 	predicate.zIndex = 10;
 	predicate.pos = null;
@@ -294,7 +294,7 @@ function initGameView(res) {
 			},
 			text_anchor: { x: .5, y: .75 },
 			texture: res.pattern.texture,
-			textureSize: {x: 100, y: 100},
+			textureSize: { x: 100, y: 100 },
 			width: .15,
 			height: .05,
 			x: .5,
@@ -520,16 +520,18 @@ function checkPositionStrip(strip) {
 				break;
 		}
 
-		if (strip.pos == null) {
-			strip.anchor.set(.5);
-		}
+		// if (strip.pos == null) {
+		// 	strip.info.y += .1;
+		// 	// strip.anchor.set(.5);
+		// }
 
 		strip.pos = positions[t_i];
 		strip.info.copyPosition(positions[t_i]);
+		strip.info.y += .05;
 
 		if (subject.pos != null && predicate.pos != null &&
 			subject.pos.word.type == '-' && predicate.pos.word.type == '=') {
-			endGame();
+			animationHands(endGame);
 		}
 	} else if (t_i < 0) {
 		moveElementToStart(strip);
@@ -571,7 +573,7 @@ function checkOrder() {
 			return;
 		}
 	}
-	startSecondStage();
+	animationHands(startSecondStage);
 }
 
 function moveAllWordsToStart() {
@@ -584,7 +586,7 @@ function moveElementToStart(elem) {
 	elem.info.setPosition(elem.startPosition.x, elem.startPosition.y);
 	if (elem == subject || elem == predicate) {
 		elem.pos = null;
-		elem.anchor.set(.5);
+		// elem.anchor.set(.5);
 	} else {
 		release(elem);
 	}
@@ -600,16 +602,20 @@ function release(elem) {
 	elem.pos = null;
 }
 
-function animationHands() {
-	let duration = 400;
+function animationHands(action) {
+	let duration = 600;
 	if (mouse.isRotate == false) {
 		mouse.isRotate = true;
 		rotate_anim(mouse.arm_left, .3, duration);
 		rotate_anim(mouse.arm_right, -.3, duration);
 		setTimeout(() => {
 			mouse.isRotate = false;
+			if (action != null) {
+				action();
+			}
 		}, duration);
 	}
+
 }
 
 function rotate_anim(elem, angle, duration) {
