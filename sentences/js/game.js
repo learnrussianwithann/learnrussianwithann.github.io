@@ -517,6 +517,7 @@ function checkPositionStrip(strip) {
 					}
 					return;
 				}
+				predicate.anchor.set(.5, .2);
 				break;
 		}
 
@@ -586,7 +587,7 @@ function moveElementToStart(elem) {
 	elem.info.setPosition(elem.startPosition.x, elem.startPosition.y);
 	if (elem == subject || elem == predicate) {
 		elem.pos = null;
-		// elem.anchor.set(.5);
+		elem.anchor.set(.5);
 	} else {
 		release(elem);
 	}
