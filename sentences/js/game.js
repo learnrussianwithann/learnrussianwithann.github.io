@@ -339,7 +339,7 @@ function initEndView() {
 			align: 'center'
 		},
 		byHeight: false,
-		width: .5,
+		width: .3,
 		x: .5,
 		y: .35
 	});
