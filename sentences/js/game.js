@@ -42,6 +42,8 @@ const viewStart = new Viewport(app, 16 / 9);
 const viewGame = new Viewport(app, 16 / 9);
 const viewEnd = new Viewport(app, 16 / 9);
 
+const sound_yes = PIXI.sound.Sound.from('sound/yes.mp3');
+const sound_no = PIXI.sound.Sound.from('sound/no.mp3');
 
 const font = new FontFaceObserver('OpenSans');
 const font2 = new FontFaceObserver('Nunito');
@@ -539,6 +541,7 @@ function checkPositionStrip(strip) {
 		if (subject.pos != null && predicate.pos != null &&
 			subject.pos.word.type == '-' && predicate.pos.word.type == '=') {
 			animationHands(endGame);
+			sound_yes.play();
 		}
 	} else if (t_i < 0) {
 		moveElementToStart(strip);
@@ -577,9 +580,11 @@ function checkOrder() {
 	for (let i = 0, x = 0; i < words.length; i++) {
 		if (words[i].pos.order != i) {
 			moveAllWordsToStart();
+			sound_no.play();
 			return;
 		}
 	}
+	sound_yes.play();
 	animationHands(startSecondStage);
 }
 
@@ -597,7 +602,6 @@ function moveElementToStart(elem) {
 	} else {
 		release(elem);
 	}
-
 }
 
 function moveElementToPosition(elem) {
