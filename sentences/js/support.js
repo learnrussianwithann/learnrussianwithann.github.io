@@ -213,6 +213,13 @@ function changeText(element, text) {
 	if (t != null) t.text = text;
 }
 
+function setHitAreaByElement(element, source) {
+	let w = 1.2 * source.width;
+	let h = 1.2 * source.height;
+	element.hitArea = new PIXI.Rectangle(-w / 2, -h / 2, w, h);
+
+}
+
 /////////////////////////////////////////
 //        Checkers
 /////////////////////////////////////////

@@ -400,6 +400,7 @@ function startGame() {
 			}
 
 			changeText(words[i], twords[i]);
+			setHitAreaByElement(words[i], words[i]);
 			// words[i].text = twords[i];
 			let width = words[i].getChildByName('text').width;
 			if (width > maxWidth) {
