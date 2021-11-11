@@ -35,6 +35,19 @@ class Info {
 		this.y = y;
 	}
 
+	setPosByPoint(pos) {
+		this.x = pos.x;
+		this.y = pos.y;
+	}
+
+	getPosition() {
+		return { x: this.x, y: this.y };
+	}
+
+	getScale() {
+		return { x: this.scale.x, y: this.scale.y };
+	}
+
 	copyPosition(element) {
 		this.x = element.info.x;
 		this.y = element.info.y;
@@ -74,7 +87,7 @@ class Viewport {
 		this.hide();
 	}
 
-		// ROUND_RECT prop(type, width*, height*, byHeight*, radius, color, x, y) *optional
+	// ROUND_RECT prop(type, width*, height*, byHeight*, radius, color, x, y) *optional
 	// SPRITE prop(type, texture, x, y, name*, anchor*, width*, height*, byHeight*) *optional
 	// TEXT prop(type, text, style, width*, height*, byHeight*, x, y) *optional
 	// BUTTON prop(type, text, style, bcolor, bwidth*, bheight*, width*, height*, byHeight*, x, y) *optional
@@ -100,6 +113,9 @@ class Viewport {
 				break;
 			case SPRITE_WITH_TEXT:				
 				e = getSpriteWithText(prop);
+				e.setText = (text) => {
+					e.getChildByName('text').text = text;
+				};
 				break;
 			case TEXT_TEXTURED:				
 				e = getTexturedText(prop);
@@ -166,11 +182,11 @@ class Viewport {
 	}
 
 	// animation types:
-	// move: element, type, start(x,y), end(x,y), isActive, end_action()
-	// rotate: element, type, start, end, duration, isActive, end_action()
-	// scale: element, type, start(x,y), end(x,y), isActive, end_action()
-	// alpha: element, type, start, end, duration, isActive, end_action()
-	// anchor loop: element, type, duration, function(progress) returns a(x,y) new element anchor
+	// ANIM_MOVE type, element, start(x,y), end(x,y), isActive, end_action()
+	// ANIM_ROTATE type, element, start, end, duration, isActive, end_action()
+	// ANIM_SCALE type, element, start(x,y), end(x,y), isActive, end_action()
+	// ANIM_ALPHA type, element, start, end, duration, isActive, end_action()
+	// ANIM_ANCHOR_LOOP type, element, duration, function(progress) returns a(x,y) new element anchor
 
 
 	createAnimation(animprop) {
@@ -252,18 +268,19 @@ class ViewportAnimation {
 
 	static getMoveAnimation(animation, prop, viewport) {
 		prop.element.move_animation = animation;
+		let start = prop.hasOwnProperty('start') ? prop.start : animation.element.info.getPosition();
 		let displacement =
 		{
-			x: prop.end.x - prop.start.x,
-			y: prop.end.y - prop.start.y
-		}
-		animation.isActive = prop.isActive;
+			x: prop.end.x - start.x,
+			y: prop.end.y - start.y
+		};
+		animation.isActive = prop.hasOwnProperty('isActive') ? prop.isActive : true;
 		animation.tick = function (time) {
 			let progress = (time - animation.start_time) / prop.duration;
 			if (progress > 1) progress = 1;
 
-			animation.element.info.x = displacement.x * progress + prop.start.x;
-			animation.element.info.y = displacement.y * progress + prop.start.y;
+			animation.element.info.x = displacement.x * progress + start.x;
+			animation.element.info.y = displacement.y * progress + start.y;
 
 			if (progress >= 1) {
 				animation.isActive = false;
@@ -285,17 +302,17 @@ class ViewportAnimation {
 
 	static getRotateAnimation(animation, prop, viewport) {
 		prop.element.rotate_animation = animation;
+		let start = prop.hasOwnProperty('start') ? prop.start : animation.element.angle;
+		let displacement = prop.end - start;
 
-		let displacement = prop.end - prop.start;
-
-		animation.isActive = prop.isActive;
+		animation.isActive = prop.hasOwnProperty('isActive') ? prop.isActive : true;
 
 		animation.tick = function (time) {
 			let progress = (time - animation.start_time) / prop.duration;
 			if (progress > 1) progress = 1;
 
-			animation.element.rotation = displacement * progress + prop.start;
-
+			animation.element.angle = displacement * progress + start;
+			
 			if (progress >= 1) {
 				animation.isActive = false;
 				animation.isDone = true;
@@ -317,17 +334,18 @@ class ViewportAnimation {
 
 	static getScaleAnimation(animation, prop, viewport) {
 		prop.element.scale_animation = animation;
+		let start = prop.hasOwnProperty('start') ? prop.start : prop.element.info.getScale();
 		let displacement =
 		{
-			x: prop.end.x - prop.start.x,
-			y: prop.end.y - prop.start.y
+			x: prop.end.x - start.x,
+			y: prop.end.y - start.y
 		}
-		animation.isActive = prop.isActive;
+		animation.isActive = prop.hasOwnProperty('isActive') ? prop.isActive : true;
 		animation.tick = function (time) {
 			let progress = (time - animation.start_time) / prop.duration;
 			if (progress > 1) progress = 1;
-			animation.element.info.scale.x = displacement.x * progress + prop.start.x;
-			animation.element.info.scale.y = displacement.y * progress + prop.start.y;
+			animation.element.info.scale.x = displacement.x * progress + start.x;
+			animation.element.info.scale.y = displacement.y * progress + start.y;
 
 			if (progress >= 1) {
 				animation.isActive = false;
@@ -352,7 +370,7 @@ class ViewportAnimation {
 
 		let displacement = prop.end - prop.start;
 
-		animation.isActive = prop.isActive;
+		animation.isActive = prop.hasOwnProperty('isActive') ? prop.isActive : true;
 
 		animation.tick = function (time) {
 			let progress = (time - animation.start_time) / prop.duration;
@@ -368,7 +386,7 @@ class ViewportAnimation {
 			viewport.resizeElement(animation.element);
 
 			if (animation.isDone) {
-				prop.element.scale_animation = null;
+				prop.element.alpha_animation = null;
 				if (prop.hasOwnProperty('end_action')) prop.end_action();
 			}
 
@@ -382,7 +400,7 @@ class ViewportAnimation {
 	static getAnchorLoopAnimation(animation, prop, viewport) {
 		prop.element.anchor_loop_animation = animation;
 
-		animation.isActive = prop.isActive;
+		animation.isActive = prop.hasOwnProperty('isActive') ? prop.isActive : true;
 
 		animation.tick = function (time) {
 			let progress = (time - animation.start_time) / prop.duration;

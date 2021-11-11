@@ -1,0 +1,39 @@
+body, html
+{
+	width: 100%;
+	height: 100%;
+	padding: 0px;
+	margin: 0px;
+	overflow: hidden;
+}
+
+#html:fullscreen {
+	width: 100%;
+	height: 100%;
+	padding: 0px;
+	margin: 0px;
+	overflow: hidden;
+	background-color: #1e99bb;
+}
+
+/* prefix for Chrome & Safari */
+#html:-webkit-full-screen {
+	width: 100%;
+	height: 100%;
+	padding: 0px;
+	margin: 0px;
+	overflow: hidden;
+	background-color: #1e99bb;
+}
+
+#game {
+    width: 100%;
+    height: 100%;
+}
+
+@font-face {
+	font-family: 'RubikMonoOne';
+	src: url('../font/RubikMonoOne-Regular.woff') format('woff'),
+	url('../font/RubikMonoOne-Regular.ttf') format('truetype');
+	
+}
