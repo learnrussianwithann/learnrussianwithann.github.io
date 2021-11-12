@@ -84,9 +84,7 @@ loader.add('hole', 'img/hole.png')
 	.add('m3', 'img/m3.png')
 	.add('cat', 'img/cat.png')
 	.add('plate', 'img/plate.png')
-	.add('cheese_texture', 'img/cheese_texture.png')
-	.add('cloud', 'img/cloud.png')
-	.add('clock', 'img/clock.png');
+	.add('cheese_texture', 'img/cheese_texture.png');
 
 const font = new FontFaceObserver('RubikMonoOne');
 
@@ -643,13 +641,13 @@ function nextWord() {
 		viewGame.createAnimation({
 			type: ANIM_MOVE,
 			element: words[curWordIndex],
-			end: { x: .4, y: .4 },
+			end: { x: .45, y: .35 },
 			duration: 400
 		});
 		viewGame.createAnimation({
 			type: ANIM_SCALE,
 			element: words[curWordIndex],
-			end: { x: 1.2, y: 1.2 },
+			end: { x: 1.3, y: 1.3 },
 			duration: 400
 		});
 		viewGame.createAnimation({
@@ -659,7 +657,7 @@ function nextWord() {
 			duration: 400
 		});
 	} else {
-		setTimeout(showEnd, 500);
+		setTimeout(showEnd, 1000);
 	}
 }
 
