@@ -100,13 +100,13 @@ class Viewport {
 		let e;
 		switch (prop.type) {
 			case ROUND_RECT:			
-				e = getRect(prop);
+				e = getRect(prop.width, prop.height, prop.color, prop.radius);
 				break;
 			case SPRITE:				
 				e = getSprite(prop);
 				break;
 			case TEXT:				
-				e = getText(prop);
+				e = getText(prop.text, prop.style);
 				break;
 			case BUTTON:				
 				e = getButton(prop);
@@ -124,6 +124,25 @@ class Viewport {
 				e = getShape(prop.polygons);
 				break;
 		}
+		this.addElement(e, prop);
+
+		// if (prop.hasOwnProperty('byHeight') && prop.byHeight == true) {
+		// 	if (prop.hasOwnProperty('height'))
+		// 		e.info = new Info(prop.height * e.width / e.height, prop.height, prop.byHeight, prop.x, prop.y);
+		// }
+		// else if (prop.hasOwnProperty('width'))
+		// 	if (prop.hasOwnProperty('height')) e.info = new Info(prop.width, prop.height, prop.byHeight, prop.x, prop.y);
+		// 	else e.info = new Info(prop.width, prop.width * e.height / e.width, prop.byHeight, prop.x, prop.y);
+		// else e.info = new Info(e.width / this.w, e.height / this.w, prop.byHeight, prop.x, prop.y);
+
+		// this.container.addChild(e);
+		// this.resizeElement(e);
+		return e;
+	}
+
+	//prop: width*, height*, byHeight*, x, y; *optional
+
+	addElement(e, prop) {
 		if (prop.hasOwnProperty('byHeight') && prop.byHeight == true) {
 			if (prop.hasOwnProperty('height'))
 				e.info = new Info(prop.height * e.width / e.height, prop.height, prop.byHeight, prop.x, prop.y);

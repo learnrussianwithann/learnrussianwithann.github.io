@@ -355,7 +355,7 @@ function initViewGame(resources) {
 
 	viewGame.cat.eyes_close.zIndex = 2;
 
-	viewGame.cat.eyes_open.info.setScale(1,0);
+	viewGame.cat.eyes_open.info.setScale(1, 0);
 
 	setButton(viewGame.cat.body, catMeow);
 
@@ -397,47 +397,17 @@ function initViewGame(resources) {
 	setButton(viewGame.mouseF, checkMouse);
 
 	//Clouds
-
-	viewGame.cloudF = viewGame.createElement({
-		type: SPRITE_WITH_TEXT,
-		texture: resources.cloud.texture,
-		text: 'Она моя!',
-		style: styleCloud,
-		width: .14,
-		x: .28,
-		y: .1,
-		text_anchor: { x: .45, y: 1.34 },
-		textScale: 1.3
-	});
-	viewGame.cloudF.zIndex = 2;
+	// viewGame.addElement(drawCloud(.14, .06, .1, 0xffffff, styleCloud, 'testtest!', .5, 'up'), { x: .27, y: .21, width: .14 });
+	viewGame.cloudF = viewGame.addElement(drawCloud(.14, .06, .1, 0xffffff, styleCloud, 'Она моя!', .5, 'left'), { x: .27, y: .21, width: .14 });
+	viewGame.cloudF.zIndex = 4;
 	viewGame.cloudF.alpha = 0;
 
-	viewGame.cloudN = viewGame.createElement({
-		type: SPRITE_WITH_TEXT,
-		texture: resources.cloud.texture,
-		text: 'Оно моё!',
-		style: styleCloud,
-		width: .14,
-		x: .28,
-		y: .4,
-		text_anchor: { x: .45, y: 1.34 },
-		textScale: 1.3
-	});
-	viewGame.cloudN.zIndex = 2;
+	viewGame.cloudN = viewGame.addElement(drawCloud(.14, .06, .1, 0xffffff, styleCloud, 'Оно моё!', .5, 'left'), { x: .27, y: .51, width: .14 });
+	viewGame.cloudN.zIndex = 4;
 	viewGame.cloudN.alpha = 0;
 
-	viewGame.cloudM = viewGame.createElement({
-		type: SPRITE_WITH_TEXT,
-		texture: resources.cloud.texture,
-		text: 'Он мой!',
-		style: styleCloud,
-		width: .14,
-		x: .28,
-		y: .7,
-		text_anchor: { x: .45, y: 1.34 },
-		textScale: 1.3
-	});
-	viewGame.cloudM.zIndex = 2;
+	viewGame.cloudM = viewGame.addElement(drawCloud(.14, .06, .1, 0xffffff, styleCloud, 'Он мой!', .5, 'left'), { x: .27, y: .81, width: .14 });
+	viewGame.cloudM.zIndex = 4;
 	viewGame.cloudM.alpha = 0;
 
 	//Words
@@ -532,44 +502,11 @@ function initViewEnd(resources) {
 
 	viewEnd.mouse3.zIndex = -1;
 
-	viewEnd.cloud1 = viewEnd.createElement({
-		type: SPRITE_WITH_TEXT,
-		texture: resources.cloud.texture,
-		text: 'Вкусненько!',
-		style: styleCloud,
-		width: .2,
-		x: .7,
-		y: .3,
-		text_anchor: { x: .55, y: 1.4 },
-		textScale: 1,
-		spriteScale: { x: -1, y: 1 }
-	});
+	viewEnd.cloud1 = viewEnd.addElement(drawCloud(.18, .06, .1, 0xffffff, styleCloud, 'testtest!', .5, 'up'), { x: .85, y: .7, width: .18 });
 
-	viewEnd.cloud2 = viewEnd.createElement({
-		type: SPRITE_WITH_TEXT,
-		texture: resources.cloud.texture,
-		text: 'Вкусненько!',
-		style: styleCloud,
-		width: .2,
-		x: .3,
-		y: .7,
-		text_anchor: { x: .45, y: -0.4 },
-		textScale: 1,
-		spriteScale: { x: 1, y: -1 }
-	});
+	viewEnd.cloud2 = viewEnd.addElement(drawCloud(.18, .06, .1, 0xffffff, styleCloud, 'testtest!', .5, 'up'), { x: .15, y: .7, width: .18 });
 
-	viewEnd.cloud3 = viewEnd.createElement({
-		type: SPRITE_WITH_TEXT,
-		texture: resources.cloud.texture,
-		text: 'Вкусненько!',
-		style: styleCloud,
-		width: .2,
-		x: .35,
-		y: .3,
-		text_anchor: { x: .55, y: -0.4 },
-		textScale: 1,
-		spriteScale: { x: -1, y: -1 }
-	});
+	viewEnd.cloud3 = viewEnd.addElement(drawCloud(.23, .06, .1, 0xffffff, styleCloud, 'testtest!', .6, 'left'), { x: .68, y: .15, width: .23 });
 
 	viewEnd.sort();
 }
@@ -707,6 +644,12 @@ function nextWord() {
 			type: ANIM_MOVE,
 			element: words[curWordIndex],
 			end: { x: .4, y: .4 },
+			duration: 400
+		});
+		viewGame.createAnimation({
+			type: ANIM_SCALE,
+			element: words[curWordIndex],
+			end: { x: 1.2, y: 1.2 },
 			duration: 400
 		});
 		viewGame.createAnimation({
@@ -872,4 +815,67 @@ function prepareWords() {
 	}
 	curWordIndex = words.length - 1;
 	shuffle(words);
+}
+
+function drawCloud(width, height, radius, color, style, text, textScale, pos) {
+	let out = new PIXI.Container();
+	// let rect = getRect(width, height, color, radius);
+	let title = getText(text, style);
+	title.scale.set(textScale);
+	out.setText = (text) => { out.getChildByName('text').text = text; };
+	let figure, w = width * DEFAULT_WIDTH, h = height * DEFAULT_WIDTH;
+	switch (pos) {
+		case 'up':
+			figure = getPrimitivs([{
+				type: 'shape',
+				color: color,
+				path:
+					[new PIXI.Point(-.3 * w, 0),
+					new PIXI.Point(.3 * w, 0),
+					new PIXI.Point(0, -h * .75)]
+			},
+			{ type: 'rect', width: width, height: height, radius: radius, color: color }]);
+			title.anchor.set(.5, .3);
+			break;
+		case 'down':
+			figure = getPrimitivs([{
+				type: 'shape',
+				color: color,
+				path:
+					[new PIXI.Point(-.3 * w, 0),
+					new PIXI.Point(.3 * w, 0),
+					new PIXI.Point(0, h * .75)]
+			},
+			{ type: 'rect', width: width, height: height, radius: radius, color: color }]);
+			title.anchor.set(.5, .7);
+			break;
+		case 'left':
+			figure = getPrimitivs([{
+				type: 'shape',
+				color: color,
+				path:
+					[new PIXI.Point(0, -h * .4),
+					new PIXI.Point(-w * .75, 0),
+					new PIXI.Point(0, h * .4)]
+			},
+			{ type: 'rect', width: width, height: height, radius: radius, color: color }]);
+			title.anchor.set(.35, .5);
+			break;
+		case 'right':
+			figure = getPrimitivs([{
+				type: 'shape',
+				color: color,
+				path:
+					[new PIXI.Point(0, -h * .4),
+					new PIXI.Point(w * .75, 0),
+					new PIXI.Point(0, h * .4)]
+			},
+			{ type: 'rect', width: width, height: height, radius: radius, color: color }]);
+			title.anchor.set(.65, .5);
+			break;
+	}
+	// out.addChild(rect);
+	out.addChild(figure);
+	out.addChild(title);
+	return out;
 }

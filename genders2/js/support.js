@@ -32,22 +32,23 @@ function getRandomInt(max) {
 	return Math.floor(Math.random() * Math.floor(max));
 }
 
-function getRect(prop) {
+function getRect(width, height, color, radius) {
 	let out = new PIXI.Graphics();
-	let w = prop.width * DEFAULT_WIDTH;
-	let h = prop.height * DEFAULT_WIDTH;
-	out.beginFill(prop.color);
-	out.drawRoundedRect(-w / 2, -h / 2, w, h, prop.radius * DEFAULT_WIDTH);
+	let w = width * DEFAULT_WIDTH;
+	let h = height * DEFAULT_WIDTH;
+	out.beginFill(color);
+	out.drawRoundedRect(-w / 2, -h / 2, w, h, radius * DEFAULT_WIDTH);
 	out.endFill();
+	out.name = 'rect';
 	return out;
 }
 
-function getRectInPixel(prop) {
+function getRectInPixels(width, height, radius, color) {
 	let out = new PIXI.Graphics();
-	let w = prop.width;
-	let h = prop.height;
-	out.beginFill(prop.color);
-	out.drawRoundedRect(-w / 2, -h / 2, w, h, prop.radius);
+	let w = width;
+	let h = height;
+	out.beginFill(color);
+	out.drawRoundedRect(-w / 2, -h / 2, w, h, radius);
 	out.endFill();
 	out.name = 'rect';
 	return out;
@@ -100,8 +101,8 @@ function getSpriteWithText(prop) {
 	return out;
 }
 
-function getText(prop) {
-	let t = new PIXI.Text(prop.text, prop.style);
+function getText(text, style) {
+	let t = new PIXI.Text(text, style);
 	t.anchor.set(0.5);
 	t.name = 'text';
 	return t;
@@ -112,7 +113,7 @@ function getTexturedText(prop) {
 	let ctex = new PIXI.TilingSprite(prop.texture, prop.textureSize.x, prop.textureSize.y);
 	ctex.anchor.set(.5);
 	ctex.name = 'sprite';
-	let t = getText(prop);
+	let t = getText(prop.text, prop.style);
 	t.anchor.set(.5);
 	t.name = 'text';
 	out.addChild(ctex);
@@ -130,15 +131,17 @@ function getButton(prop) {
 	let t = new PIXI.Text(prop.text, prop.style);
 	t.anchor.set(0.5);
 
-	out.addChild(getRectInPixel({
-		width: bwidth * prop.width * DEFAULT_WIDTH,
-		height: bheight * prop.height * DEFAULT_WIDTH,
-		radius: bheight * prop.height * DEFAULT_WIDTH,
-		color: prop.bcolor
-	}));
+	out.addChild(getRectInPixels(
+		bwidth * prop.width * DEFAULT_WIDTH,
+		bheight * prop.height * DEFAULT_WIDTH,
+		bheight * prop.height * DEFAULT_WIDTH,
+		prop.bcolor
+	));
 	out.addChild(t);
 	return out;
 }
+
+// Shape polygons: color, path
 
 function getShape(polygons) {
 	let g = new PIXI.Graphics();
@@ -154,6 +157,27 @@ function drawPoly(graphics, color, path) {
 	graphics.beginFill(color);
 	graphics.drawPolygon(path);
 	graphics.endFill();
+}
+
+function getPrimitivs(primitives) {
+	let g = new PIXI.Graphics();
+	primitives.forEach(p => {
+		switch (p.type) {
+			case 'rect':
+				let w = p.width * DEFAULT_WIDTH, h = p.height * DEFAULT_WIDTH, radius = p.radius * DEFAULT_WIDTH;
+				g.beginFill(p.color);
+				g.drawRoundedRect(-w / 2, -h / 2, w, h, radius);
+				g.endFill();
+				break;
+			case 'shape':
+				drawPoly(g, p.color, p.path);
+				break;
+		}
+
+	});
+	let out = new PIXI.Sprite(app.renderer.generateTexture(g));
+	out.anchor.set(.5);
+	return out;
 }
 
 ///////////////////////////////////////////////////
