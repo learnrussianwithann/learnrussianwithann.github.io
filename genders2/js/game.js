@@ -638,6 +638,7 @@ function catMeow() {
 
 function nextWord() {
 	if (curWordIndex >= 0) {
+		isReady = false;
 		viewGame.createAnimation({
 			type: ANIM_MOVE,
 			element: words[curWordIndex],
@@ -654,7 +655,8 @@ function nextWord() {
 			type: ANIM_ROTATE,
 			element: words[curWordIndex],
 			end: 0,
-			duration: 400
+			duration: 400,
+			end_action: () => { isReady = true }
 		});
 	} else {
 		setTimeout(showEnd, 1000);
@@ -767,7 +769,8 @@ function checkMouse() {
 }
 
 function correct(mouse) {
-
+	if (!isReady) return;
+	isReady = false;
 	viewGame.createAnimation({
 		type: ANIM_MOVE,
 		element: words[curWordIndex],

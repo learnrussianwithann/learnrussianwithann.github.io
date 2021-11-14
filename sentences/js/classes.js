@@ -213,6 +213,10 @@ class Viewport {
 			})
 		}
 	}
+
+	isVisible() {
+		return this.container.visible;
+	}
 }
 
 class ViewportAnimation {
@@ -365,10 +369,10 @@ class ViewportAnimation {
 				animation.isDone = true;
 			}
 
-			viewport.resizeElement(animation.element);
+			// viewport.resizeElement(animation.element);
 
 			if (animation.isDone) {
-				prop.element.scale_animation = null;
+				prop.element.alpha_animation = null;
 				if (prop.hasOwnProperty('end_action')) prop.end_action();
 			}
 

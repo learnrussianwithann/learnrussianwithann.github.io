@@ -2,31 +2,31 @@
 
 const SENTENCES =
 	["-Заяц/быстро/=скрылся/в лесу.",
-	"Зелёная/-гусеница/=переползает/дорогу.",
-	"-Муравей/=тащит/тяжелую/ветку.",
-	"-Школьники/радостно/=бегут/домой.",
-	"Сегодня/=дует/сильный/-ветер.",
-	"Ночью/ярко/=светят/-звёзды.",
-	"На каникулах/-мы/=поедем/к морю.",
-	"В озере/=плавает/большая/-рыба.",
-	"-Я/=видел/в лесу/медведя.",
-	"Лесной/-ручей/весело/=журчит.",
-	"-Бабушка/=пишет/письмо/внуку.",
-	"-Мышка/=утащила/в норку/сыр.",
-	"-Котёнок/=испугался/громкого/шума.",
-	"Весной/=цветут/красивые/-розы.",
-	"-Я/=люблю/шоколадные/конфеты.",
-	"-Лиса/тихо/=крадётся/за кроликом.",
-	"Красная/-машина/=приехала/первой.",
-	"-Белка/=спрятала/орехи/в дупле.",
-	"Полярная/-сова/=притаилась/в снегу.",
-	"-Я/=съел/целый/торт!",
-	"-Мама/=показала/новый/мультфильм.",
-	"-Мальчик/хорошо/=катается/на коньках.",
-	"Ночью/в лесу/=рыщет/-волк.",
-	"Спелое/-яблоко/=упало/с дерева.",
-	"Летучие/-мыши/=спят/в пещере.",
-	"Сегодня/-идёт/сильный/=дождь."];
+		"Зелёная/-гусеница/=переползает/дорогу.",
+		"-Муравей/=тащит/тяжелую/ветку.",
+		"-Школьники/радостно/=бегут/домой.",
+		"Сегодня/=дует/сильный/-ветер.",
+		"Ночью/ярко/=светят/-звёзды.",
+		"На каникулах/-мы/=поедем/к морю.",
+		"В озере/=плавает/большая/-рыба.",
+		"-Я/=видел/в лесу/медведя.",
+		"Лесной/-ручей/весело/=журчит.",
+		"-Бабушка/=пишет/письмо/внуку.",
+		"-Мышка/=утащила/в норку/сыр.",
+		"-Котёнок/=испугался/громкого/шума.",
+		"Весной/=цветут/красивые/-розы.",
+		"-Я/=люблю/шоколадные/конфеты.",
+		"-Лиса/тихо/=крадётся/за кроликом.",
+		"Красная/-машина/=приехала/первой.",
+		"-Белка/=спрятала/орехи/в дупле.",
+		"Полярная/-сова/=притаилась/в снегу.",
+		"-Я/=съел/целый/торт!",
+		"-Мама/=показала/новый/мультфильм.",
+		"-Мальчик/хорошо/=катается/на коньках.",
+		"Ночью/в лесу/=рыщет/-волк.",
+		"Спелое/-яблоко/=упало/с дерева.",
+		"Летучие/-мыши/=спят/в пещере.",
+		"Сегодня/-идёт/сильный/=дождь."];
 
 const gamefield = document.getElementById('game');
 const app = new PIXI.Application({
@@ -134,7 +134,7 @@ function initStartView() {
 
 function initGameView(res) {
 
-	mouse.x = .2;
+	mouse.x = .12;
 	mouse.y = .6;
 	mouse.scale = .2;
 	mouse.isRotate = false;
@@ -174,7 +174,7 @@ function initGameView(res) {
 	paper = viewGame.createElement({
 		type: SPRITE,
 		texture: res.paper.texture,
-		width: .65,
+		width: .75,
 		height: .3,
 		x: .6,
 		y: .33,
@@ -191,6 +191,7 @@ function initGameView(res) {
 	// 	y: .6,
 	// 	anchor: .5
 	// });
+
 
 	subject = viewGame.createElement({
 		type: SHAPE,
@@ -220,6 +221,7 @@ function initGameView(res) {
 	subject.pos = null;
 	subject.startPosition = { x: subject.info.x, y: subject.info.y };
 	setMoveable(subject, upStrip, downStrip);
+	subject.hitArea = new PIXI.Rectangle(-200, -400, 400, 800);
 
 	// predicate = viewGame.createElement({
 	// 	type: SPRITE,
@@ -273,6 +275,7 @@ function initGameView(res) {
 	predicate.pos = null;
 	predicate.startPosition = { x: predicate.info.x, y: predicate.info.y };
 	setMoveable(predicate, upStrip, downStrip);
+	predicate.hitArea = new PIXI.Rectangle(-200, -400, 400, 800);
 
 	for (let i = 0; i < MAX_WORDS; i++) {
 		BUFFER_POS[i] = viewGame.createElement({
@@ -371,7 +374,7 @@ function initEndView() {
 function startGame() {
 	let twords = SENTENCES[Math.floor(Math.random() * SENTENCES.length)].split('/');
 	let l = twords.length;
-	let xGap = .3;
+	let xGap = .25;
 	let maxWidth = 0;
 	let maxWidthIndex = 0;
 
@@ -455,21 +458,26 @@ function endGame() {
 }
 
 function showStart() {
-	viewStart.show();
-	viewGame.hide();
-	viewEnd.hide();
+	let show = () => { showView(viewStart) };
+
+	hideView(viewGame, show);
+	hideView(viewEnd, show);
+
+	if (!viewGame.isVisible() && !viewEnd.isVisible()) show();
 }
 
 function showGame() {
-	viewStart.hide();
-	viewGame.show();
-	viewEnd.hide();
+	let show = () => { showView(viewGame) };
+
+	hideView(viewStart, show);
+	hideView(viewEnd, show);
 }
 
 function showEnd() {
-	viewStart.hide();
-	viewGame.hide();
-	viewEnd.show();
+	let show = () => { showView(viewEnd) };
+
+	hideView(viewStart, show);
+	hideView(viewGame, show);
 }
 
 function downWord() {
@@ -540,7 +548,7 @@ function checkPositionStrip(strip) {
 
 		if (subject.pos != null && predicate.pos != null &&
 			subject.pos.word.type == '-' && predicate.pos.word.type == '=') {
-			animationHands(endGame);
+			animationHands(showEnd);
 			sound_yes.play();
 		}
 	} else if (t_i < 0) {
@@ -621,9 +629,7 @@ function animationHands(action) {
 		rotate_anim(mouse.arm_right, -.3, duration);
 		setTimeout(() => {
 			mouse.isRotate = false;
-			if (action != null) {
-				action();
-			}
+			if (typeof action === 'function') action();
 		}, duration);
 	}
 
@@ -650,6 +656,38 @@ function rotate_anim_reverse(elem, angle, duration) {
 		start: elem.rotation,
 		end: elem.rotation - angle,
 		duration: duration / 2,
+		isActive: true
+	});
+}
+
+function hideView(view, action) {
+	if (view.isVisible()) {
+		console.log("hide ", view, action);
+		view.createAnimation({
+			type: ANIM_ALPHA,
+			element: view.container,
+			start: 1,
+			end: 0,
+			duration: 300,
+			isActive: true,
+			end_action: () => {
+				console.log('end action');
+				view.hide();
+				if (action) action();
+			}
+		});
+	}
+}
+
+function showView(view) {
+	view.container.alpha = 0;
+	view.show();
+	view.createAnimation({
+		type: ANIM_ALPHA,
+		element: view.container,
+		start: 0,
+		end: 1,
+		duration: 300,
 		isActive: true
 	});
 }
