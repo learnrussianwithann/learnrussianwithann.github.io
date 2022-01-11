@@ -1,74 +1,114 @@
-const SPRITE = 'sprite';
-const SPRITE_WITH_TEXT = 'sprite_text';
-const TEXT = 'text';
-const TEXT_TEXTURED = 'text_textured';
-const ROUND_RECT = 'round_rect';
-const BUTTON = 'button';
-const SHAPE = 'shape';
-
-const ANIM_MOVE = 'move';
-const ANIM_ROTATE = 'rot';
-const ANIM_SCALE = 'scale';
-const ANIM_ALPHA = 'alpha';
-const ANIM_ANCHOR_LOOP = 'anloop';
-
-
-
-class Info {
-	constructor(width, height, byHeight, x, y) {
-		this.width = width;
-		this.height = height;
-		this.ratio = width / height;
-		this.byHeight = byHeight;
-		this.scale = { x: 1, y: 1 };
-		this.x = x;
-		this.y = y;
-	}
-
-	setScale(x = 0, y = x) {
-		this.scale.x = x;
-		this.scale.y = y;
-	}
-
-	setPosition(x = 0, y = x) {
-		this.x = x;
-		this.y = y;
-	}
-
-	setPosByPoint(pos) {
-		this.x = pos.x;
-		this.y = pos.y;
-	}
-
-	getPosition() {
-		return { x: this.x, y: this.y };
-	}
-
-	getScale() {
-		return { x: this.scale.x, y: this.scale.y };
-	}
-
-	copyPosition(element) {
-		this.x = element.info.x;
-		this.y = element.info.y;
-	}
-
-	getSize(screenSize) {
-		let out = { w: 0, h: 0 };
-		if (this.byHeight) {
-			out.h = this.height * screenSize;
-			out.w = out.h * this.ratio * this.scale.x;
-			out.h *= this.scale.y;
+class Point {
+	constructor(x, y) {
+		if (x == undefined) {
+			this.x = 0;
+			this.y = 0;
 		} else {
-			out.w = this.width * screenSize;
-			out.h = (out.w / this.ratio) * this.scale.y;
-			out.w *= this.scale.x;
+			this.x = x;
+			if (y == undefined) {
+				this.y = x;
+			} else {
+				this.y = y;
+			}
 		}
-		return out;
 	}
 
-	clone() {
-		return new Info(this.width, this.height, this.byHeight, this.x, this.y);
+	set(x, y) {
+		if (x == undefined) {
+			this.x = 0;
+			this.y = 0;
+		} else {
+			this.x = x;
+			if (y == undefined) {
+				this.y = x;
+			} else {
+				this.y = y;
+			}
+		}
+	}
+
+	multiple(d) {
+		this.x *= d;
+		this.y *= d;
+		return this;
+	}
+
+	static subtractPoint(a, b) {
+		return new Point(a.x - b.x, a.y - b.y);
+	}
+
+	sumPoint(d) {
+		this.x += d.x;
+		this.y += d.y;
+		return this;
+	}
+
+	dist(x, y) {
+		return Math.sqrt((x - this.x) * (x - this.x) + (y - this.y) * (y - this.y));
+	}
+
+	distToPoint(point) {
+		return this.dist(point.x, point.y);
+	}
+
+	static getVector(a, b) {
+		return new Point(b.x - a.x, b.y - a.y);
+	}
+
+	static getPoint(elem) {
+		return new Point(elem.x, elem.y);
+	}
+
+	toString() {
+		return 'x: ' + this.x + ' y: ' + this.y;
+	}
+}
+
+class Element extends PIXI.Container {
+	constructor(name) {
+		super();
+		this.interactiveChildren = false;
+		this.ratio = 1;
+		if (name) this.name = name;
+	}
+
+	add(elem) {
+		this.addChild(elem);
+		this.updateHitArea();
+	}
+
+	updateHitArea() {
+		this.calculateBounds();
+		this.hitArea = this.getLocalBounds();
+	}
+
+	getByName(name) {
+		return this.getChildByName(name);
+	}
+
+	hide(name) {
+		this.getByName(name).visible = false;
+	}
+
+	show(name) {
+		this.getByName(name).visible = true;
+	}
+}
+
+class MaskText extends Element {
+	constructor(name, texture, textStyle) {
+		super(name);
+		this.add(texture);
+		this.text = new PIXI.Text('', textStyle);
+		this.text.anchor.set(.5);
+		this.add(this.text);
+		this.mask = this.text;
+		this.gender = '';
+	}
+
+	setText(word) {
+		this.text.text = word.word;
+		this.gender = word.gender;
 	}
 }
 
@@ -76,403 +116,246 @@ class Viewport {
 	constructor(application, ratio) { //ratio width/height
 		this.app = application;
 		this.container = new PIXI.Container();
-		this.active = false;
 		this.w = 100;
 		this.h = 100;
-		this.c = { x: 0, y: 0 };
+		this.c = new Point(0, 0);
 		if (ratio) this.ratio = ratio;
 		else this.ratio = 16 / 9;
 		this.app.stage.addChild(this.container);
-		window.addEventListener('resize', () => { this.resize(); });
-		this.hide();
 	}
 
-	// ROUND_RECT prop(type, width*, height*, byHeight*, radius, color, x, y) *optional
-	// SPRITE prop(type, texture, x, y, name*, anchor*, width*, height*, byHeight*) *optional
-	// TEXT prop(type, text, style, width*, height*, byHeight*, x, y) *optional
-	// BUTTON prop(type, text, style, bcolor, bwidth*, bheight*, width*, height*, byHeight*, x, y) *optional
-	// SPRITE_WITH_TEXT prop(type, texture, text, style, name*, anchor*, text_anchor*, width*, height*, byHeight*, x, y) *optional
-	// TEXT_TEXTURED prop(type, text, style, texture, textureSize{x,y}, width*, height*, byHeight*, x, y) *optional
-	// SHAPE prop(type, text, style, texture, width*, height*, byHeight*, x, y) *optional
-
-	createElement(prop) {
-		this.calcScreenSize();
-		let e;
-		switch (prop.type) {
-			case ROUND_RECT:			
-				e = getRect(prop.width, prop.height, prop.color, prop.radius);
-				break;
-			case SPRITE:				
-				e = getSprite(prop);
-				break;
-			case TEXT:				
-				e = getText(prop.text, prop.style);
-				break;
-			case BUTTON:				
-				e = getButton(prop);
-				break;
-			case SPRITE_WITH_TEXT:				
-				e = getSpriteWithText(prop);
-				e.setText = (text) => {
-					e.getChildByName('text').text = text;
-				};
-				break;
-			case TEXT_TEXTURED:				
-				e = getTexturedText(prop);
-				break;
-			case SHAPE:				
-				e = getShape(prop.polygons);
-				break;
-		}
-		this.addElement(e, prop);
-
-		// if (prop.hasOwnProperty('byHeight') && prop.byHeight == true) {
-		// 	if (prop.hasOwnProperty('height'))
-		// 		e.info = new Info(prop.height * e.width / e.height, prop.height, prop.byHeight, prop.x, prop.y);
-		// }
-		// else if (prop.hasOwnProperty('width'))
-		// 	if (prop.hasOwnProperty('height')) e.info = new Info(prop.width, prop.height, prop.byHeight, prop.x, prop.y);
-		// 	else e.info = new Info(prop.width, prop.width * e.height / e.width, prop.byHeight, prop.x, prop.y);
-		// else e.info = new Info(e.width / this.w, e.height / this.w, prop.byHeight, prop.x, prop.y);
-
-		// this.container.addChild(e);
-		// this.resizeElement(e);
-		return e;
+	add(elem, x, y, w, byHeight) {
+		elem.info = { x: x, y: y, size: w, byHeight: byHeight };
+		this.container.addChild(elem);
 	}
 
-	//prop: width*, height*, byHeight*, x, y; *optional
+	removeAll() {
+		this.container.removeChildren(0, this.container.children.lenght);
+	}
 
-	addElement(e, prop) {
-		if (prop.hasOwnProperty('byHeight') && prop.byHeight == true) {
-			if (prop.hasOwnProperty('height'))
-				e.info = new Info(prop.height * e.width / e.height, prop.height, prop.byHeight, prop.x, prop.y);
-		}
-		else if (prop.hasOwnProperty('width'))
-			if (prop.hasOwnProperty('height')) e.info = new Info(prop.width, prop.height, prop.byHeight, prop.x, prop.y);
-			else e.info = new Info(prop.width, prop.width * e.height / e.width, prop.byHeight, prop.x, prop.y);
-		else e.info = new Info(e.width / this.w, e.height / this.w, prop.byHeight, prop.x, prop.y);
+	remove(elem) {
+		this.container.removeChild(elem);
+	}
 
-		this.container.addChild(e);
-		this.resizeElement(e);
-		return e;
+	getContainer() {
+		return this.container;
 	}
 
 	resizeElement(e) {
-		let size = e.info.getSize(this.w);
-		e.height = size.h;
-		e.width = size.w;
-		e.x = this.w * e.info.x + this.k_w;
-		e.y = this.h * e.info.y + this.k_h;
+		e.calculateBounds();
+		e.scale.set(1);
+		e.ratio = e.width / e.height;
+		if (e.info.byHeight) {
+			e.height = this.w * e.info.size;
+			e.width = e.height * e.ratio;
+			e.x = this.w * e.info.x + this.c.x;
+			e.y = this.h * e.info.y + this.c.y;
+		} else {
+			e.width = this.w * e.info.size;
+			e.height = e.width / e.ratio;
+			e.x = this.w * e.info.x + this.c.x;
+			e.y = this.h * e.info.y + this.c.y;
+		}
 	}
 
 	resize() {
-		if (this.container.visible) {
-			this.calcScreenSize();
-			this.container.children.forEach(e => {
-				this.resizeElement(e);
-			});
-		}
-
-	}
-
-	sort() {
-		this.container.sortChildren();
-	}
-
-	calcScreenSize() {
 		this.w = this.app.screen.width;
 		this.h = this.app.screen.height;
-		this.k_w = this.app.screen.width / 2;
-		this.k_h = this.app.screen.height / 2;
+		this.c.set(this.w / 2, this.h / 2);
 		if (this.w / this.ratio < this.h) {
 			this.h = this.w / this.ratio;
 		} else {
 			this.w = this.h * this.ratio;
 		}
-		this.k_w -= this.w / 2;
-		this.k_h -= this.h / 2;
-	}
-
-	getRelativeCoordinates(element) {
-		return {
-			x: (element.position.x - this.k_w) / this.w,
-			y: (element.position.y - this.k_h) / this.h
-		};
-	}
-
-	// animation types:
-	// ANIM_MOVE type, element, start(x,y), end(x,y), isActive, end_action()
-	// ANIM_ROTATE type, element, start, end, duration, isActive, end_action()
-	// ANIM_SCALE type, element, start(x,y), end(x,y), isActive, end_action()
-	// ANIM_ALPHA type, element, start, end, duration, isActive, end_action()
-	// ANIM_ANCHOR_LOOP type, element, duration, function(progress) returns a(x,y) new element anchor
-
-
-	createAnimation(animprop) {
-		let a = new ViewportAnimation(animprop, this);
-		if (a.hasOwnProperty('tick')) return a;
-		else return null;
-	}
-
-	startAnimation() {
-		this.active = true;
-	}
-
-	stopAnimation() {
-		this.active = false;
-	}
-
-	pauseAnimation() {
-		this.active = false;
+		this.c.x -= this.w / 2;
+		this.c.y -= this.h / 2;
+		this.container.children.forEach(element => {
+			this.resizeElement(element);
+		});
 	}
 
 	show() {
 		this.container.visible = true;
-		this.resize();
-		this.startAnimation();
 	}
 
 	hide() {
-		this.stopAnimation();
 		this.container.visible = false;
-	}
-
-	loop() {
-		if (this.active) {
-			let flag = true; console.log()
-			this.animation.forEach(a => {
-				if (a.isActive) {
-					a.tick();
-				}
-				if (a.isDone) this.animation.delete(a);
-			})
-		}
 	}
 }
 
-class ViewportAnimation {
-	constructor(prop, viewport) {
-		this.type = prop.type;
-		this.element = prop.element;
-		this.isActive = false;
-		this.isDone = false;
-		switch (prop.type) {
-			case ANIM_MOVE:
-				if (prop.element.hasOwnProperty('move_animation') && prop.element.move_animation != null) return;
-				ViewportAnimation.getMoveAnimation(this, prop, viewport);
-				break;
-			case ANIM_ROTATE:
-				if (prop.element.hasOwnProperty('rotate_animation') && prop.element.rotate_animation != null) return;
-				ViewportAnimation.getRotateAnimation(this, prop, viewport);
-				break;
-			case ANIM_SCALE:
-				if (prop.element.hasOwnProperty('scale_animation') && prop.element.scale_animation != null) return;
-				ViewportAnimation.getScaleAnimation(this, prop, viewport);
-				break;
-			case ANIM_ALPHA:
-				if (prop.element.hasOwnProperty('alpha_animation') && prop.element.alpha_animation != null) return;
-				ViewportAnimation.getAlphaAnimation(this, prop, viewport);
-				break;
-			case ANIM_ANCHOR_LOOP:
-				if (prop.element.hasOwnProperty('anchor_loop_animation') && prop.element.anchor_loop_animation != null) return;
-				ViewportAnimation.getAnchorLoopAnimation(this, prop, viewport);
-				break;
+class Animator {
+	constructor(application, fps) {
+		this.application = application;
+		window.animator = this;
+		this.animations = { next: null };
+		this.isRun = false;
+		if (fps == null) this.fps = 60;
+		else this.fps = fps;
+		this.endFunc = null;
+		this.jumping = [];
+	}
+
+	fmove(element, arg, steps) {
+		element.x += arg.x * steps;
+		element.y += arg.y * steps;
+	}
+
+	falpha(element, arg, steps) {
+		element.alpha += arg * steps;
+	}
+
+	fscale(element, arg, steps) {
+		element.scale.x += arg.x * steps;
+		element.scale.y += arg.y * steps;
+	}
+
+	frotate(element, arg, steps) {
+		element.rotation += arg * steps;
+	}
+
+	addNewAnimationMove(elem, start, end, time, endFunc) {
+		if (start == null) start = new Point(elem.x, elem.y);
+		let steps = Math.ceil(time * this.fps);
+		let step = Point.subtractPoint(end, start).multiple(1 / steps);
+		elem.position.set(start.x, start.y);
+		new EAnimation(this.animations, elem, this.fmove, steps, step, endFunc);
+		this.start();
+	}
+
+	addNewAnimationAlpha(elem, start, end, time, endFunc) {
+		let steps = Math.ceil(time * this.fps);
+		let disp = (end - start) / steps;
+		elem.alpha = start;
+		new EAnimation(this.animations, elem, this.falpha, steps, disp, endFunc);
+		this.start();
+	}
+
+	addNewAnimationScale(elem, startScale, endScale, baseScale, time, endFunc) {
+		if (startScale == null) startScale = elem.scale;
+		else {
+			if (!startScale.hasOwnProperty('x')) startScale = { x: startScale, y: startScale };
+			if (baseScale != null) {
+				startScale.x *= baseScale.x;
+				startScale.y *= baseScale.y;
+			}
+			elem.scale.set(startScale.x, startScale.y);
 		}
+		if (!endScale.hasOwnProperty('x')) endScale = { x: endScale, y: endScale };
+
+		if (baseScale != null) {
+			endScale.x *= baseScale.x;
+			endScale.y *= baseScale.y;
+		}
+
+		let steps = Math.ceil(time * this.fps);
+		let step = Point.subtractPoint(endScale, startScale).multiple(1 / steps);
+		new EAnimation(this.animations, elem, this.fscale, steps, step, endFunc);
+		this.start();
+	}
+
+	addNewAnimationRotation(elem, startAngle, endAngle, time, endFunc) {
+		if (startAngle == null) startAngle = elem.rotation;
+		let steps = Math.ceil(time * this.fps);
+		let step = (endAngle - startAngle) / steps;
+		if (elem.rotation != startAngle) elem.rotation == startAngle;
+		new EAnimation(this.animations, elem, this.frotate, steps, step, endFunc);
+		this.start();
+	}
+
+	tick() {
+		if (this.animations.next == null) this.stop();
+		else this.animations.next.do();
+		this.application.render();
 	}
 
 	start() {
-		window.requestAnimationFrame(this.tick);
-		this.start_time = performance.now();
-	}
-
-	static getMoveAnimation(animation, prop, viewport) {
-		prop.element.move_animation = animation;
-		let start = prop.hasOwnProperty('start') ? prop.start : animation.element.info.getPosition();
-		let displacement =
-		{
-			x: prop.end.x - start.x,
-			y: prop.end.y - start.y
-		};
-		animation.isActive = prop.hasOwnProperty('isActive') ? prop.isActive : true;
-		animation.tick = function (time) {
-			let progress = (time - animation.start_time) / prop.duration;
-			if (progress > 1) progress = 1;
-
-			animation.element.info.x = displacement.x * progress + start.x;
-			animation.element.info.y = displacement.y * progress + start.y;
-
-			if (progress >= 1) {
-				animation.isActive = false;
-				animation.isDone = true;
-			}
-
-			viewport.resizeElement(animation.element);
-
-			if (animation.isDone) {
-				prop.element.move_animation = null;
-				if (prop.hasOwnProperty('end_action')) prop.end_action();
-			}
-
-			if (animation.isActive) window.requestAnimationFrame(animation.tick);
-
-		}
-		if (animation.isActive) animation.start();
-	}
-
-	static getRotateAnimation(animation, prop, viewport) {
-		prop.element.rotate_animation = animation;
-		let start = prop.hasOwnProperty('start') ? prop.start : animation.element.angle;
-		let displacement = prop.end - start;
-
-		animation.isActive = prop.hasOwnProperty('isActive') ? prop.isActive : true;
-
-		animation.tick = function (time) {
-			let progress = (time - animation.start_time) / prop.duration;
-			if (progress > 1) progress = 1;
-
-			animation.element.angle = displacement * progress + start;
-			
-			if (progress >= 1) {
-				animation.isActive = false;
-				animation.isDone = true;
-			}
-
-			viewport.resizeElement(animation.element);
-
-			if (animation.isDone) {
-				prop.element.rotate_animation = null;
-				if (prop.hasOwnProperty('end_action')) prop.end_action();
-			}
-
-			if (animation.isActive) window.requestAnimationFrame(animation.tick);
-
-		}
-
-		if (animation.isActive) animation.start();
-	}
-
-	static getScaleAnimation(animation, prop, viewport) {
-		prop.element.scale_animation = animation;
-		let start = prop.hasOwnProperty('start') ? prop.start : prop.element.info.getScale();
-		let displacement =
-		{
-			x: prop.end.x - start.x,
-			y: prop.end.y - start.y
-		}
-		animation.isActive = prop.hasOwnProperty('isActive') ? prop.isActive : true;
-		animation.tick = function (time) {
-			let progress = (time - animation.start_time) / prop.duration;
-			if (progress > 1) progress = 1;
-			animation.element.info.scale.x = displacement.x * progress + start.x;
-			animation.element.info.scale.y = displacement.y * progress + start.y;
-
-			if (progress >= 1) {
-				animation.isActive = false;
-				animation.isDone = true;
-			}
-
-			viewport.resizeElement(animation.element);
-
-			if (animation.isDone) {
-				prop.element.scale_animation = null;
-				if (prop.hasOwnProperty('end_action')) prop.end_action();
-			}
-
-			if (animation.isActive) window.requestAnimationFrame(animation.tick);
-
-		}
-		if (animation.isActive) animation.start();
-	}
-
-	static getAlphaAnimation(animation, prop, viewport) {
-		prop.element.alpha_animation = animation;
-
-		let displacement = prop.end - prop.start;
-
-		animation.isActive = prop.hasOwnProperty('isActive') ? prop.isActive : true;
-
-		animation.tick = function (time) {
-			let progress = (time - animation.start_time) / prop.duration;
-			if (progress > 1) progress = 1;
-
-			animation.element.alpha = displacement * progress + prop.start;
-
-			if (progress >= 1) {
-				animation.isActive = false;
-				animation.isDone = true;
-			}
-
-			viewport.resizeElement(animation.element);
-
-			if (animation.isDone) {
-				prop.element.alpha_animation = null;
-				if (prop.hasOwnProperty('end_action')) prop.end_action();
-			}
-
-			if (animation.isActive) window.requestAnimationFrame(animation.tick);
-
-		}
-
-		if (animation.isActive) animation.start();
-	}
-
-	static getAnchorLoopAnimation(animation, prop, viewport) {
-		prop.element.anchor_loop_animation = animation;
-
-		animation.isActive = prop.hasOwnProperty('isActive') ? prop.isActive : true;
-
-		animation.tick = function (time) {
-			let progress = (time - animation.start_time) / prop.duration;
-			if (progress > 1) {
-				progress = 1;
-				animation.start_time = performance.now();
-			}
-
-			let a = prop.function(progress);
-			animation.element.anchor.set(a.x, a.y);
-			// viewport.resizeElement(animation.element);
-
-			if (animation.isDone) {
-				animation.isActive = false;
-				prop.element.anchor_loop_animation = null;
-				if (prop.hasOwnProperty('end_action')) prop.end_action();
-			}
-
-			if (animation.isActive) window.requestAnimationFrame(animation.tick);
-
-		}
-
-		if (animation.isActive) animation.start();
-	}
-}
-
-class SoundBuffer {
-	constructor(path, size, loop) {
-		this.buffer = new Array(size);
-		for (let i = 0; i < this.buffer.length; i++) {
-			this.buffer[i] = PIXI.sound.Sound.from(path);
-			this.buffer[i].loop = loop ? true : false;
-		}
-	}
-
-	play() {
-		let count = this.buffer.length;
-		this.buffer.forEach(e => {
-			if (!e.isPlaying) count--;
-		});
-		if (count < this.buffer.length) {
-			this.buffer[count].play();
+		if (!this.isRun) {
+			this.isRun = true;
+			this.timerId = setInterval(function () { window.animator.tick() }, 1000 / this.fps);
 		}
 	}
 
 	stop() {
-		for (let i = 0; i < this.buffer.length; i++) {
-			if (this.buffer[i].isPlaying) {
-				this.buffer[i].stop();
-				break;
-			}
+		this.isRun = false;
+		clearInterval(this.timerId);
+		if (this.endFunc != null) this.endFunc();
+		this.endFunc = null;
+	}
+
+	addAnimationJump(elem) {
+		if (!this.jumping.includes(elem)) {
+			let jumping = this.jumping;
+			jumping.push(elem);
+			let tprep = 0.1;
+			let tup = .1;
+			let tdown = .1;
+			let ttonormal = .1;
+			let h = elem.getLocalBounds().height;
+			let fMove = this.addNewAnimationMove.bind(this);
+			setTimeout(function () {
+				fMove(elem, null, { x: 0, y: -.05 * h }, tup, () => {
+					fMove(elem, null, { x: 0, y: .01 * h }, tdown + tprep, () => {
+						fMove(elem, null, { x: 0, y: 0 }, ttonormal, () => { jumping.splice(jumping.indexOf(elem), 1); });
+					});
+				});
+			}, tprep * 1000);
+
+			let fScale = this.addNewAnimationScale.bind(this);
+			let baseScale = elem.scale.clone();
+			fScale(elem, null, { x: 1.05, y: .95 }, baseScale, tprep, () => {
+				fScale(elem, null, { x: .95, y: 1.05 }, baseScale, tup, () => {
+					fScale(elem, null, 1, baseScale, tdown);
+				})
+			})
 		}
+	}
+
+	doAll() {
+		while (this.animations.next != null) {
+			this.animations.next.doAll();
+		}
+	}
+}
 
 
+
+class EAnimation {
+	constructor(prev, element, func, steps, arg, endFunc) {
+		this.prev = prev;
+		if (prev.next) {
+			prev.next.prev = this;
+			this.next = prev.next;
+		}
+		prev.next = this;
+		this.count = steps;
+		this.element = element;
+		this.func = func;
+		this.arg = arg
+		this.endFunc = endFunc;
+	}
+
+	do() {
+		if (this.count > 0) {
+			this.func(this.element, this.arg, 1);
+			this.count--;
+		} else {
+			this.end();
+		}
+		if (this.next != null) this.next.do();
+	}
+
+	doAll() {
+		this.func(this.element, this.arg, this.count);
+		this.count = -1;
+		this.end();
+		if (this.next != null) this.next.doAll();
+	}
+
+	end() {
+		if (this.next) this.next.prev = this.prev;
+		this.prev.next = this.next;
+		if (this.endFunc != null) {
+			this.endFunc();
+		}
 	}
 }

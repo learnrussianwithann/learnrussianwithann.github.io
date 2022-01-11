@@ -1,36 +1,31 @@
 'use strict';
-
-const ALL_WORDS = {
-	m0: ['папа', 'дядя', 'друг', 'брат', 'урок', 'луч', 'меч', 'заяц', 'куст', 'лес', 'крик', 'сон', 'глаз', 'стол', 'карандаш', 'лист', 'вес', 'магазин', 'поход', 'дождь', 'день', 'ремень', 'огонь', 'шампунь', 'голубь', 'конь', 'мост', 'экран', 'герой', 'рассказ', 'воздух', 'ключ', 'медведь', 'снег', 'тюлень', 'мотоцикл', 'фонтан', 'путь', 'мужчина', 'ботинок'],
-	f0: ['морковь', 'пыль', 'лошадь', 'кровать', 'зелень', 'дверь', 'игра', 'пила', 'картина', 'туча', 'погода', 'ягода', 'голова', 'мечта', 'мысль', 'речь', 'ночь', 'дочь', 'ручка', 'причёска', 'юбка', 'футболка', 'бабушка', 'сестра', 'семья', 'вилка', 'сказка', 'книга', 'школа', 'улыбка', 'песня', 'музыка', 'каша', 'фея', 'комната', 'подруга', 'тень', 'помощь', 'дочь', 'вещь'],
-	n0: ['поле', 'море', 'пальто', 'радио', 'кино', 'кафе', 'варенье', 'небо', 'одеяло', 'зеркало', 'стекло', 'слово', 'дупло', 'плечо', 'молоко ', 'метро', 'кимоно', 'пюре', 'пианино', 'блюдо', 'шоссе', 'желе', 'меню', 'яблоко', 'ухо', 'эхо', 'дерево', 'колено', 'лето', 'письмо', 'зерно', 'гнездо', 'платье', 'солнце', 'полотенце', 'время', 'племя', 'пламя', 'чтение', 'отражение'],
-	m1: ['овощ', 'бензин', 'плащ', 'ключ', 'человек', 'город', 'час', 'локоть', 'огонь', 'календарь', 'гараж', 'рояль', 'богач', 'душ', 'матч', 'восход', 'молоток', 'вход', 'звук', 'маяк', 'завтрак', 'котёл', 'вратарь', 'январь', 'пример', 'космос', 'червяк', 'голос', 'метеорит', 'комикс', 'лабиринт', 'финиш', 'камень', 'обман', 'ручей', 'кашель', 'монстр', 'глагол', 'пояс', 'остров', 'великан', 'царь', 'силач', 'потолок', 'дракон', 'глобус', 'магнит', 'ус', 'урожай', 'рецепт'],
-	f1: ['тишина', 'жизнь', 'комната', 'осень', 'точка', 'мышь', 'печь', 'секунда', 'математика', 'тетрадь', 'челюсть', 'фамилия', 'неделя', 'миля', 'оценка', 'пружина', 'смелость', 'подушка', 'музыка', 'башня', 'деревня', 'вещь', 'пыль', 'роль', 'лисица', 'перемена', 'задача', 'пустота', 'планета', 'лень', 'история', 'песня', 'буква', 'мумия', 'удача', 'стрела', 'свобода', 'медуза', 'русалка ', 'струна', 'метла', 'тьма', 'шкатулка', 'резина', 'страница', 'петля', 'проверка', 'уборка', 'зарядка'],
-	n1: ['слово', 'окно', 'пламя', 'какао', 'племя', 'предложение', 'болото', 'удивление', 'кресло', 'здоровье', 'тесто', 'зерно', 'озеро', 'сердце', 'золото', 'ударение', 'дыхание', 'щупальце', 'чучело', 'приключение', 'меню', 'чудовище', 'чувство', 'лето', 'сиденье', 'письмо', 'место', 'королевство', 'привидение', 'облако', 'волшебство', 'плечо', 'дупло', 'тело', 'здание', 'полотенце', 'железо', 'растение', 'занятие', 'хобби']
-};
-
-const END_PHRASE = ['Вкусненько!', 'Еще хочу!', 'Вкуснятина!', 'Люблю сыр!', 'Ням-ням!'];
-
-shuffle(ALL_WORDS['f0']);
-shuffle(ALL_WORDS['m0']);
-shuffle(ALL_WORDS['n0']);
-shuffle(ALL_WORDS['f1']);
-shuffle(ALL_WORDS['m1']);
-shuffle(ALL_WORDS['n1']);
-
 const gamefield = document.getElementById('game');
 const app = new PIXI.Application({
 	resizeTo: gamefield,
 	backgroundColor: 0x1e99bb,
 	resolution: window.devicePixelRatio,
 	autoDensity: true,
-	antialias: true,
-	// forceCanvas: true
+	antialias: false,
+	forceCanvas: true
 });
 
 const viewStart = new Viewport(app, 16 / 9);
 const viewEnd = new Viewport(app, 16 / 9);
 const viewGame = new Viewport(app, 16 / 9);
+
+const animator = new Animator(app, 40);
+
+const plate = new Element();
+const mouseF = new Element('f');
+const mouseM = new Element('m');
+const mouseN = new Element('n');
+const cloudF = new Element();
+const cloudM = new Element();
+const cloudN = new Element();
+const cat = new Element();
+const word = new Element();
+const clock = new Element();
+const glade = getDrawRect(20, 20, 20, 0xff0000);
 
 const sound_meow = PIXI.sound.Sound.from('audio/meow.mp3');
 const sound_yummy = PIXI.sound.Sound.from('audio/yummy.mp3');
@@ -38,11 +33,13 @@ const sound_no = PIXI.sound.Sound.from('audio/no.mp3');
 
 const styleCheese = new PIXI.TextStyle({
 	fontFamily: 'RubikMonoOne',
-	fontSize: 50,
+	fontSize: 80,
 	fill: '#ffffff',
 	wordWrap: false,
 	letterSpacing: 0
 });
+const text = new PIXI.Text('', styleCheese);
+const words = [];
 
 const styleName = new PIXI.TextStyle({
 	fontFamily: 'Arial',
@@ -51,10 +48,13 @@ const styleName = new PIXI.TextStyle({
 	fill: '#ffffff',
 	wordWrap: false,
 });
+const textF = new PIXI.Text('ЖЕНСКИЙ РОД', styleName);
+const textN = new PIXI.Text('СРЕДНИЙ РОД', styleName);
+const textM = new PIXI.Text('МУЖСКОЙ РОД', styleName);
 
 const styleCloud = new PIXI.TextStyle({
 	fontFamily: 'Arial',
-	fontSize: 100,
+	fontSize: 150,
 	fontWeight: 'bold',
 	fill: '#344072',
 	wordWrap: false,
@@ -84,480 +84,266 @@ loader.add('hole', 'img/hole.png')
 	.add('m3', 'img/m3.png')
 	.add('cat', 'img/cat.png')
 	.add('plate', 'img/plate.png')
-	.add('cheese_texture', 'img/cheese_texture.png');
+	.add('cheese_texture', 'img/cheese_texture.png')
+	.add('cloud', 'img/cloud.png')
+	.add('clock', 'img/clock.png')
+	.load(init);
 
-const font = new FontFaceObserver('RubikMonoOne');
-
-font.load().then(() => { loader.load(init) });
-
-var difficulty = 0;
-var currentPositions = [0, 0, 0];
+var scale = 1;
+var cheese_texture;
+var curWordGender = '';
 var curWordIndex = 0;
 var isMeow = false;
 var isNewWord = true;
 var isShowingCloud = false;
-var isReady = true;
-var words = Array(12);
-var startPos = Array(12);
-var startAngle = Array(12);
+var isReady = false;
+// var eaten = -1;
+var endingCount = new PIXI.Text(``, styleCheeseEnding);
 
 
-// function resize() {
-// 	viewStart.resize();
-// 	viewEnd.resize();
-// 	viewGame.resize();
-// 	app.resize();
-// }
+function resize() {
+	viewStart.resize();
+	viewEnd.resize();
+	viewGame.resize();
+	app.resize();
+	updater();
+}
 
 function init(loader, resources) {
 	initViewStart(resources);
-	initViewGame(resources);
 	initViewEnd(resources);
+	initViewGame(resources);
 
-	// app.stage.sortChildren();
-	// window.addEventListener('resize', resize);
+	app.stage.sortChildren();
+	window.addEventListener('resize', resize);
 
 	// app.stop();
 
-	showStart();
+	viewStart.show();
+	viewEnd.hide();
+	viewGame.hide();
 
 	gamefield.appendChild(app.view);
-	// resize();
+	resize();
 }
 
 function initViewStart(resources) {
-
-	viewStart.createElement({
-		type: ROUND_RECT,
-		width: .6,
-		height: .5,
-		radius: .1,
-		color: 0x5d70bc,
-		x: .5,
-		y: .5
-	})
-
-	viewStart.createElement({
-		type: TEXT,
-		text: 'Мышки проголодались\n\nпомоги покормить мышек',
-		style: styleMessage,
-		byHeight: false,
-		width: .5,
-		x: .5,
-		y: .35
-	});
-
-	let bstart = viewStart.createElement({
-		type: BUTTON,
-		text: 'Помогу',
-		style: styleMessage,
-		bcolor: 0xff6968,
-		bwidth: .7,
-		width: .3,
-		height: .06,
-		x: .5,
-		y: .8
-	});
-
-	let bdiff0 = viewStart.createElement({
-		type: BUTTON,
-		text: 'Легко',
-		style: styleMessage,
-		bcolor: 0xff6968,
-		bwidth: .7,
-		width: .15,
-		height: .06,
-		x: .4,
-		y: .6
-	});
-
-	let bdiff1 = viewStart.createElement({
-		type: BUTTON,
-		text: 'Сложно',
-		style: styleMessage,
-		bcolor: 0xff6968,
-		bwidth: .7,
-		width: .15,
-		height: .06,
-		x: .6,
-		y: .6
-	});
-
-	bdiff0.info.setScale(1.15);
-	bdiff1.info.setScale(0.85);
+	viewStart.getContainer().zIndex = 10;
+	viewEnd.getContainer().zIndex = 11;
+	viewGame.getContainer().zIndex = 0;
 
 
-	setButton(bstart, showGame);
-	setButton(bdiff0, () => {
-		if (difficulty == 0) return;
-		setDifficulty(0);
-		viewStart.createAnimation({
-			type: ANIM_SCALE,
-			element: bdiff0,
-			start: { x: .85, y: .85 },
-			end: { x: 1.15, y: 1.15 },
-			duration: 200,
-			isActive: true
-		});
-		viewStart.createAnimation({
-			type: ANIM_SCALE,
-			element: bdiff1,
-			start: { x: 1.15, y: 1.15 },
-			end: { x: .85, y: .85 },
-			duration: 200,
-			isActive: true
-		});
-	});
-	setButton(bdiff1, () => {
-		if (difficulty == 1) return;
-		setDifficulty(1);
-		viewStart.createAnimation({
-			type: ANIM_SCALE,
-			element: bdiff0,
-			start: { x: 1.15, y: 1.15 },
-			end: { x: .85, y: .85 },
-			duration: 200,
-			isActive: true
-		});
-		viewStart.createAnimation({
-			type: ANIM_SCALE,
-			element: bdiff1,
-			start: { x: .85, y: .85 },
-			end: { x: 1.15, y: 1.15 },
-			duration: 200,
-			isActive: true
-		});
-	});
+	let greeting = new PIXI.Text("Мышки проголодались\n\nпомоги покормить мышек", styleMessage);
+	greeting.anchor.set(.5);
 
-}
+	let startButton = genButton("Помогу", styleMessage, 0xff6968, 2);
+	setButton(startButton, startGame);
 
-function initViewGame(resources) {
-
-	//Holes
-
-	viewGame.createElement({
-		type: SPRITE,
-		texture: resources.hole.texture,
-		width: .1,
-		x: .15,
-		y: .2,
-		anchor: .5
-	});
-
-	viewGame.createElement({
-		type: SPRITE,
-		texture: resources.hole.texture,
-		width: .1,
-		x: .15,
-		y: .5,
-		anchor: .5
-	});
-
-	viewGame.createElement({
-		type: SPRITE,
-		texture: resources.hole.texture,
-		width: .1,
-		x: .15,
-		y: .8,
-		anchor: .5
-	});
-
-	//Titles
-
-	viewGame.createElement({
-		type: TEXT,
-		text: "ЖЕНСКИЙ РОД",
-		width: .13,
-		style: styleName,
-		x: .15,
-		y: .07,
-		anchor: .5
-	});
-
-	viewGame.createElement({
-		type: TEXT,
-		text: "СРЕДНИЙ РОД",
-		width: .13,
-		style: styleName,
-		x: .15,
-		y: .37,
-		anchor: .5
-	});
-
-	viewGame.createElement({
-		type: TEXT,
-		text: "МУЖСКОЙ РОД",
-		width: .13,
-		style: styleName,
-		x: .15,
-		y: .67,
-		anchor: .5
-	});
-
-	//Plate
-
-	viewGame.createElement({
-		type: SPRITE,
-		texture: resources.plate.texture,
-		width: .3,
-		x: .4,
-		y: .8,
-		anchor: .5
-	});
-
-	//Cat
-
-	viewGame.cat = {};
-
-	viewGame.cat.body = viewGame.createElement({
-		type: SPRITE,
-		texture: new PIXI.Texture(resources.cat.texture.baseTexture, new PIXI.Rectangle(0, 0, 1436, 1021)),
-		width: .38,
-		x: .75,
-		y: .7,
-		anchor: .5
-	});
-
-	viewGame.cat.body.zIndex = 1;
-
-	viewGame.cat.leg = viewGame.createElement({
-		type: SPRITE,
-		texture: new PIXI.Texture(resources.cat.texture.baseTexture, new PIXI.Rectangle(686, 1076, 750, 167)),
-		width: .2,
-		x: .67,
-		y: .8,
-		anchor: .5
-	});
-
-	viewGame.cat.leg.zIndex = 0;
-
-	viewGame.cat.eyes_open = viewGame.createElement({
-		type: SPRITE,
-		texture: new PIXI.Texture(resources.cat.texture.baseTexture, new PIXI.Rectangle(192, 1154, 439, 194)),
-		width: .12,
-		x: .655,
-		y: .64,
-		anchor: .5
-	});
-
-	viewGame.cat.eyes_open.zIndex = 3;
-
-	viewGame.cat.eyes_close = viewGame.createElement({
-		type: SPRITE,
-		texture: new PIXI.Texture(resources.cat.texture.baseTexture, new PIXI.Rectangle(186, 1021, 445, 133)),
-		width: .13,
-		x: .655,
-		y: .64,
-		anchor: .5
-	});
-
-	viewGame.cat.eyes_close.zIndex = 2;
-
-	viewGame.cat.eyes_open.info.setScale(1, 0);
-
-	setButton(viewGame.cat.body, catMeow);
-
-	//Mouses
-
-	viewGame.mouseF = viewGame.createElement({
-		type: SPRITE,
-		texture: resources.m1.texture,
-		width: .08,
-		x: .15,
-		y: .21,
-		anchor: .5
-	});
-
-	viewGame.mouseN = viewGame.createElement({
-		type: SPRITE,
-		texture: resources.m2.texture,
-		width: .08,
-		x: .15,
-		y: .51,
-		anchor: .5
-	});
-
-	viewGame.mouseM = viewGame.createElement({
-		type: SPRITE,
-		texture: resources.m3.texture,
-		width: .08,
-		x: .15,
-		y: .81,
-		anchor: .5
-	});
-
-	viewGame.mouseM.gender = 'm';
-	viewGame.mouseN.gender = 'n';
-	viewGame.mouseF.gender = 'f';
-
-	setButton(viewGame.mouseM, checkMouse);
-	setButton(viewGame.mouseN, checkMouse);
-	setButton(viewGame.mouseF, checkMouse);
-
-	//Clouds
-	// viewGame.addElement(drawCloud(.14, .06, .1, 0xffffff, styleCloud, 'testtest!', .5, 'up'), { x: .27, y: .21, width: .14 });
-	viewGame.cloudF = viewGame.addElement(drawCloud(.14, .06, .1, 0xffffff, styleCloud, 'Она моя!', .5, 'left'), { x: .27, y: .21, width: .14 });
-	viewGame.cloudF.zIndex = 4;
-	viewGame.cloudF.alpha = 0;
-
-	viewGame.cloudN = viewGame.addElement(drawCloud(.14, .06, .1, 0xffffff, styleCloud, 'Оно моё!', .5, 'left'), { x: .27, y: .51, width: .14 });
-	viewGame.cloudN.zIndex = 4;
-	viewGame.cloudN.alpha = 0;
-
-	viewGame.cloudM = viewGame.addElement(drawCloud(.14, .06, .1, 0xffffff, styleCloud, 'Он мой!', .5, 'left'), { x: .27, y: .81, width: .14 });
-	viewGame.cloudM.zIndex = 4;
-	viewGame.cloudM.alpha = 0;
-
-	//Words
-
-	for (let i = 0; i < words.length; i++) {
-		words[i] = viewGame.createElement({
-			type: TEXT_TEXTURED,
-			text: 'wordtest',
-			style: styleCheese,
-			texture: resources.cheese_texture.texture,
-			textureSize: { x: 800, y: 100 },
-			x: .5,
-			y: .5,
-			height: .07,
-			byHeight: true
-		});
-		words[i].zIndex = 3;
-	}
-
-	viewGame.sort();
+	viewStart.add(getDrawRect(300, 200, 30, 0x5d70bc), 0.5, 0.5, .6);
+	viewStart.add(greeting, 0.5, .35, .4);
+	viewStart.add(startButton, 0.5, .7, .2);
 }
 
 function initViewEnd(resources) {
+	let ending = new PIXI.Text("Мышки съели\n12 сырных слов!", styleCheeseEnding);
+	ending.anchor.set(.5);
 
-	viewEnd.createElement({
-		type: ROUND_RECT,
-		width: .6,
-		height: .4,
-		radius: .1,
-		color: 0x5d70bc,
-		x: .5,
-		y: .6
-	})
+	endingCount.anchor.set(.5);
 
-	viewEnd.createElement({
-		type: TEXT,
-		text: 'Мышки наелись!',
-		style: styleMessage,
-		byHeight: false,
-		width: .35,
-		x: .5,
-		y: .55
+	let againButton = genButton(" Сыграть еще ", styleMessage, 0xff6968);
+	setButton(againButton, startGame);
+
+	let endButton = genButton("Закончить игру", styleMessage, 0x3d55b7);
+	setButton(endButton, exitGame);
+
+
+	let c1 = genCloud(resources.cloud.texture, 'Вкуснятина!', styleCloud, { x: 1.75, y: 2.75 }, { x: -1.5, y: 1 });
+	let c2 = genCloud(resources.cloud.texture, 'А я бы поел ещё!', styleCloud, { x: -.7, y: 2.75 }, { x: 2, y: 1 });
+	let c3 = genCloud(resources.cloud.texture, 'Очень вкусно!!', styleCloud, { x: 1.65, y: 2.75 }, { x: -1.7, y: 1 });
+
+	c1.name = 'c1';
+	c2.name = 'c2';
+	c3.name = 'c3';
+
+	let m1 = new Element('m1');
+	m1.add(genSprite(resources.m1.texture, 'mouse', { x: .5, y: .4 }))
+	setButton(m1, () => {
+		animator.addNewAnimationAlpha(c1, null, 1, .3);
+		m1.interactive = false;
 	});
 
-	let bagain = viewEnd.createElement({
-		type: BUTTON,
-		text: 'Еще раз',
-		style: styleMessage,
-		bcolor: 0xff6968,
-		bwidth: .7,
-		width: .3,
-		height: .06,
-		x: .5,
-		y: .8
+	let m2 = new Element('m2');
+	m2.add(genSprite(resources.m2.texture, 'mouse', { x: .5, y: .4 }, { x: -1, y: 1 }))
+	setButton(m2, () => {
+		animator.addNewAnimationAlpha(c2, null, 1, .3);
+		m2.interactive = false;
 	});
 
-	setButton(bagain, showStart);
-
-	viewEnd.mouse1 = viewEnd.createElement({
-		type: SPRITE,
-		texture: resources.m1.texture,
-		width: .15,
-		x: .85,
-		y: .5,
-		anchor: .5
+	let m3 = new Element('m3');
+	m3.add(genSprite(resources.m3.texture, 'mouse', { x: .5, y: .4 }, { x: -1, y: 1 }))
+	setButton(m3, () => {
+		animator.addNewAnimationAlpha(c3, null, 1, .3);
+		m3.interactive = false;
 	});
-
-	viewEnd.mouse1.angle = 15;
-	viewEnd.mouse1.zIndex = -1;
-
-	viewEnd.mouse2 = viewEnd.createElement({
-		type: SPRITE,
-		texture: resources.m2.texture,
-		width: .15,
-		x: .15,
-		y: .5,
-		anchor: .5
-	});
-
-	viewEnd.mouse2.scale.x *= -1
-	viewEnd.mouse2.angle = -15;
-	viewEnd.mouse2.zIndex = -1;
-
-	viewEnd.mouse3 = viewEnd.createElement({
-		type: SPRITE,
-		texture: resources.m3.texture,
-		width: .15,
-		x: .5,
-		y: .5,
-		anchor: .5
-	});
-
-	viewEnd.mouse3.zIndex = -1;
-
-	viewEnd.cloud1 = viewEnd.addElement(drawCloud(.18, .06, .1, 0xffffff, styleCloud, 'testtest!', .5, 'up'), { x: .85, y: .7, width: .18 });
-
-	viewEnd.cloud2 = viewEnd.addElement(drawCloud(.18, .06, .1, 0xffffff, styleCloud, 'testtest!', .5, 'up'), { x: .15, y: .7, width: .18 });
-
-	viewEnd.cloud3 = viewEnd.addElement(drawCloud(.23, .06, .1, 0xffffff, styleCloud, 'testtest!', .6, 'left'), { x: .68, y: .15, width: .23 });
-
-	viewEnd.sort();
+	viewEnd.add(m1, .44, .65, .07);
+	viewEnd.add(m2, .56, .65, .07);
+	viewEnd.add(m3, .22, .29, .07);
+	viewEnd.add(getDrawRect(400, 200, 50, 0x1e2949), .5, .3, .5);
+	viewEnd.add(ending, .5, .3, .1, true);
+	// viewEnd.add(endingCount, .5, .4, .3);
+	viewEnd.add(againButton, .35, .86, .06, true);
+	viewEnd.add(endButton, .65, .86, .06, true);
+	viewEnd.add(c1, .49, .65, .07, true);
+	viewEnd.add(c2, .50, .65, .07, true);
+	viewEnd.add(c3, .27, .29, .07, true);
 }
 
-function setDifficulty(param) {
-	difficulty = param;
+function reinitEnd() {
+	viewEnd.getContainer().getChildByName('c1').alpha = 0;
+	viewEnd.getContainer().getChildByName('c2').alpha = 0;
+	viewEnd.getContainer().getChildByName('c3').alpha = 0;
+	viewEnd.getContainer().getChildByName('m1').interactive = true;
+	viewEnd.getContainer().getChildByName('m2').interactive = true;
+	viewEnd.getContainer().getChildByName('m3').interactive = true;
+
+	// if (eaten == 0) {
+	// 	endingCount.text = `Мышки не поели!`;
+	// 	viewEnd.getContainer().getChildByName('m1').interactive = false;
+	// 	viewEnd.getContainer().getChildByName('m2').interactive = false;
+	// } else {
+	// 	viewEnd.getContainer().getChildByName('m1').interactive = true;
+	// 	viewEnd.getContainer().getChildByName('m2').interactive = true;
+	// 	let wcheese, wword;
+	// 	let ten = eaten % 10;
+	// 	let hundred = eaten % 100;
+
+	// 	if (ten == 1 && eaten != 11) {
+	// 		wcheese = 'сырное';
+	// 		wword = 'слово';
+	// 	} else {
+	// 		wcheese = 'сырных';
+	// 		if (hundred >= 11 && hundred <= 19) {
+	// 			wword = 'слов';
+	// 		} else {
+	// 			switch (ten) {
+	// 				case (1): wword = 'слово'; break;
+	// 				case (2):
+	// 				case (3):
+	// 				case (4): wword = 'слова'; break;
+	// 				default: wword = 'слов';
+	// 			}
+	// 		}
+	// 	}
+	// 	endingCount.text = `Мышки съели\n${eaten} ${wcheese} ${wword}!`;
+	// }
+
+
+	// viewEnd.resizeElement(endingCount);
+}
+
+function initViewGame(resources) {
+	mouseF.add(genSprite(resources.hole.texture, 'hole', .5, 1.5));
+	mouseN.add(genSprite(resources.hole.texture, 'hole', .5, 1.5));
+	mouseM.add(genSprite(resources.hole.texture, 'hole', .5, 1.5));
+
+	mouseF.add(genSprite(resources.m1.texture, 'body', { x: .5, y: .4 }));
+	mouseN.add(genSprite(resources.m2.texture, 'body', { x: .5, y: .4 }));
+	mouseM.add(genSprite(resources.m3.texture, 'body', { x: .5, y: .4 }));
+
+	cloudF.add(genCloud(resources.cloud.texture, 'Она моя!', styleCloud, { x: -.9, y: 3.1 }, 1.2));
+	cloudN.add(genCloud(resources.cloud.texture, 'Оно моё!', styleCloud, { x: -.9, y: 3.1 }, 1.2));
+	cloudM.add(genCloud(resources.cloud.texture, 'Он мой!', styleCloud, { x: -1.1, y: 3.1 }, 1.2));
+
+	plate.add(genSprite(resources.plate.texture, 'cheese', .5))
+
+	cat.add(genSprite(new PIXI.Texture(resources.cat.texture.baseTexture, new PIXI.Rectangle(686, 1076, 750, 167)), 'leg', { x: .9, y: -.8 }));
+	cat.add(genSprite(new PIXI.Texture(resources.cat.texture.baseTexture, new PIXI.Rectangle(0, 0, 1436, 1021)), 'body', .5));
+	cat.add(genSprite(new PIXI.Texture(resources.cat.texture.baseTexture, new PIXI.Rectangle(186, 1021, 445, 133)), 'eyes_close', { x: 1.35, y: 1.3 }));
+	cat.add(genSprite(new PIXI.Texture(resources.cat.texture.baseTexture, new PIXI.Rectangle(192, 1154, 439, 194)), 'eyes_open', .5, 1, { x: -380, y: -120 }));
+	// cat.add(genSprite(new PIXI.Texture(resources.cat.texture.baseTexture, new PIXI.Rectangle(192, 1154, 439, 194)), 'eyes_open', { x: 1.36, y: 1.1 }));
+
+	cat.hide('eyes_open');
+
+	mouseF.add(textF);
+	mouseN.add(textN);
+	mouseM.add(textM);
+	textF.scale.set(3);
+	textN.scale.set(3);
+	textM.scale.set(3);
+	textF.anchor.set(0.5, 4.8);
+	textN.anchor.set(0.5, 4.8);
+	textM.anchor.set(0.5, 4.8);
+
+	// clock.add(genSprite(new PIXI.Texture(resources.clock.texture.baseTexture, new PIXI.Rectangle(0, 0, 600, 600)), null, .5));
+	// clock.add(genSprite(new PIXI.Texture(resources.clock.texture.baseTexture, new PIXI.Rectangle(601, 0, 48, 284)), 'arrow', { x: .5, y: .91 }));
+	// clock.getChildByName('arrow').pivot.set(.5, .91);
+
+	glade.addChild(getDrawRect(20, 20, 20, 0xff0000));
+	glade.visible = false;
+
+	viewGame.add(cat, .76, .77, .35);
+	viewGame.add(plate, .45, 0.89, .32);
+	viewGame.add(glade, .48, 0.3, .01);
+	viewGame.add(mouseF, .22, .155, .13, true);
+	viewGame.add(mouseN, .22, .5, .13, true);
+	viewGame.add(mouseM, .22, .86, .13, true);
+
+	// viewGame.add(word, .0, -.2, .05, true);
+
+
+	// cheese_texture.anchor.set(.5);
+	// cheese_texture.mask = text;
+	// text.anchor.set(.5);
+	// word.addChild(cheese_texture);
+	// word.addChild(text);
+
+
+	setButton(cat, catMeow);
+
+	setButton(mouseF, checkMouse);
+	setButton(mouseN, checkMouse);
+	setButton(mouseM, checkMouse);
+
+	// setButton(plate, catMeow);
+
+	for (let i = 0; i < 12; i++) {
+		let ctex = new PIXI.TilingSprite(resources.cheese_texture.texture, 1000, 250);
+		ctex.anchor.set(.5);
+		words.push(new MaskText(null, ctex, styleCheese));
+		words[i].rotation = .1 - .2 * Math.random();
+		viewGame.add(words[i], 0, 0, .12, true);
+	}
+
+	viewGame.add(cloudF, .22, .155, .08, true);
+	viewGame.add(cloudN, .22, .5, .08, true);
+	viewGame.add(cloudM, .22, .86, .08, true);
+}
+
+function initGame() {
+	// eaten = 0;
+	showMouses();
+
+	let twords = genWords();
+	for (let i = 0; i < words.length; i++) {
+		words[i].setText(twords[i]);
+		words[i].info.x = plate.info.x - 0.02 + .04 * Math.random();
+		words[i].info.y = plate.info.y - .06 + .1 * Math.random();
+		words[i].visible = true;
+	}
+
+	curWordIndex = words.length - 1;
+}
+
+function updater() {
+	// app.render();
 }
 
 function showCloud(cloud) {
-	viewGame.createAnimation({
-		type: ANIM_ALPHA,
-		element: cloud,
-		start: 0,
-		end: 1,
-		duration: 500,
-		isActive: true,
-		end_action: () => {
-			setTimeout(() => {
-				viewGame.createAnimation({
-					type: ANIM_ALPHA,
-					element: cloud,
-					start: 1,
-					end: 0,
-					duration: 500,
-					isActive: true,
-					end_action: () => { isShowingCloud = false }
-				})
-			}, 2000)
-
-		}
-	});
-}
-
-function jumpMouse(mouse) {
-	let pos = mouse.info.getPosition();
-	let pos2 = { x: pos.x, y: pos.y - .02 };
-	viewGame.createAnimation({
-		type: ANIM_MOVE,
-		element: mouse,
-		start: pos,
-		end: pos2,
-		duration: 200,
-		isActive: true,
-		end_action: () => {
-			viewGame.createAnimation({
-				type: ANIM_MOVE,
-				element: mouse,
-				start: pos2,
-				end: pos,
-				duration: 200,
-				isActive: true
-			})
-		}
+	animator.addNewAnimationAlpha(cloud, 0, 1, .1, function () {
+		setTimeout(function () {
+			animator.addNewAnimationAlpha(cloud, 1, 0, .1);
+			isShowingCloud = false;
+		}, 2800);
 	});
 }
 
@@ -566,317 +352,144 @@ function help() {
 		isShowingCloud = true;
 		switch (words[curWordIndex].gender) {
 			case 'f':
-				showCloud(viewGame.cloudF);
-				jumpMouse(viewGame.mouseF);
-				break;
-			case 'm':
-				showCloud(viewGame.cloudM);
-				jumpMouse(viewGame.mouseM);
+				showCloud(cloudF.getByName('cloud'));
+				animator.addAnimationJump(mouseF.getByName('body'));
 				break;
 			case 'n':
-				showCloud(viewGame.cloudN);
-				jumpMouse(viewGame.mouseN);
+				showCloud(cloudN.getByName('cloud'));
+				animator.addAnimationJump(mouseN.getByName('body'));
+				break;
+			case 'm':
+				showCloud(cloudM.getByName('cloud'));
+				animator.addAnimationJump(mouseM.getByName('body'));
 				break;
 		}
-
 	}
 }
 
+function showMouses() {
+	if (mouseF.getByName('body').alpha < .9) animator.addNewAnimationAlpha(mouseF.getByName('body'), mouseF.getByName('body').alpha, 1, .2);
+	if (mouseN.getByName('body').alpha < .9) animator.addNewAnimationAlpha(mouseN.getByName('body'), mouseN.getByName('body').alpha, 1, .2);
+	if (mouseM.getByName('body').alpha < .9) animator.addNewAnimationAlpha(mouseM.getByName('body'), mouseM.getByName('body').alpha, 1, .2);
+}
+
 function catMeow() {
-	if (!isMeow && !isShowingCloud) {
+	if (!isMeow && isReady) {
 		help();
 		isMeow = true;
+		cat.show('eyes_open');
+		cat.hide('eyes_close');
 		sound_meow.play();
-		viewGame.cat.eyes_open.info.setScale(1, 0);
-		viewGame.cat.eyes_close.visible = false;
-		viewGame.createAnimation({
-			type: ANIM_SCALE,
-			element: viewGame.cat.eyes_open,
-			end: { x: 1, y: 1 },
-			isActive: true,
-			duration: 200,
-			end_action: () => {
-				setTimeout(() => {
-					viewGame.createAnimation({
-						type: ANIM_SCALE,
-						element: viewGame.cat.eyes_open,
-						end: { x: 1, y: 0 },
-						isActive: true,
-						duration: 200,
-						end_action: () => {
-							isMeow = false;
-							viewGame.cat.eyes_close.visible = true;
-						}
-					})
-				}, 1000);
-			}
-		});
-
-		let pos = viewGame.cat.leg.info.getPosition();
-		let pos2 = { x: pos.x - .03, y: pos.y };
-
-		viewGame.createAnimation({
-			type: ANIM_MOVE,
-			element: viewGame.cat.leg,
-			start: pos,
-			end: pos2,
-			duration: 200,
-			isActive: true,
-			end_action: () => {
-				viewGame.createAnimation({
-					type: ANIM_MOVE,
-					element: viewGame.cat.leg,
-					start: pos2,
-					end: pos,
-					duration: 200,
-					isActive: true
+		let leg = cat.getByName('leg');
+		let w = leg.width;
+		let eyes = cat.getByName('eyes_open');
+		animator.addNewAnimationScale(eyes, { x: 1, y: 0.1 }, { x: 1, y: 1 }, null, 0.1);
+		animator.addNewAnimationMove(leg, null, new Point(-.1 * w, 0), .2, function () {
+			animator.addNewAnimationMove(leg, null, new Point(), 2.6, function () {
+				animator.addNewAnimationScale(eyes, { x: 1, y: 1 }, { x: 1, y: 0.1 }, null, .1, () => {
+					cat.show('eyes_close');
+					cat.hide('eyes_open');
+					isMeow = false;
+					updater();
 				})
-			}
+			});
 		});
+		updater();
+	}
+}
+
+function createNewWord() {
+	if (isNewWord) {
+		writeNewWord(text);
+		viewGame.resizeElement(word);
+		isNewWord = false;
+		showMouses();
+		animator.addNewAnimationMove(word, plate, word, .5);
+
+		let baseScale = word.scale.clone();
+		word.scale.set(0);
+		animator.addNewAnimationScale(word, 0, 1, baseScale, 0.5, () => {
+			isReady = true;
+		});
+		animator.addAnimationJump(plate.getByName('cheese'));
 	}
 }
 
 function nextWord() {
 	if (curWordIndex >= 0) {
-		isReady = false;
-		viewGame.createAnimation({
-			type: ANIM_MOVE,
-			element: words[curWordIndex],
-			end: { x: .45, y: .35 },
-			duration: 400
-		});
-		viewGame.createAnimation({
-			type: ANIM_SCALE,
-			element: words[curWordIndex],
-			end: { x: 1.3, y: 1.3 },
-			duration: 400
-		});
-		viewGame.createAnimation({
-			type: ANIM_ROTATE,
-			element: words[curWordIndex],
-			end: 0,
-			duration: 400,
-			end_action: () => { isReady = true }
+		words[curWordIndex].info.x = glade.info.x;
+		words[curWordIndex].info.y = glade.info.y;
+		animator.addNewAnimationMove(words[curWordIndex], null, glade, .5);
+		animator.addNewAnimationRotation(words[curWordIndex], null, 0, .5, () => {
+			isReady = true;
 		});
 	} else {
-		setTimeout(showEnd, 1000);
+		endGame();
 	}
 }
 
-function showStart() {
-	viewStart.show();
-	viewGame.hide();
-	viewEnd.hide();
-}
-
-function showGame() {
-	prepareWords();
-	nextWord();
+function startGame() {
+	initGame();
 
 	viewStart.hide();
+	viewEnd.hide();
 	viewGame.show();
-	viewEnd.hide();
+	// createNewWord();
+	// setTimeout(endGame, 500);
+	// animator.addNewAnimationRotation(clock.getChildByName('arrow'), 0, 2 * Math.PI, 30, endGame);
+	resize();
+	nextWord();
 }
 
-function showEnd() {
+function endGame() {
+	reinitEnd();
 
-	shuffle(END_PHRASE);
-	viewEnd.cloud1.setText(END_PHRASE[0]);
-	viewEnd.cloud2.setText(END_PHRASE[1]);
-	viewEnd.cloud3.setText(END_PHRASE[2]);
-
-	viewEnd.mouse1.info.setPosition(.5, .5);
-	viewEnd.cloud1.alpha = 0;
-
-	setTimeout(() => {
-		viewEnd.createAnimation({
-			type: ANIM_MOVE,
-			element: viewEnd.mouse1,
-			end: { x: .85, y: .5 },
-			isActive: true,
-			duration: Math.random() * 1000 + 500,
-			end_action: () => {
-				viewEnd.createAnimation({
-					type: ANIM_ALPHA,
-					element: viewEnd.cloud1,
-					start: 0,
-					end: 1,
-					duration: 500,
-					isActive: true
-				})
-			}
-		});
-	}, Math.random() * 1000 + 200);
-
-	viewEnd.mouse2.info.setPosition(.5, .5);
-	viewEnd.cloud2.alpha = 0;
-
-	setTimeout(() => {
-		viewEnd.createAnimation({
-			type: ANIM_MOVE,
-			element: viewEnd.mouse2,
-			end: { x: .15, y: .5 },
-			isActive: true,
-			duration: Math.random() * 1000 + 500,
-			end_action: () => {
-				viewEnd.createAnimation({
-					type: ANIM_ALPHA,
-					element: viewEnd.cloud2,
-					start: 0,
-					end: 1,
-					duration: 500,
-					isActive: true
-				})
-			}
-		});
-	}, Math.random() * 1000 + 200);
-
-	viewEnd.mouse3.info.setPosition(.5, .5);
-	viewEnd.cloud3.alpha = 0;
-	setTimeout(() => {
-		viewEnd.createAnimation({
-			type: ANIM_MOVE,
-			element: viewEnd.mouse3,
-			end: { x: .5, y: .15 },
-			isActive: true,
-			duration: Math.random() * 1000 + 500,
-			end_action: () => {
-				viewEnd.createAnimation({
-					type: ANIM_ALPHA,
-					element: viewEnd.cloud3,
-					start: 0,
-					end: 1,
-					duration: 500,
-					isActive: true
-				})
-			}
-		});
-	}, Math.random() * 1000 + 200);
-
-
-
-	viewStart.hide();
 	viewGame.hide();
+	viewStart.hide();
 	viewEnd.show();
+	updater();
+}
+
+function exitGame() {
+	viewGame.hide();
+	viewStart.hide();
+	viewEnd.hide();
+	updater();
 }
 
 function checkMouse() {
 	if (isReady) {
-		if (words[curWordIndex].gender == this.gender) correct(this);
+		if (words[curWordIndex].gender == this.name) correct(this);
 		else incorrect(this);
 	}
 
 }
 
 function correct(mouse) {
-	if (!isReady) return;
+	// eaten++;
 	isReady = false;
-	viewGame.createAnimation({
-		type: ANIM_MOVE,
-		element: words[curWordIndex],
-		end: mouse.info.getPosition(),
-		duration: 400
-	});
-	viewGame.createAnimation({
-		type: ANIM_SCALE,
-		element: words[curWordIndex],
-		end: { x: 0, y: 0 },
-		duration: 400
-	});
-	setTimeout(function () {
-		sound_yummy.play();
+	animator.addNewAnimationMove(words[curWordIndex], null, mouse.position, .3);
+	let baseScale = words[curWordIndex].scale.clone();
+	animator.addNewAnimationScale(words[curWordIndex], null, 0, baseScale, 0.5, function () {
+		words[curWordIndex].visible = false;
+		text.text = '';
+		curWordGender = '';
+		isNewWord = true;
 		curWordIndex--;
 		nextWord();
-	}, 200);
+		// createNewWord();
+	});
+	let body = mouse.getChildByName('body');
+	let scale = new Point(body.scale.x);
+	let h = body.getBounds().height;
 
+	setTimeout(function () {
+		sound_yummy.play();
+		animator.addAnimationJump(body);
+	}, 200);
 }
 
 function incorrect(mouse) {
-	jumpMouse(mouse);
+	animator.addAnimationJump(mouse.getByName('body'));
 	if (!sound_no.isPlaying) sound_no.play();
-}
-
-function prepareWords() {
-	let m = ALL_WORDS['m' + difficulty];
-	let f = ALL_WORDS['f' + difficulty];
-	let n = ALL_WORDS['n' + difficulty];
-
-	for (let i = 0; i < words.length / 3; i++) {
-		words[i].getChildByName('text').text = m[currentPositions[0]++ % m.length];
-		words[i].gender = 'm';
-		words[i + words.length / 3].getChildByName('text').text = n[currentPositions[1]++ % n.length];
-		words[i + words.length / 3].gender = 'n';
-		words[i + 2 * words.length / 3].getChildByName('text').text = f[currentPositions[2]++ % f.length];
-		words[i + 2 * words.length / 3].gender = 'f';
-	}
-	for (let i = 0; i < words.length; i++) {
-		words[i].info.setScale(1);
-		words[i].angle = 15 - Math.random() * 30;
-		words[i].info.setPosition(.38 + Math.random() * .04, .75 + Math.random() * .08);
-	}
-	curWordIndex = words.length - 1;
-	shuffle(words);
-}
-
-function drawCloud(width, height, radius, color, style, text, textScale, pos) {
-	let out = new PIXI.Container();
-	// let rect = getRect(width, height, color, radius);
-	let title = getText(text, style);
-	title.scale.set(textScale);
-	out.setText = (text) => { out.getChildByName('text').text = text; };
-	let figure, w = width * DEFAULT_WIDTH, h = height * DEFAULT_WIDTH;
-	switch (pos) {
-		case 'up':
-			figure = getPrimitivs([{
-				type: 'shape',
-				color: color,
-				path:
-					[new PIXI.Point(-.3 * w, 0),
-					new PIXI.Point(.3 * w, 0),
-					new PIXI.Point(0, -h * .75)]
-			},
-			{ type: 'rect', width: width, height: height, radius: radius, color: color }]);
-			title.anchor.set(.5, .3);
-			break;
-		case 'down':
-			figure = getPrimitivs([{
-				type: 'shape',
-				color: color,
-				path:
-					[new PIXI.Point(-.3 * w, 0),
-					new PIXI.Point(.3 * w, 0),
-					new PIXI.Point(0, h * .75)]
-			},
-			{ type: 'rect', width: width, height: height, radius: radius, color: color }]);
-			title.anchor.set(.5, .7);
-			break;
-		case 'left':
-			figure = getPrimitivs([{
-				type: 'shape',
-				color: color,
-				path:
-					[new PIXI.Point(0, -h * .4),
-					new PIXI.Point(-w * .75, 0),
-					new PIXI.Point(0, h * .4)]
-			},
-			{ type: 'rect', width: width, height: height, radius: radius, color: color }]);
-			title.anchor.set(.35, .5);
-			break;
-		case 'right':
-			figure = getPrimitivs([{
-				type: 'shape',
-				color: color,
-				path:
-					[new PIXI.Point(0, -h * .4),
-					new PIXI.Point(w * .75, 0),
-					new PIXI.Point(0, h * .4)]
-			},
-			{ type: 'rect', width: width, height: height, radius: radius, color: color }]);
-			title.anchor.set(.65, .5);
-			break;
-	}
-	// out.addChild(rect);
-	out.addChild(figure);
-	out.addChild(title);
-	return out;
 }
