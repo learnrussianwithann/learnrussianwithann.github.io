@@ -26,7 +26,7 @@ const SENTENCES =
 		"Ночью/в лесу/=рыщет/-волк.",
 		"Спелое/-яблоко/=упало/с дерева.",
 		"Летучие/-мыши/=спят/в пещере.",
-		"Сегодня/-идёт/сильный/=дождь."];
+		"Сегодня/=идёт/сильный/-дождь."];
 
 const gamefield = document.getElementById('game');
 const app = new PIXI.Application({
@@ -219,7 +219,7 @@ function initGameView(res) {
 
 	subject.zIndex = 10;
 	subject.pos = null;
-	subject.startPosition = { x: subject.info.x, y: subject.info.y };
+	subject.info.startPosition = { x: subject.info.x, y: subject.info.y };
 	setMoveable(subject, upStrip, downStrip);
 	subject.hitArea = new PIXI.Rectangle(-200, -400, 400, 800);
 
@@ -273,7 +273,7 @@ function initGameView(res) {
 	});
 	predicate.zIndex = 10;
 	predicate.pos = null;
-	predicate.startPosition = { x: predicate.info.x, y: predicate.info.y };
+	predicate.info.startPosition = { x: predicate.info.x, y: predicate.info.y };
 	setMoveable(predicate, upStrip, downStrip);
 	predicate.hitArea = new PIXI.Rectangle(-200, -400, 400, 800);
 
@@ -381,15 +381,13 @@ function startGame() {
 	words = new Array(l);
 	positions = new Array(l);
 
-	for (let i = 0, k = getRandomInt(l); i < MAX_WORDS; i++, k++) {
+	for (let i = 0; i < MAX_WORDS; i++) {
 		if (i < l) {
-			k %= l;
-
 			words[i] = BUFFER_WORDS[i];
-			words[i].info.x = BOARD_POSITION.X - .5 + xGap + k * (1 - 2 * xGap) / (l - 1);
+			words[i].info.x = BOARD_POSITION.X - .5 + xGap + i * (1 - 2 * xGap) / (l - 1);
 			words[i].info.y = BOARD_POSITION.Y - .5 + .7;
 			words[i].info.width = (1 - 2 * xGap) / (l - 1);
-			words[i].startPosition = { x: words[i].info.x, y: words[i].info.y };
+			words[i].info.startPosition = { x: words[i].info.x, y: words[i].info.y };
 			words[i].visible = true;
 			setMoveable(words[i], upWord, downWord);
 			release(words[i]);
@@ -425,6 +423,9 @@ function startGame() {
 		}
 	}
 
+
+	swapInfo(words[0], words[getRandomIntBetween(1, l - 2)]);
+	swapInfo(words[l - 1], words[getRandomIntBetween(0, l - 2)]);
 
 
 	for (let i = 0; i < words.length; i++) {
@@ -603,7 +604,7 @@ function moveAllWordsToStart() {
 }
 
 function moveElementToStart(elem) {
-	elem.info.setPosition(elem.startPosition.x, elem.startPosition.y);
+	elem.info.setPosition(elem.info.startPosition.x, elem.info.startPosition.y);
 	if (elem == subject || elem == predicate) {
 		elem.pos = null;
 		elem.anchor.set(.5);

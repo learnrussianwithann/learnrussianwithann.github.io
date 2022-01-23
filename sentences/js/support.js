@@ -32,6 +32,10 @@ function getRandomInt(max) {
 	return Math.floor(Math.random() * Math.floor(max));
 }
 
+function getRandomIntBetween(min, max) {
+	return min + Math.floor(Math.random() * Math.floor(max - min));
+}
+
 function getRect(prop) {
 	let out = new PIXI.Graphics();
 	let w = prop.width * DEFAULT_WIDTH;
@@ -218,6 +222,18 @@ function setHitAreaByElement(element, source) {
 	let h = 3 * source.height;
 	element.hitArea = new PIXI.Rectangle(-w / 2, -h / 2, w, h);
 
+}
+
+function swap(array, pos1, pos2) {
+	let temp = array[pos1];
+	array[pos1] = array[pos2];
+	array[pos2] = temp;
+}
+
+function swapInfo(elem1, elem2) {
+	let temp = elem1.info;
+	elem1.info = elem2.info;
+	elem2.info = temp;
 }
 
 /////////////////////////////////////////
