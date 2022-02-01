@@ -101,8 +101,15 @@ function getSpriteWithText(prop) {
 	return out;
 }
 
-function getText(prop) {
-	let t = new PIXI.Text(prop.text, prop.style);
+// function getText(prop) {
+// 	let t = new PIXI.Text(prop.text, prop.style);
+// 	t.anchor.set(0.5);
+// 	t.name = 'text';
+// 	return t;
+// }
+
+function getText(text, style) {
+	let t = new PIXI.Text(text, style);
 	t.anchor.set(0.5);
 	t.name = 'text';
 	return t;
@@ -113,7 +120,7 @@ function getTexturedText(prop) {
 	let ctex = new PIXI.TilingSprite(prop.texture, prop.textureSize.x, prop.textureSize.y);
 	ctex.anchor.set(.5);
 	ctex.name = 'sprite';
-	let t = getText(prop);
+	let t = getText(prop.text, prop.style);
 	t.anchor.set(.5);
 	t.name = 'text';
 	out.addChild(ctex);
@@ -148,6 +155,90 @@ function drawPoly(graphics, color, path) {
 	graphics.beginFill(color);
 	graphics.drawPolygon(path);
 	graphics.endFill();
+}
+
+function getPrimitivs(primitives) {
+	let g = new PIXI.Graphics();
+	primitives.forEach(p => {
+		switch (p.type) {
+			case 'rect':
+				let w = p.width * DEFAULT_WIDTH, h = p.height * DEFAULT_WIDTH, radius = p.radius * DEFAULT_WIDTH;
+				g.beginFill(p.color);
+				g.drawRoundedRect(-w / 2, -h / 2, w, h, radius);
+				g.endFill();
+				break;
+			case 'shape':
+				drawPoly(g, p.color, p.path);
+				break;
+		}
+
+	});
+	let out = new PIXI.Sprite(app.renderer.generateTexture(g));
+	out.anchor.set(.5);
+	return out;
+}
+
+function drawCloud(width, height, radius, color, style, text, textScale, pos) {
+	let out = new PIXI.Container();
+	// let rect = getRect(width, height, color, radius);
+	let title = getText(text, style);
+	title.scale.set(textScale);
+	out.setText = (text) => { out.getChildByName('text').text = text; };
+	let figure, w = width * DEFAULT_WIDTH, h = height * DEFAULT_WIDTH;
+	switch (pos) {
+		case 'up':
+			figure = getPrimitivs([{
+				type: 'shape',
+				color: color,
+				path:
+					[new PIXI.Point(-.3 * w, 0),
+					new PIXI.Point(.3 * w, 0),
+					new PIXI.Point(0, -h * .75)]
+			},
+			{ type: 'rect', width: width, height: height, radius: radius, color: color }]);
+			title.anchor.set(.5, .3);
+			break;
+		case 'down':
+			figure = getPrimitivs([{
+				type: 'shape',
+				color: color,
+				path:
+					[new PIXI.Point(-.3 * w, 0),
+					new PIXI.Point(.3 * w, 0),
+					new PIXI.Point(0, h * .75)]
+			},
+			{ type: 'rect', width: width, height: height, radius: radius, color: color }]);
+			title.anchor.set(.5, .7);
+			break;
+		case 'left':
+			figure = getPrimitivs([{
+				type: 'shape',
+				color: color,
+				path:
+					[new PIXI.Point(0, -h * .4),
+					new PIXI.Point(-w * .75, 0),
+					new PIXI.Point(0, h * .4)]
+			},
+			{ type: 'rect', width: width, height: height, radius: radius, color: color }]);
+			title.anchor.set(.35, .5);
+			break;
+		case 'right':
+			figure = getPrimitivs([{
+				type: 'shape',
+				color: color,
+				path:
+					[new PIXI.Point(0, -h * .4),
+					new PIXI.Point(w * .75, 0),
+					new PIXI.Point(0, h * .4)]
+			},
+			{ type: 'rect', width: width, height: height, radius: radius, color: color }]);
+			title.anchor.set(.65, .5);
+			break;
+	}
+	// out.addChild(rect);
+	out.addChild(figure);
+	out.addChild(title);
+	return out;
 }
 
 ///////////////////////////////////////////////////

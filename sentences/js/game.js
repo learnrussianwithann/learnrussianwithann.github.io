@@ -319,6 +319,48 @@ function initGameView(res) {
 
 	setButton(mouse.body, animationHands);
 
+	viewGame.cloud = viewGame.addElement(
+		drawCloud(
+			.30,
+			.1,
+			.05,
+			0xffffff,
+			{
+				fontFamily: 'OpenSans',
+				fontSize: 40,
+				fill: '#000000',
+				wordWrap: false,
+				align: 'center'
+			},
+			'Правильно!',
+			1,
+			'down'
+		),
+		{ x: .13, y: .3, width: .25 });
+
+	viewGame.cloud.alpha = 0;
+
+	viewGame.check = viewGame.createElement({
+		type: BUTTON,
+		text: 'Проверить',
+		style: {
+			fontFamily: 'OpenSans',
+			fontSize: 30,
+			fill: '#ffffff',
+			wordWrap: false,
+			align: 'center'
+		},
+		bcolor: 0xff6968,
+		k_w: 2,
+		k_h: 1.8,
+		width: .3,
+		height: .06,
+		x: .6,
+		y: .75
+	});
+	viewGame.check.alpha = 0;
+	viewGame.check.visible = false;
+
 }
 
 function initEndView() {
@@ -441,12 +483,17 @@ function startGame() {
 	moveElementToStart(subject);
 	moveElementToStart(predicate);
 
+	firstStage();
+
 	showGame();
 }
 
 function startSecondStage() {
 	subject.visible = true;
 	predicate.visible = true;
+
+	setInactive(viewGame.check);
+	setButton(viewGame.check, checkStrip);
 
 	words.forEach(e => {
 		setInactive(e);
@@ -547,14 +594,32 @@ function checkPositionStrip(strip) {
 		strip.info.copyPosition(positions[t_i]);
 		strip.info.y += .05;
 
-		if (subject.pos != null && predicate.pos != null &&
-			subject.pos.word.type == '-' && predicate.pos.word.type == '=') {
-			animationHands(showEnd);
-			sound_yes.play();
-		}
+		// if (subject.pos != null && predicate.pos != null &&
+		// 	subject.pos.word.type == '-' && predicate.pos.word.type == '=') {
+		// 	animationHands(showEnd);
+		// 	say('Правильно!');
+		// 	sound_yes.play();
+		// }
+
+		if (subject.pos != null && predicate.pos != null)
+			showCheck();
 	} else if (t_i < 0) {
 		moveElementToStart(strip);
+		hideCheck();
 	}
+}
+
+function checkStrip() {
+	if (subject.pos != null && predicate.pos != null &&
+			subject.pos.word.type == '-' && predicate.pos.word.type == '=') {
+			animationHands(showEnd);
+			say('Правильно!');
+			sound_yes.play();
+		} else {
+			sound_no.play();
+			say('Неправильно!');
+			animationHands();
+		}
 }
 
 function checkPositionWord(word) {
@@ -582,24 +647,30 @@ function checkPositionWord(word) {
 		if (w.pos == null) flag = false;
 	});
 
-	if (flag) checkOrder();
+	if (flag) showCheck();
+	else hideCheck();
 }
 
 function checkOrder() {
 	for (let i = 0, x = 0; i < words.length; i++) {
 		if (words[i].pos.order != i) {
-			moveAllWordsToStart();
 			sound_no.play();
+			say('Неправильно!');
+			hideCheck();
+			moveAllWordsToStart();
 			return;
 		}
 	}
+	say('Правильно!');
 	sound_yes.play();
 	animationHands(startSecondStage);
+	hideCheck();
 }
 
 function moveAllWordsToStart() {
 	words.forEach(w => {
 		moveElementToStart(w);
+		viewGame.resizeElement(w);
 	});
 }
 
@@ -663,7 +734,6 @@ function rotate_anim_reverse(elem, angle, duration) {
 
 function hideView(view, action) {
 	if (view.isVisible()) {
-		console.log("hide ", view, action);
 		view.createAnimation({
 			type: ANIM_ALPHA,
 			element: view.container,
@@ -672,7 +742,6 @@ function hideView(view, action) {
 			duration: 300,
 			isActive: true,
 			end_action: () => {
-				console.log('end action');
 				view.hide();
 				if (action) action();
 			}
@@ -691,4 +760,65 @@ function showView(view) {
 		duration: 300,
 		isActive: true
 	});
+}
+
+function say(text) {
+	if (!viewGame.cloud.isAnimated) {
+		viewGame.cloud.isAnimated = true;
+		changeText(viewGame.cloud, text);
+		viewGame.createAnimation({
+			type: ANIM_ALPHA,
+			element: viewGame.cloud,
+			start: 0,
+			end: 1,
+			duration: 200,
+			isActive: true,
+			end_action: () => {
+				setTimeout(() => {
+					viewGame.createAnimation({
+						type: ANIM_ALPHA,
+						element: viewGame.cloud,
+						start: 1,
+						end: 0,
+						duration: 200,
+						isActive: true,
+						end_action: () => { viewGame.cloud.isAnimated = false }
+					})
+				}, 1000)
+
+			}
+		})
+	}
+}
+
+function showCheck() {
+	if (viewGame.check.visible) return;
+
+	viewGame.check.visible = true;
+	viewGame.createAnimation({
+		type: ANIM_ALPHA,
+		element: viewGame.check,
+		start: 0,
+		end: 1,
+		duration: 200,
+		isActive: true
+	});
+}
+
+function hideCheck() {
+	if (!viewGame.check.visible) return;
+	viewGame.createAnimation({
+		type: ANIM_ALPHA,
+		element: viewGame.check,
+		start: 1,
+		end: 0,
+		duration: 200,
+		isActive: true,
+		end_action: ()=>{viewGame.check.visible = false;}
+	});
+}
+
+function firstStage() {
+	setInactive(viewGame.check);
+	setButton(viewGame.check, checkOrder);
 }
