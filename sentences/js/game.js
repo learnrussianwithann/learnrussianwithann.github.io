@@ -1,7 +1,7 @@
 'use strict';
 
 const SENTENCES_HARD =
-	["-Заяц/быстро/=скрылся/в/лесу."];
+	["-Заяц/очень/быстро/=скрылся/в/лесу."];
 
 const SENTENCES_EASY =
 	["-Заяц/быстро/=скрылся/в лесу.",
@@ -63,7 +63,7 @@ loader.add('pattern', 'img/pattern.png')
 
 font.load().then(() => { font2.load().then(() => { loader.load(init); }) });
 
-const MAX_WORDS = 5;
+const MAX_WORDS = 6;
 const BUFFER_POS = new Array(MAX_WORDS);
 const BUFFER_WORDS = new Array(MAX_WORDS);
 const BOARD_POSITION = { X: 0.6, Y: 0.3 };
@@ -513,7 +513,7 @@ function startGame() {
 
 	let twords = sentences[Math.floor(Math.random() * sentences.length)].split('/');
 	let l = twords.length;
-	let xGap = .25;
+	let xGap = .25 - difficulty * .05;
 	let maxWidth = 0;
 	let maxWidthIndex = 0;
 
@@ -598,7 +598,7 @@ function startSecondStage() {
 		setInactive(e);
 	});
 
-	setTimeout(mouseInteract, 1600);
+	setTimeout(mouseInteract, 2000);
 }
 
 function endGame() {
@@ -887,7 +887,7 @@ function say(text) {
 						isActive: true,
 						end_action: () => { viewGame.cloud.isAnimated = false }
 					})
-				}, 1000)
+				}, 2000)
 
 			}
 		})
