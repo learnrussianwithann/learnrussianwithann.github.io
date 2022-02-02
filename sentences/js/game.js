@@ -819,6 +819,7 @@ function hideCheck() {
 }
 
 function firstStage() {
+	hideCheck();
 	setInactive(viewGame.check);
 	setButton(viewGame.check, checkOrder);
 }
