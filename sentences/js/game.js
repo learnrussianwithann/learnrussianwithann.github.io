@@ -1,6 +1,9 @@
 'use strict';
 
-const SENTENCES =
+const SENTENCES_HARD =
+	["-Заяц/быстро/=скрылся/в/лесу."];
+
+const SENTENCES_EASY =
 	["-Заяц/быстро/=скрылся/в лесу.",
 		"Зелёная/-гусеница/=переползает/дорогу.",
 		"-Муравей/=тащит/тяжелую/ветку.",
@@ -44,6 +47,8 @@ const viewEnd = new Viewport(app, 16 / 9);
 
 const sound_yes = PIXI.sound.Sound.from('sound/yes.mp3');
 const sound_no = PIXI.sound.Sound.from('sound/no.mp3');
+const sound_pisk0 = PIXI.sound.Sound.from('sound/pisk0.mp3');
+const sound_pisk1 = PIXI.sound.Sound.from('sound/pisk1.mp3');
 
 const font = new FontFaceObserver('OpenSans');
 const font2 = new FontFaceObserver('Nunito');
@@ -63,6 +68,9 @@ const BUFFER_POS = new Array(MAX_WORDS);
 const BUFFER_WORDS = new Array(MAX_WORDS);
 const BOARD_POSITION = { X: 0.6, Y: 0.3 };
 
+var sentences;
+var stage = 0;
+var difficulty = 0;
 var subject;
 var predicate;
 var words;
@@ -126,10 +134,90 @@ function initStartView() {
 		width: .3,
 		height: .06,
 		x: .5,
-		y: .65
+		y: .8
 	});
 
 	setButton(bstart, startGame);
+
+	let bdiff0 = viewStart.createElement({
+		type: BUTTON,
+		text: 'Легко',
+		style: {
+			fontFamily: 'OpenSans',
+			fontSize: 30,
+			fill: '#ffffff',
+			wordWrap: false,
+			align: 'center'
+		},
+		bcolor: 0xff6968,
+		bwidth: .7,
+		width: .15,
+		height: .06,
+		x: .4,
+		y: .6
+	});
+
+	let bdiff1 = viewStart.createElement({
+		type: BUTTON,
+		text: 'Сложно',
+		style: {
+			fontFamily: 'OpenSans',
+			fontSize: 30,
+			fill: '#ffffff',
+			wordWrap: false,
+			align: 'center'
+		},
+		bcolor: 0xff6968,
+		bwidth: .7,
+		width: .15,
+		height: .06,
+		x: .6,
+		y: .6
+	});
+
+	bdiff0.info.setScale(1.15);
+	bdiff1.info.setScale(0.85);
+
+	setButton(bdiff0, () => {
+		if (difficulty == 0) return;
+		difficulty = 0;
+		viewStart.createAnimation({
+			type: ANIM_SCALE,
+			element: bdiff0,
+			start: { x: .85, y: .85 },
+			end: { x: 1.15, y: 1.15 },
+			duration: 200,
+			isActive: true
+		});
+		viewStart.createAnimation({
+			type: ANIM_SCALE,
+			element: bdiff1,
+			start: { x: 1.15, y: 1.15 },
+			end: { x: .85, y: .85 },
+			duration: 200,
+			isActive: true
+		});
+	});
+	setButton(bdiff1, () => {
+		if (difficulty == 1) return;
+		difficulty = 1;
+		viewStart.createAnimation({
+			type: ANIM_SCALE,
+			element: bdiff0,
+			start: { x: 1.15, y: 1.15 },
+			end: { x: .85, y: .85 },
+			duration: 200,
+			isActive: true
+		});
+		viewStart.createAnimation({
+			type: ANIM_SCALE,
+			element: bdiff1,
+			start: { x: .85, y: .85 },
+			end: { x: 1.15, y: 1.15 },
+			duration: 200,
+			isActive: true
+		});
+	});
 }
 
 function initGameView(res) {
@@ -317,12 +405,12 @@ function initGameView(res) {
 		viewGame.sort();
 	}
 
-	setButton(mouse.body, animationHands);
+	setButton(mouse.body, mouseInteract);
 
 	viewGame.cloud = viewGame.addElement(
 		drawCloud(
 			.30,
-			.1,
+			.15,
 			.05,
 			0xffffff,
 			{
@@ -414,7 +502,16 @@ function initEndView() {
 }
 
 function startGame() {
-	let twords = SENTENCES[Math.floor(Math.random() * SENTENCES.length)].split('/');
+	switch (difficulty) {
+		case 0:
+			sentences = SENTENCES_EASY;
+			break;
+		case 1:
+			sentences = SENTENCES_HARD;
+			break;
+	}
+
+	let twords = sentences[Math.floor(Math.random() * sentences.length)].split('/');
 	let l = twords.length;
 	let xGap = .25;
 	let maxWidth = 0;
@@ -489,6 +586,8 @@ function startGame() {
 }
 
 function startSecondStage() {
+	stage = 1;
+
 	subject.visible = true;
 	predicate.visible = true;
 
@@ -498,6 +597,8 @@ function startSecondStage() {
 	words.forEach(e => {
 		setInactive(e);
 	});
+
+	setTimeout(mouseInteract, 1600);
 }
 
 function endGame() {
@@ -611,15 +712,15 @@ function checkPositionStrip(strip) {
 
 function checkStrip() {
 	if (subject.pos != null && predicate.pos != null &&
-			subject.pos.word.type == '-' && predicate.pos.word.type == '=') {
-			animationHands(showEnd);
-			say('Правильно!');
-			sound_yes.play();
-		} else {
-			sound_no.play();
-			say('Неправильно!');
-			animationHands();
-		}
+		subject.pos.word.type == '-' && predicate.pos.word.type == '=') {
+		say('Правильно!');
+		setTimeout(showEnd, 2000);
+		// sound_yes.play();
+	} else {
+		// sound_no.play();
+		say('Неправильно!');
+		// animationHands();
+	}
 }
 
 function checkPositionWord(word) {
@@ -654,16 +755,16 @@ function checkPositionWord(word) {
 function checkOrder() {
 	for (let i = 0, x = 0; i < words.length; i++) {
 		if (words[i].pos.order != i) {
-			sound_no.play();
+			// sound_no.play();
 			say('Неправильно!');
 			hideCheck();
 			moveAllWordsToStart();
 			return;
 		}
 	}
-	say('Правильно!');
-	sound_yes.play();
 	animationHands(startSecondStage);
+	say('Правильно!');
+	// sound_yes.play();
 	hideCheck();
 }
 
@@ -765,6 +866,8 @@ function showView(view) {
 function say(text) {
 	if (!viewGame.cloud.isAnimated) {
 		viewGame.cloud.isAnimated = true;
+		mousePisk();
+		animationHands();
 		changeText(viewGame.cloud, text);
 		viewGame.createAnimation({
 			type: ANIM_ALPHA,
@@ -814,12 +917,26 @@ function hideCheck() {
 		end: 0,
 		duration: 200,
 		isActive: true,
-		end_action: ()=>{viewGame.check.visible = false;}
+		end_action: () => { viewGame.check.visible = false; }
 	});
 }
 
 function firstStage() {
+	stage = 0;
 	hideCheck();
 	setInactive(viewGame.check);
 	setButton(viewGame.check, checkOrder);
+
+	setTimeout(mouseInteract, 600);
+}
+
+function mouseInteract() {
+	if (mouse.isRotate) return;
+	if (stage == 0)say('Расставь слова\nправильно!');
+	else say('Найди\nподлежащее\nи сказуемое!')
+}
+
+function mousePisk() {
+	if (sound_pisk0.isPlaying || sound_pisk1.isPlaying) return;
+	Math.random() > .5 ? sound_pisk0.play() : sound_pisk1.play();
 }
